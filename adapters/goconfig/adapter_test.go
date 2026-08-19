@@ -10,7 +10,7 @@ import (
 
 func managerFromJSON(t *testing.T, document string) (*config.Manager, *config.Node) {
 	t.Helper()
-	source, err := config.NewStrSource(document, "")
+	source, err := config.NewStrSource(document, `{}`)
 	if err != nil {
 		t.Fatal(err)
 	}

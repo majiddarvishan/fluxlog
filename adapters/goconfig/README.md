@@ -24,7 +24,7 @@ Expected configuration:
 `output_mode` is `file` or `both`.
 
 ```go
-source, err := config.NewStrSource(configJSON, "")
+source, err := config.NewStrSource(configJSON, schemaJSON)
 if err != nil {
 	return err
 }
