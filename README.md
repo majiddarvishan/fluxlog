@@ -109,11 +109,25 @@ child.Info().Msg("worker started")
 
 Configuration adapters, including the optional `goconfig` adapter, are kept
 outside the core module. This ensures applications that do not use a provider
-do not inherit its dependencies. The adapter is planned as a separate Go
-submodule in a later implementation phase.
+do not inherit its dependencies.
+
+The goconfig adapter preserves the original configuration keys and binds the
+`level` node to runtime-safe per-instance level changes:
+
+```bash
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig
+```
+
+```go
+logger, err := fluxgoconfig.New(manager, loggerConfigNode)
+```
+
+See [`adapters/goconfig`](./adapters/goconfig) for the full configuration and
+usage example.
 
 ## Development
 
 ```bash
 make verify
+(cd adapters/goconfig && go test ./...)
 ```
