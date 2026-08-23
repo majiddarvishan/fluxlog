@@ -34,9 +34,9 @@ func TestConfigRejectsNegativeRotationValue(t *testing.T) {
 
 func TestParseLevelAliases(t *testing.T) {
 	tests := map[string]Level{
-		"TRACE":   TraceLevel,
+		"TRACE":     TraceLevel,
 		" warning ": WarnLevel,
-		"off":     DisabledLevel,
+		"off":       DisabledLevel,
 	}
 
 	for input, expected := range tests {

@@ -8,7 +8,7 @@ import (
 func benchmarkLogger(b *testing.B, level Level) *Logger {
 	b.Helper()
 	logger, err := New(Config{
-		Level:   level,
+		Level: level,
 		Console: &ConsoleConfig{
 			Writer: io.Discard,
 			Format: JSONFormat,

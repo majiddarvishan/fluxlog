@@ -29,6 +29,7 @@ jobs:
           unformatted="$(gofmt -l $(find . -name '*.go' -not -path './vendor/*' -not -path './adapters/*'))"
           if [ -n "$unformatted" ]; then
             printf '%s\n' "$unformatted"
+            gofmt -d $unformatted
             exit 1
           fi
 
