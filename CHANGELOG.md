@@ -13,6 +13,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   Logger and a single printf-style function per level.
 - Runnable package-level API example.
 - Console pattern with caller and service before the message.
+- Distinct cyan service name in color-enabled console output.
 - Configurable caller shortening with a default maximum of 15 characters.
 
 ## [0.1.0] - 2026-08-25

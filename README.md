@@ -135,7 +135,9 @@ shortened from the left so the filename and line number remain visible:
 ```
 
 `CallerMaxLength` defaults to `15`. JSON output is unchanged and retains the
-full `caller` and `service` fields.
+full `caller` and `service` fields. The parenthesized service name is cyan when
+color output is enabled; `NeverColor` and the `NO_COLOR` environment variable
+disable it along with the other console colors.
 
 File output defaults to JSON and never contains ANSI color codes.
 
