@@ -11,9 +11,11 @@ func main() {
 		Level:     fluxlog.DebugLevel,
 		Service:   "gateway",
 		Timestamp: true,
+		Caller:    true,
 		Console: &fluxlog.ConsoleConfig{
-			Format: fluxlog.ConsoleFormat,
-			Color:  fluxlog.AutoColor,
+			Format:          fluxlog.ConsoleFormat,
+			Color:           fluxlog.AutoColor,
+			CallerMaxLength: 15,
 		},
 	})
 	if err != nil {

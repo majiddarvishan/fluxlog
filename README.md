@@ -10,7 +10,7 @@ modify zerolog's process-global logger or global level.
 ## Install
 
 ```bash
-go get github.com/majiddarvishan/fluxlog@v0.1.0
+go get github.com/majiddarvishan/fluxlog@v0.2.0
 ```
 
 ## Basic usage
@@ -31,8 +31,9 @@ func main() {
 		Timestamp: true,
 		Caller:    true,
 		Console: &fluxlog.ConsoleConfig{
-			Format: fluxlog.ConsoleFormat,
-			Color:  fluxlog.AutoColor,
+			Format:          fluxlog.ConsoleFormat,
+			Color:           fluxlog.AutoColor,
+			CallerMaxLength: 15,
 		},
 	})
 	if err != nil {
@@ -40,7 +41,7 @@ func main() {
 	}
 	defer logger.Close()
 
-logger.Info().
+	logger.Info().
 		Str("request_id", "req-1").
 		Msg("request received")
 }
@@ -125,6 +126,16 @@ logger, err := fluxlog.New(fluxlog.Config{
 	},
 })
 ```
+
+Console-formatted logs place caller and service before the message. Caller is
+shortened from the left so the filename and line number remain visible:
+
+```text
+2026-08-25T18:22:43+03:30 INF [ …_server.go:272 ] (Gateway) Web server starting on 0.0.0.0:4567
+```
+
+`CallerMaxLength` defaults to `15`. JSON output is unchanged and retains the
+full `caller` and `service` fields.
 
 File output defaults to JSON and never contains ANSI color codes.
 

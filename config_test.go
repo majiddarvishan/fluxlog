@@ -32,6 +32,20 @@ func TestConfigRejectsNegativeRotationValue(t *testing.T) {
 	}
 }
 
+func TestConfigRejectsNegativeCallerMaxLength(t *testing.T) {
+	_, err := New(Config{
+		Level: InfoLevel,
+		Console: &ConsoleConfig{
+			Writer:          &bytes.Buffer{},
+			Format:          ConsoleFormat,
+			CallerMaxLength: -1,
+		},
+	})
+	if err == nil {
+		t.Fatal("expected negative caller max length to be rejected")
+	}
+}
+
 func TestParseLevelAliases(t *testing.T) {
 	tests := map[string]Level{
 		"TRACE":     TraceLevel,
