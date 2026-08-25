@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 	"unicode"
 	"unicode/utf8"
 
@@ -18,14 +19,28 @@ func newConsoleWriter(
 	timeFormat string,
 	callerMaxLength int,
 ) zerolog.ConsoleWriter {
-	return zerolog.ConsoleWriter{
-		Out:           output,
-		NoColor:       !colorEnabled(color, output),
-		TimeFormat:    timeFormat,
-		PartsOrder:    []string{zerolog.TimestampFieldName, zerolog.LevelFieldName, zerolog.CallerFieldName, zerolog.MessageFieldName},
-		FieldsExclude: []string{"service"},
-		FormatCaller:  callerFormatter(callerMaxLength),
-		FormatPrepare: prepareConsoleEvent,
+	writer := zerolog.ConsoleWriter{Out: output}
+	writer.NoColor = !colorEnabled(color, output)
+	writer.TimeFormat = timeFormat
+	writer.PartsOrder = []string{zerolog.TimestampFieldName, zerolog.LevelFieldName, zerolog.CallerFieldName, zerolog.MessageFieldName}
+	writer.FieldsExclude = []string{"service"}
+	writer.FormatTimestamp = timestampFormatter(timeFormat)
+	writer.FormatCaller = callerFormatter(callerMaxLength)
+	writer.FormatPrepare = prepareConsoleEvent
+	return writer
+}
+
+func timestampFormatter(timeFormat string) zerolog.Formatter {
+	return func(value any) string {
+		timestamp, ok := value.(string)
+		if !ok || timestamp == "" {
+			return ""
+		}
+		parsed, err := time.Parse(zerolog.TimeFieldFormat, timestamp)
+		if err != nil {
+			return timestamp
+		}
+		return parsed.Format(timeFormat)
 	}
 }
 
