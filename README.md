@@ -10,7 +10,7 @@ modify zerolog's process-global logger or global level.
 ## Install
 
 ```bash
-go get github.com/majiddarvishan/fluxlog
+go get github.com/majiddarvishan/fluxlog@v0.1.0
 ```
 
 ## Basic usage
@@ -115,7 +115,7 @@ The goconfig adapter preserves the original configuration keys and binds the
 `level` node to runtime-safe per-instance level changes:
 
 ```bash
-go get github.com/majiddarvishan/fluxlog/adapters/goconfig
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.1.0
 ```
 
 ```go
@@ -123,7 +123,8 @@ logger, err := fluxgoconfig.New(manager, loggerConfigNode)
 ```
 
 See [`adapters/goconfig`](./adapters/goconfig) for the full configuration and
-usage example.
+[`adapters/goconfig/examples/basic`](./adapters/goconfig/examples/basic) for a
+runnable example.
 
 ## Development
 

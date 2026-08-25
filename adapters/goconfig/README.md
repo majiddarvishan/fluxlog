@@ -5,7 +5,7 @@ This optional module creates a `fluxlog.Logger` from
 the `level` node is replaced at runtime.
 
 ```bash
-go get github.com/majiddarvishan/fluxlog/adapters/goconfig
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.1.0
 ```
 
 Expected configuration:
@@ -44,3 +44,5 @@ logger.Info().Msg("configured through goconfig")
 
 The core `github.com/majiddarvishan/fluxlog` module has no dependency on
 `goconfig`; only applications importing this adapter module receive it.
+
+A complete runnable program is available in [`examples/basic`](./examples/basic).
