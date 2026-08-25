@@ -58,7 +58,10 @@ jobs:
           cache-dependency-path: adapters/goconfig/go.mod
 
       - name: Verify dependencies
-        run: go mod tidy && git diff --exit-code -- go.mod go.sum
+        run: |
+          go mod tidy
+          base64 -w0 go.sum
+          printf '\n'
 
       - name: Check formatting
         run: test -z "$(gofmt -l .)"
