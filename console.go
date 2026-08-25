@@ -13,6 +13,12 @@ import (
 	"github.com/rs/zerolog"
 )
 
+const (
+	consoleServiceField = "service"
+	ansiCyan            = "\x1b[36m"
+	ansiReset           = "\x1b[0m"
+)
+
 func newConsoleWriter(
 	output io.Writer,
 	color ColorMode,
@@ -20,13 +26,14 @@ func newConsoleWriter(
 	callerMaxLength int,
 ) zerolog.ConsoleWriter {
 	writer := zerolog.ConsoleWriter{Out: output}
-	writer.NoColor = !colorEnabled(color, output)
+	noColor := !colorEnabled(color, output)
+	writer.NoColor = noColor
 	writer.TimeFormat = timeFormat
-	writer.PartsOrder = []string{zerolog.TimestampFieldName, zerolog.LevelFieldName, zerolog.CallerFieldName, zerolog.MessageFieldName}
-	writer.FieldsExclude = []string{"service"}
+	writer.PartsOrder = []string{zerolog.TimestampFieldName, zerolog.LevelFieldName, zerolog.CallerFieldName, consoleServiceField, zerolog.MessageFieldName}
+	writer.FieldsExclude = []string{consoleServiceField}
 	writer.FormatTimestamp = timestampFormatter(timeFormat)
 	writer.FormatCaller = callerFormatter(callerMaxLength)
-	writer.FormatPrepare = prepareConsoleEvent
+	writer.FormatPartValueByName = consolePartFormatter(noColor)
 	return writer
 }
 
@@ -44,20 +51,21 @@ func timestampFormatter(timeFormat string) zerolog.Formatter {
 	}
 }
 
-func prepareConsoleEvent(event map[string]any) error {
-	service, ok := event["service"].(string)
-	if !ok || strings.TrimSpace(service) == "" {
-		return nil
+func consolePartFormatter(noColor bool) zerolog.FormatterByFieldName {
+	return func(value any, field string) string {
+		if field != consoleServiceField {
+			return fmt.Sprint(value)
+		}
+		service, ok := value.(string)
+		if !ok || strings.TrimSpace(service) == "" {
+			return ""
+		}
+		formatted := "(" + capitalizeFirst(service) + ")"
+		if noColor || os.Getenv("NO_COLOR") != "" {
+			return formatted
+		}
+		return ansiCyan + formatted + ansiReset
 	}
-
-	prefix := "(" + capitalizeFirst(service) + ")"
-	message, _ := event[zerolog.MessageFieldName].(string)
-	if message == "" {
-		event[zerolog.MessageFieldName] = prefix
-	} else {
-		event[zerolog.MessageFieldName] = prefix + " " + message
-	}
-	return nil
 }
 
 func callerFormatter(maxLength int) zerolog.Formatter {
