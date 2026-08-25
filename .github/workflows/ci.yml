@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.x"
+          cache: true
+
+      - name: Verify dependencies
+        run: go mod tidy && git diff --exit-code -- go.mod go.sum
+
+      - name: Check formatting
+        run: |
+          unformatted="$(gofmt -l $(find . -name '*.go' -not -path './vendor/*' -not -path './adapters/*'))"
+          if [ -n "$unformatted" ]; then
+            printf '%s\n' "$unformatted"
+            gofmt -d $unformatted
+            exit 1
+          fi
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test with race detector
+        run: go test -race -coverprofile=coverage.out ./...
+
+  goconfig-adapter:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: adapters/goconfig
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.x"
+          cache-dependency-path: adapters/goconfig/go.mod
+
+      - name: Resolve dependencies
+        run: go mod tidy
+
+      - name: Check formatting
+        run: test -z "$(gofmt -l .)"
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test with race detector
+        run: go test -race ./...
