@@ -19,13 +19,13 @@ func newConsoleWriter(
 	callerMaxLength int,
 ) zerolog.ConsoleWriter {
 	return zerolog.ConsoleWriter{
-		Out:             output,
-		NoColor:         !colorEnabled(color, output),
-		TimeFormat:      timeFormat,
-		PartsOrder:      []string{zerolog.TimestampFieldName, zerolog.LevelFieldName, zerolog.CallerFieldName, zerolog.MessageFieldName},
-		FieldsExclude:   []string{"service"},
-		FormatCaller:    callerFormatter(callerMaxLength),
-		FormatPrepare:   prepareConsoleEvent,
+		Out:           output,
+		NoColor:       !colorEnabled(color, output),
+		TimeFormat:    timeFormat,
+		PartsOrder:    []string{zerolog.TimestampFieldName, zerolog.LevelFieldName, zerolog.CallerFieldName, zerolog.MessageFieldName},
+		FieldsExclude: []string{"service"},
+		FormatCaller:  callerFormatter(callerMaxLength),
+		FormatPrepare: prepareConsoleEvent,
 	}
 }
 
