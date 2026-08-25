@@ -29,11 +29,16 @@ const (
 // ConsoleConfig configures an optional stream output. The presence of this
 // value enables the output. Writer defaults to os.Stdout.
 type ConsoleConfig struct {
-	Writer     io.Writer
-	Format     OutputFormat
-	Color      ColorMode
-	TimeFormat string
+	Writer          io.Writer
+	Format          OutputFormat
+	Color           ColorMode
+	TimeFormat      string
+	CallerMaxLength int
 }
+
+// DefaultCallerMaxLength is the maximum number of visible characters used for
+// a caller path in console-formatted output.
+const DefaultCallerMaxLength = 15
 
 // FileConfig configures an optional size-rotated file output. The presence of
 // this value enables the output. Sizes are expressed in megabytes, matching
@@ -66,10 +71,11 @@ func DefaultConfig() Config {
 		Level:     InfoLevel,
 		Timestamp: true,
 		Console: &ConsoleConfig{
-			Writer:     os.Stdout,
-			Format:     ConsoleFormat,
-			Color:      AutoColor,
-			TimeFormat: time.RFC3339,
+			Writer:          os.Stdout,
+			Format:          ConsoleFormat,
+			Color:           AutoColor,
+			TimeFormat:      time.RFC3339,
+			CallerMaxLength: DefaultCallerMaxLength,
 		},
 	}
 }
@@ -105,6 +111,12 @@ func (config Config) normalized() (Config, error) {
 		}
 		if console.TimeFormat == "" {
 			console.TimeFormat = time.RFC3339
+		}
+		if console.CallerMaxLength < 0 {
+			return Config{}, errors.New("fluxlog: console caller max length cannot be negative")
+		}
+		if console.CallerMaxLength == 0 {
+			console.CallerMaxLength = DefaultCallerMaxLength
 		}
 		config.Console = &console
 	}

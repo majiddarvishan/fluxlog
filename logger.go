@@ -46,6 +46,7 @@ func New(config Config) (*Logger, error) {
 			normalized.Console.Format,
 			normalized.Console.Color,
 			normalized.Console.TimeFormat,
+			normalized.Console.CallerMaxLength,
 		))
 	}
 
@@ -66,6 +67,7 @@ func New(config Config) (*Logger, error) {
 			normalized.File.Format,
 			NeverColor,
 			normalizedConsoleTimeFormat(normalized.Console),
+			normalizedConsoleCallerMaxLength(normalized.Console),
 		))
 		closers = append(closers, fileOutput)
 	}
@@ -93,16 +95,17 @@ func New(config Config) (*Logger, error) {
 	}, nil
 }
 
-func outputWriter(output io.Writer, format OutputFormat, color ColorMode, timeFormat string) io.Writer {
+func outputWriter(
+	output io.Writer,
+	format OutputFormat,
+	color ColorMode,
+	timeFormat string,
+	callerMaxLength int,
+) io.Writer {
 	if format == JSONFormat {
 		return output
 	}
-
-	return zerolog.ConsoleWriter{
-		Out:        output,
-		NoColor:    !colorEnabled(color, output),
-		TimeFormat: timeFormat,
-	}
+	return newConsoleWriter(output, color, timeFormat, callerMaxLength)
 }
 
 func normalizedConsoleTimeFormat(config *ConsoleConfig) string {
@@ -110,6 +113,13 @@ func normalizedConsoleTimeFormat(config *ConsoleConfig) string {
 		return DefaultConfig().Console.TimeFormat
 	}
 	return config.TimeFormat
+}
+
+func normalizedConsoleCallerMaxLength(config *ConsoleConfig) int {
+	if config == nil {
+		return DefaultCallerMaxLength
+	}
+	return config.CallerMaxLength
 }
 
 func colorEnabled(mode ColorMode, output io.Writer) bool {
