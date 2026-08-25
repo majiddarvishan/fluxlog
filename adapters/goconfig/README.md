@@ -5,7 +5,7 @@ This optional module creates a `fluxlog.Logger` from
 the `level` node is replaced at runtime.
 
 ```bash
-go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.1.0
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.2.1
 ```
 
 Expected configuration:
@@ -14,6 +14,8 @@ Expected configuration:
 {
   "output_mode": "both",
   "level": "info",
+  "service": "gateway",
+  "caller_max_length": 15,
   "file_name": "./logs/application.log",
   "max_file_size": 100,
   "max_files": 10
@@ -21,7 +23,8 @@ Expected configuration:
 ```
 
 `file_name`, `max_file_size`, and `max_files` are required only when
-`output_mode` is `file` or `both`.
+`output_mode` is `file` or `both`. `service` and `caller_max_length` are
+optional; caller length defaults to `15`.
 
 ```go
 source, err := config.NewStrSource(configJSON, schemaJSON)
@@ -39,7 +42,10 @@ if err != nil {
 }
 defer logger.Close()
 
-logger.Info().Msg("configured through goconfig")
+previous := fluxlog.SetDefault(logger)
+defer fluxlog.SetDefault(previous)
+
+fluxlog.Info("server started")
 ```
 
 The core `github.com/majiddarvishan/fluxlog` module has no dependency on

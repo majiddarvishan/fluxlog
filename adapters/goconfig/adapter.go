@@ -97,16 +97,25 @@ func Parse(node *config.Node) (fluxlog.Config, *config.Node, error) {
 	if err != nil {
 		return fluxlog.Config{}, nil, fieldError("level", err)
 	}
+	service, _, err := optionalString(node, "service")
+	if err != nil {
+		return fluxlog.Config{}, nil, err
+	}
+	callerMaxLength, _, err := optionalInt(node, "caller_max_length")
+	if err != nil {
+		return fluxlog.Config{}, nil, err
+	}
 
 	result := fluxlog.Config{
 		Level:     level,
+		Service:   service,
 		Timestamp: true,
 		Caller:    true,
 	}
 
 	switch strings.ToLower(strings.TrimSpace(outputMode)) {
 	case "console":
-		result.Console = defaultConsole()
+		result.Console = defaultConsole(callerMaxLength)
 	case "file", "both":
 		fileName, err := requiredString(node, "file_name")
 		if err != nil {
@@ -128,7 +137,7 @@ func Parse(node *config.Node) (fluxlog.Config, *config.Node, error) {
 			MaxAgeDays: 28,
 		}
 		if strings.EqualFold(strings.TrimSpace(outputMode), "both") {
-			result.Console = defaultConsole()
+			result.Console = defaultConsole(callerMaxLength)
 		}
 	default:
 		return fluxlog.Config{}, nil, fieldError(
@@ -140,10 +149,11 @@ func Parse(node *config.Node) (fluxlog.Config, *config.Node, error) {
 	return result, levelNode, nil
 }
 
-func defaultConsole() *fluxlog.ConsoleConfig {
+func defaultConsole(callerMaxLength int) *fluxlog.ConsoleConfig {
 	return &fluxlog.ConsoleConfig{
-		Format: fluxlog.ConsoleFormat,
-		Color:  fluxlog.AutoColor,
+		Format:          fluxlog.ConsoleFormat,
+		Color:           fluxlog.AutoColor,
+		CallerMaxLength: callerMaxLength,
 	}
 }
 
@@ -161,6 +171,38 @@ func requiredInt(node *config.Node, name string) (int, error) {
 		return 0, fieldError(name, err)
 	}
 	return value, nil
+}
+
+func optionalString(node *config.Node, name string) (string, bool, error) {
+	object, err := node.GetObject()
+	if err != nil {
+		return "", false, fieldError(name, err)
+	}
+	valueNode, exists := object[name]
+	if !exists {
+		return "", false, nil
+	}
+	value, err := valueNode.GetString()
+	if err != nil {
+		return "", false, fieldError(name, err)
+	}
+	return value, true, nil
+}
+
+func optionalInt(node *config.Node, name string) (int, bool, error) {
+	object, err := node.GetObject()
+	if err != nil {
+		return 0, false, fieldError(name, err)
+	}
+	valueNode, exists := object[name]
+	if !exists {
+		return 0, false, nil
+	}
+	value, err := valueNode.GetInt()
+	if err != nil {
+		return 0, false, fieldError(name, err)
+	}
+	return value, true, nil
 }
 
 func fieldError(name string, err error) error {

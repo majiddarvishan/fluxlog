@@ -3,7 +3,7 @@ module github.com/majiddarvishan/fluxlog/adapters/goconfig
 go 1.23
 
 require (
-	github.com/majiddarvishan/fluxlog v0.1.0
+	github.com/majiddarvishan/fluxlog v0.2.1
 	github.com/majiddarvishan/goconfig v1.3.0
 )
 

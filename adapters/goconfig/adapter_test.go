@@ -59,6 +59,36 @@ func TestParseConsoleDoesNotRequireFileFields(t *testing.T) {
 	}
 }
 
+func TestParseOptionalConsoleIdentity(t *testing.T) {
+	_, node := managerFromJSON(t, `{
+		"output_mode":"console",
+		"level":"info",
+		"service":"gateway",
+		"caller_max_length":15
+	}`)
+	actual, _, err := Parse(node)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if actual.Service != "gateway" {
+		t.Fatalf("service = %q, want gateway", actual.Service)
+	}
+	if actual.Console == nil || actual.Console.CallerMaxLength != 15 {
+		t.Fatalf("unexpected console config: %#v", actual.Console)
+	}
+}
+
+func TestParseRejectsInvalidOptionalConsoleIdentity(t *testing.T) {
+	_, node := managerFromJSON(t, `{
+		"output_mode":"console",
+		"level":"info",
+		"service":42
+	}`)
+	if _, _, err := Parse(node); err == nil {
+		t.Fatal("expected invalid optional service to fail")
+	}
+}
+
 func TestParseRejectsUnknownOutputMode(t *testing.T) {
 	_, node := managerFromJSON(t, `{"output_mode":"remote","level":"info"}`)
 	if _, _, err := Parse(node); err == nil {
