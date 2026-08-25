@@ -17,11 +17,12 @@ import (
 // Logger is an independent logger instance. It is safe for concurrent use.
 // Call Close when a file output is configured.
 type Logger struct {
-	logger    zerolog.Logger
-	level     *levelWriter
-	output    *managedWriter
-	closeOnce sync.Once
-	closeErr  error
+	logger             zerolog.Logger
+	packageLevelLogger zerolog.Logger
+	level              *levelWriter
+	output             *managedWriter
+	closeOnce          sync.Once
+	closeErr           error
 }
 
 // New validates config and constructs an independent Logger without changing
@@ -84,14 +85,20 @@ func New(config Config) (*Logger, error) {
 	if normalized.Service != "" {
 		contextBuilder = contextBuilder.Str("service", normalized.Service)
 	}
+	instanceLogger := contextBuilder.Logger()
+	packageLevelLogger := instanceLogger
 	if normalized.Caller {
-		contextBuilder = contextBuilder.Caller()
+		instanceLogger = instanceLogger.With().Caller().Logger()
+		packageLevelLogger = packageLevelLogger.With().
+			CallerWithSkipFrameCount(zerolog.CallerSkipFrameCount + 2).
+			Logger()
 	}
 
 	return &Logger{
-		logger: contextBuilder.Logger(),
-		level:  dynamicLevel,
-		output: managed,
+		logger:             instanceLogger,
+		packageLevelLogger: packageLevelLogger,
+		level:              dynamicLevel,
+		output:             managed,
 	}, nil
 }
 

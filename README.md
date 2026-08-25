@@ -10,7 +10,7 @@ modify zerolog's process-global logger or global level.
 ## Install
 
 ```bash
-go get github.com/majiddarvishan/fluxlog@v0.2.0
+go get github.com/majiddarvishan/fluxlog@v0.2.1
 ```
 
 ## Basic usage
