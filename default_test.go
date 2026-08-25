@@ -2,6 +2,7 @@ package fluxlog
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"strings"
 	"testing"
@@ -84,4 +85,33 @@ func TestSetDefaultRejectsNil(t *testing.T) {
 		}
 	}()
 	SetDefault(nil)
+}
+
+func TestPackageLevelCallerPointsToApplication(t *testing.T) {
+	var output bytes.Buffer
+	logger, err := New(Config{
+		Level:  InfoLevel,
+		Caller: true,
+		Console: &ConsoleConfig{
+			Writer: &output,
+			Format: JSONFormat,
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer logger.Close()
+
+	previous := SetDefault(logger)
+	defer SetDefault(previous)
+	Info("caller test")
+
+	var event map[string]any
+	if err := json.Unmarshal(bytes.TrimSpace(output.Bytes()), &event); err != nil {
+		t.Fatal(err)
+	}
+	caller, _ := event["caller"].(string)
+	if !strings.Contains(caller, "default_test.go:") {
+		t.Fatalf("caller = %q, want application call site", caller)
+	}
 }
