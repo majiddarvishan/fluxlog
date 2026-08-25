@@ -1,4 +1,4 @@
-.PHONY: fmt fmt-check test test-race vet verify
+.PHONY: adapter-test fmt fmt-check test test-race vet verify verify-all
 
 fmt:
 	gofmt -w $$(find . -name '*.go' -not -path './vendor/*')
@@ -16,3 +16,8 @@ vet:
 	go vet ./...
 
 verify: fmt-check vet test test-race
+
+adapter-test:
+	cd adapters/goconfig && go test -race ./...
+
+verify-all: verify adapter-test
