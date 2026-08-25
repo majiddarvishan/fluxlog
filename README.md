@@ -40,11 +40,53 @@ func main() {
 	}
 	defer logger.Close()
 
-	logger.Info().
+logger.Info().
 		Str("request_id", "req-1").
 		Msg("request received")
 }
 ```
+
+## Package-level convenience API
+
+For applications that prefer direct package functions, configure a Logger as
+the package default:
+
+```go
+logger, err := fluxlog.New(fluxlog.DefaultConfig())
+if err != nil {
+	return err
+}
+defer logger.Close()
+
+previous := fluxlog.SetDefault(logger)
+defer fluxlog.SetDefault(previous)
+
+fluxlog.Info("server started")
+fluxlog.Debug("listening on port %d", 8080)
+fluxlog.Warn("retry %d of %d", 1, 3)
+```
+
+Each level has a single package function: `Trace`, `Debug`, `Info`, `Warn`,
+`Error`, `Fatal`, and `Panic`. A single value is rendered directly, including an
+`error`. When the first value is a string and more arguments follow, it is used
+as a `fmt.Printf` format string. Separate `Debugf`, `Infof`, and similar variants
+are therefore unnecessary. Formatting is skipped when the selected level is
+disabled.
+
+```go
+fluxlog.Error(err)
+fluxlog.Info("processed %d requests", count)
+```
+
+`SetDefault` is concurrency-safe and returns the previous Logger. It does not
+take ownership of either Logger, so callers remain responsible for `Close`.
+Use the instance API when structured fields are needed:
+
+```go
+logger.Info().Str("request_id", "req-1").Msg("request received")
+```
+
+See [`examples/package-level`](./examples/package-level) for a runnable example.
 
 ## Runtime level changes
 
