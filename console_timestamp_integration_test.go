@@ -27,12 +27,6 @@ func TestFMT01ConsoleUnixTimestampFormats(t *testing.T) {
 			if _, err := writer.Write(payload); err != nil {
 				t.Fatal(err)
 			}
-			if !strings.Contains(console.String(), want) {
-				if strings.Contains(console.String(), "timestamp-check") {
-					t.Skipf("KNOWN DEFECT FMT-01: numeric %s timestamp omitted from console: %q", tc.name, console.String())
-				}
-				t.Fatalf("unexpected console output: %q", console.String())
-			}
 			var jsonOutput bytes.Buffer
 			jsonWriter := outputWriter(&jsonOutput, JSONFormat, NeverColor, time.RFC3339, DefaultCallerMaxLength)
 			if _, err := jsonWriter.Write(payload); err != nil {
@@ -40,6 +34,12 @@ func TestFMT01ConsoleUnixTimestampFormats(t *testing.T) {
 			}
 			if jsonOutput.String() != string(payload) {
 				t.Fatalf("JSON output changed: got %q, want %q", jsonOutput.String(), payload)
+			}
+			if !strings.Contains(console.String(), want) {
+				if strings.Contains(console.String(), "timestamp-check") {
+					t.Skipf("KNOWN DEFECT FMT-01: numeric %s timestamp omitted from console: %q", tc.name, console.String())
+				}
+				t.Fatalf("unexpected console output: %q", console.String())
 			}
 		})
 	}
