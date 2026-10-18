@@ -5,7 +5,7 @@
 
 ## Thirty-second orientation
 
-Fluxlog is a reusable **Go structured-logging library**. The core Go module wraps `rs/zerolog` with instance-scoped, atomically changeable severity filtering, synchronized output lifecycle, custom console formatting, and optional size-rotated logs through `lumberjack`. It has both a `*fluxlog.Logger` API returning `*zerolog.Event` and convenience package functions. A separately versioned Go module under `adapters/goconfig` maps a legacy configuration shape and subscribes to runtime level replacements.
+Fluxlog is a reusable **Go structured-logging library**. The core Go module wraps `rs/zerolog` with instance-scoped, atomically changeable severity filtering, synchronized output lifecycle, custom console formatting, and optional size-rotated logs through `lumberjack`. It has both a `*fluxlog.Logger` API returning `*zerolog.Event` and convenience package functions. A separate Go module under `adapters/goconfig` that follows lockstep release versions maps a legacy configuration shape and subscribes to runtime level replacements.
 
 This is **not** an application, network service, remote log collector, asynchronous queue, or general-purpose configuration framework.
 
@@ -38,4 +38,4 @@ This is **not** an application, network service, remote log collector, asynchron
 - CI: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
 - Development: [Makefile](../Makefile).
 
-**Status:** documentation PR #9 is merged in `main`. For the goconfig v1.6.0 dependency iteration, inspect PR #10 and its CI; never assume that a development branch is already merged.
+**Current release checkpoint (2026-10-19):** root `v0.3.0` is already published on the tested main commit. The next nested adapter tag is `adapters/goconfig/v0.3.0` after its own CI and merge gates. See `CURRENT_STATUS.md` and `RELEASING.md`.
