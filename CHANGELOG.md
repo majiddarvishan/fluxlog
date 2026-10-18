@@ -5,6 +5,25 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Render zerolog numeric Unix timestamps as human-readable local timestamps in
+  console output, honoring the configured Go time layout and preserving the
+  original JSON encoding.
+
+### Tested
+
+- Add regression coverage for concurrent writes and logger shutdown, default
+  logger ownership, real file rotation/retention/compression, output errors,
+  and ANSI/NO_COLOR console formatting.
+- Verify root and nested adapter modules with Go race-detector CI.
+
+The next root version (proposed `v0.3.0`) is **not published**. Adapter changes
+are independently versioned and described in
+[`adapters/goconfig/CHANGELOG.md`](adapters/goconfig/CHANGELOG.md).
+
 ## [0.2.1] - 2026-08-25
 
 ### Fixed
