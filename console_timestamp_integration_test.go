@@ -14,9 +14,9 @@ import (
 func TestFMT01ConsoleUnixTimestampFormats(t *testing.T) {
 	want := time.Unix(1700000000, 0).Local().Format(time.RFC3339)
 	for _, tc := range []struct {
-		name     string
+		name      string
 		timestamp string
-		format   string
+		format    string
 	}{
 		{name: "seconds", timestamp: "1700000000", format: zerolog.TimeFormatUnix},
 		{name: "milliseconds", timestamp: "1700000000000", format: zerolog.TimeFormatUnixMs},
@@ -86,8 +86,8 @@ func TestFMT01CustomHumanReadableTimeLayout(t *testing.T) {
 // must be converted without overflowing a time.Duration.
 func TestFMT01UnixTimestampPrecisionAndNegativeEpoch(t *testing.T) {
 	for _, tc := range []struct {
-		name      string
-		format    string
+		name     string
+		format   string
 		value    string
 		expected time.Time
 	}{
