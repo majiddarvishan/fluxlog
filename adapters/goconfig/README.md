@@ -54,18 +54,43 @@ logger, err := fluxgoconfig.New(manager, manager.Config())
 if err != nil {
 	return err
 }
-defer logger.Close()
 
 previous := fluxlog.SetDefault(logger)
-defer fluxlog.SetDefault(previous)
+defer func() {
+	fluxlog.SetDefault(previous) // Restore the default before closing.
+	_ = logger.Close()
+}()
 
 fluxlog.Info("server started")
+// Given a "/level" node at the root, this enables package-level debug:
+// manager.Replace("/level", "debug")
 ```
 
 The core `github.com/majiddarvishan/fluxlog` module has no dependency on
 `goconfig`; only applications importing this adapter module receive it.
 
 A complete runnable program is available in [`examples/basic`](./examples/basic).
+From the repository's nested module, run:
+
+```bash
+cd adapters/goconfig
+go run ./examples/basic
+```
+
+The example configures both console output and a JSON file at
+`./logs/application.log`, prints package-level `fluxlog.Info(...)` messages,
+then calls `manager.Replace("/logger/level", "debug")`. The adapter applies
+the new level after goconfig commits the replacement, so `fluxlog.Debug(...)`
+becomes visible without rebuilding the logger. An invalid replacement is
+rejected and leaves the last valid level unchanged. The example also
+demonstrates a structured event with `logger.Info().Str(...).Msg(...)`.
+
+`SetDefault(logger)` changes only the package-level default; it does **not**
+take ownership of the Logger or close the previous default. Keep the Manager
+and Logger alive for the intended logging lifetime, restore the previous
+default before closing the Logger, and do not put this defer in a short-lived
+initialization helper. goconfig retains the registered callbacks for the
+Manager's lifetime.
 
 ## Runtime level updates in v0.3.0
 

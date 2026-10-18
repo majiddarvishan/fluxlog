@@ -61,13 +61,15 @@ logger, err := fluxlog.New(fluxlog.DefaultConfig())
 if err != nil {
 	return err
 }
-defer logger.Close()
 
 previous := fluxlog.SetDefault(logger)
-defer fluxlog.SetDefault(previous)
+defer func() {
+	fluxlog.SetDefault(previous) // Restore the old default first.
+	_ = logger.Close()           // Then close this logger's outputs.
+}()
 
 fluxlog.Info("server started")
-fluxlog.Debug("listening on port %d", 8080)
+fluxlog.Info("listening on port %d", 8080)
 fluxlog.Warn("retry %d of %d", 1, 3)
 ```
 
@@ -85,13 +87,26 @@ fluxlog.Info("processed %d requests", count)
 
 `SetDefault` is concurrency-safe and returns the previous Logger. It does not
 take ownership of either Logger, so callers remain responsible for `Close`.
-Use the instance API when structured fields are needed:
+Restore the previous default **before** closing the configured Logger, and keep
+this lifecycle in the scope that owns the Logger (usually `main`, not a
+short-lived initialization helper). Avoid replacing the package default again
+while this owner is active: unconditional restoration would overwrite a newer
+default. Package-level `fluxlog.Info(...)` also works before `SetDefault`,
+but uses the library's built-in default configuration.
+
+To change the installed Logger's level at runtime, call
+`logger.SetLevelString("debug")`; subsequent `fluxlog.Debug(...)` calls use the
+new level. Use the instance API when structured fields are needed:
 
 ```go
 logger.Info().Str("request_id", "req-1").Msg("request received")
 ```
 
 See [`examples/package-level`](./examples/package-level) for a runnable example.
+
+Run it from the repository root with `go run ./examples/package-level`.
+The example demonstrates `Info` formatting, level changes, structured events,
+and default-Logger ownership.
 
 ## Runtime level changes
 
