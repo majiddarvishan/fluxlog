@@ -38,3 +38,18 @@ Inspection and CI run retrieval are **not** newly executed local Go tests. Do no
 ## Handoff
 
 See `CURRENT_STATUS.md` for baseline and `NEXT_CHAT_PROMPT.md` for a copyable continuation. When documentation is merged, update current main SHA and integrate new CI evidence into this log. In later sessions, read `.codex` first and inspect only changes since the documented baseline.
+
+---
+
+# Session update — 2026-10-18: goconfig v1.6.0 and planning
+
+The maintainer explicitly selected goconfig **v1.6.0** and requested that remaining findings be converted into an **English task list and execution plan**. Existing runtime code is not to be changed as part of planning.
+
+- Verified `main@93e0945e14a34a72ab93d8d048cd1131c523c6b6` with PR #9 merged and CI passed.
+- Verified upstream `majiddarvishan/goconfig` Git tag `v1.6.0`, its `go.mod`, and exported `Manager.OnReplace` API.
+- Verified adapter currently required `v1.3.0` before this migration.
+- Verified only adapter module tag `adapters/goconfig/v0.1.0` (not v0.2.1) was present in GitHub tags.
+- Opened branch `chore/goconfig-1.6.0-and-hardening-plan` and PR #10.
+- Recorded bounded phases/tasks in `TASKS.md` and `IMPLEMENTATION_PLAN.md`.
+- A local repository clone / `go mod tidy` attempt was blocked by DNS/network isolation; use GitHub CI as external verification and do not fabricate checksums or passing local tests.
+- Only the requested dependency and planning documents were touched; no application logging runtime source was modified.

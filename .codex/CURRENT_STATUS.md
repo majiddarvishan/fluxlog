@@ -1,36 +1,41 @@
-# Current status — evidence-based snapshot
+# Current status — Fluxlog
 
-**Reviewed:** 2026-10-18  
+**Date:** 2026-10-18  
 **Repository:** https://github.com/majiddarvishan/fluxlog  
-**Source baseline:** `main` at `f0b79fcd7afeb0406e75a1c2ca5fe1e15243e881`  
-**Source commit:** Merge PR #8, `feat(goconfig): align adapter with fluxlog v0.2.1` (2026-08-25)  
-**Latest changelog entry:** v0.2.1, dated 2026-08-25  
-**Source languages:** Go, Markdown, Makefile, GitHub Actions YAML  
-**Module declarations:** core and one independently declared `adapters/goconfig` nested Go module
+**Verified main HEAD before this iteration:** `93e0945e14a34a72ab93d8d048cd1131c523c6b6`  
+**Review baseline for runtime implementation:** `f0b79fcd7afeb0406e75a1c2ca5fe1e15243e881` (runtime unchanged by docs PR #9).  
+**Documentation PR #9:** merged on `main`; GitHub Actions [run 39141256243](https://github.com/majiddarvishan/fluxlog/actions/runs/39141256243) succeeded.
 
-## Findings confirmed by inspection
+## Current requested work
 
-- Core library wraps zerolog, emits structured JSON/human-readable console events and optional lumberjack-rotated file records.
-- Each `Logger` has atomic runtime severity; managed sinks serialize write/close operations.
-- Caller and service formatting are customized for human console output; JSON preserves structured fields.
-- Package-level logging uses an atomic swappable default and printf-style convenience helpers.
-- The optional adapter translates legacy `goconfig` nodes and registers runtime replacement for `level` only.
-- No `.codex` directory existed in the base tracked tree; this documentation adds it.
-- No open pull requests were reported by the GitHub API before the documentation work began.
-- A GitHub Actions CI run for the exact baseline source SHA reported **success**: [run 32868901673](https://github.com/majiddarvishan/fluxlog/actions/runs/32868901673).
+The maintainer specifically chose **`goconfig v1.6.0`**, with all other findings to become an **English task list and execution plan**, not implementation work.
 
-## Open observations and caution
+**Working branch:** `chore/goconfig-1.6.0-and-hardening-plan`  
+**PR:** [#10](https://github.com/majiddarvishan/fluxlog/pull/10)  
+**Current scope:** `adapters/goconfig/go.mod`, its generated `go.sum` and `.codex` knowledge/plan only.
 
-1. **Docs-only mismatch**: root README recommends adapter install `@v0.1.0`; adapter README says `@v0.2.1`. Confirm module tags and align installation advice.
-2. **Tests are not exhaustive**: explicit rotation, concurrent-close, and post-binding adapter change/rollback cases are not currently represented by targeted tests. See [TESTING.md](TESTING.md).
-3. **Runtime semantics need lifecycle care**: `SetDefault` does not close previous pointers. Coordinate with concurrent users before retiring any Logger.
-4. **Release metadata**: the `CHANGELOG.md` records 0.2.1; the GitHub API releases list returned empty at review time. Do not equate changelog links with verified published release artifacts or module tags.
-5. **Do not overstate the review**: this was a remote source/CI evidence review, not a freshly executed local verification run or a security audit.
+The upstream goconfig Git tag `v1.6.0` was verified. Core module still has no dependency on goconfig. The v1.6 upstream `Manager.OnReplace` registration API remains present. Formal compatibility requires the final CI checks; source inspection alone is insufficient.
 
-## Documentation branch
+## Release/version findings
 
-Initial documentation branch: `docs/fluxlog-codebase-knowledge-20261018`. Verify the branch/PR merge status in GitHub before assuming that these `.codex` files are in `main`.
+The GitHub tag list showed `adapters/goconfig/v0.1.0` and core tags `v0.1.0`, `v0.2.0` and `v0.2.1`, but **no adapter tag v0.2.1**. Public adapter README advice to install `adapters/goconfig@v0.2.1` is therefore not currently supported by a verified Git tag. Do not create new tags as part of this dependency update.
 
-## Next action
+## Known bounded follow-ups
 
-Use [NEXT_CHAT_PROMPT.md](NEXT_CHAT_PROMPT.md) to resume without re-reading every source file. First compare actual current `main` HEAD against the recorded baseline; inspect only the relevant diff and changed files. Use [TASKS.md](TASKS.md) for evidence-driven follow-ups.
+- Actual manager replacement/rollback, multi-logger binding and callback lifetime need focused tests at v1.6.0.
+- External zerolog global-level interaction and numeric timestamp formatting are contract questions to test before fixing.
+- Concurrent Close/Write, file rotation, output errors and console colors merit targeted verification.
+- Release documentation hygiene and benchmarks are later phases, not new implementation authorization.
+
+See [TASKS.md](TASKS.md) and [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+
+## Verification status
+
+- **Source-backed:** main source tree, modules and upstream goconfig v1.6.0 API and tag inspected.
+- **Historical:** main CI and documentation PR #9 passed.
+- **Current PR:** final adapter tidy/checksums, race, vet, examples and CI **must be checked before any merge**; if not complete, report the exact blocker.
+- **Not performed here:** local verification from the network-isolated runtime, which cannot resolve github.com.
+
+## Continuation rule
+
+Before future work, verify the actual main/PR HEAD and CI status. Only diff new files since the baseline and read relevant `.codex` docs; do not re-audit the entire repository by default. After merging PR #10, update the final main HEAD and retire the temporary branch.
