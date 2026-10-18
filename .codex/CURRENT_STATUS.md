@@ -1,27 +1,43 @@
 # Current status — Fluxlog
 
-**Updated:** 2026-10-18  
-**Repository:** https://github.com/majiddarvishan/fluxlog  
-**Verified Fluxlog main baseline:** `e338798de9a572c3eb9b6698091347081e60f728` (PR #16 merged, post-merge CI 39160720366 success).  
-**Pinned adapter dependency:** `github.com/majiddarvishan/goconfig v1.6.0` (unchanged).  
-**Current activity:** documentation-only upstream integration handoff after [goconfig PR #1](https://github.com/majiddarvishan/goconfig/pull/1).
+**Updated:** 2026-10-19  
+**Base main before PR #18:** `3c3b38352e44eb311f7841f670c8071ae7cf41a7`  
+**Development PR:** [#18 — Post-commit shared level binding](https://github.com/majiddarvishan/fluxlog/pull/18)  
+**Final pre-merge test evidence:** [GitHub Actions run 39165664802](https://github.com/majiddarvishan/fluxlog/actions/runs/39165664802) **PASS** for both Go modules.
 
-## Verified upstream progress
+## Completed implementation
 
-Upstream goconfig `main@20a58eb9a426d0ed7d522b1e5848a0971ce58198` includes an additive `OnReplaceCommitted` API. It broadcasts observers only after successful `Replace` or `Batch` commit. A temporary Actions workflow ran Go 1.23 `gofmt`, `go test -race -v ./...`, `go vet ./...`, `go build ./...`: [run 39162857364](https://github.com/majiddarvishan/goconfig/actions/runs/39162857364) PASS. The temporary workflow was removed from the final PR; no workflow was added to upstream main.
+The optional `adapters/goconfig` module now pins a reproducible upstream
+pseudo-version `v1.6.1-0.20261018202246-20a58eb9a426` (exact commit
+`20a58eb9a426d0ed7d522b1e5848a0971ce58198`). This is a deliberate
+development integration, **not** a newly tagged upstream version.
+Checksum provenance: [Go module resolution run 39165338586](https://github.com/majiddarvishan/fluxlog/actions/runs/39165338586).
 
-**No new goconfig release tag exists:** latest verified tag remains `v1.6.0`. The new API is present on upstream main but **not available** to Fluxlog at its pinned dependency.
+`BindLevel` validates incoming levels before persistence and updates all
+bound loggers only after a successful committed configuration change, using
+the new upstream `Manager.OnReplaceCommitted`. The historical known-issue
+CFG-02 and CFG-03 tests are now strict **PASS** assertions, also covering
+successful/failed Batch, invalid values and real FileSource failure injection.
 
-## Task state
+`gofmt`, `go mod tidy`, `go vet`, `go test -race`, and example builds
+passed for both the root and adapter jobs in run 39165664802. No root
+runtime source or root `go.mod` was changed.
 
-**Complete:** DEP-01, DEP-02, INV-01, CFG-01, LVL-01, FMT-01, LIFE-01, FILE-01, ERR-01, FMT-02, REL-01 and **UP-01** (upstream groundwork).
+## Tracking
 
-**OPEN/blocked:** **CFG-02** (second Logger does not receive a shared level replacement), **CFG-03** (failed FileSource persistence leaves the Logger level changed), **UP-02** (requires an authorized upstream version/tag followed by adapter integration), **DOC-01** (final behavior documentation).
+**Complete in development source:** UP-01, UP-02, CFG-01, CFG-02, CFG-03,
+LVL-01, FMT-01, FMT-02, LIFE-01, FILE-01, ERR-01, DEP-01/02, REL-01 and DOC-01.
 
-**Optional:** PERF-01 and CI-01, not approved work.
+**Not yet done:** Publish a stable new goconfig tag and, separately, a new
+nested adapter version — neither was authorized or created. Do not say the
+published adapter `v0.1.0` contains these changes.
 
-The two existing Fluxlog CFG regression tests still produce known-issue **SKIPs**, not passes. Do not mark them resolved by the upstream merge.
+**Supported limitation:** Fluxlog must be the first pre-commit handler
+registered for a managed level path to validate every candidate level.
+The legacy goconfig `OnReplace` still uses first-match selection.
+Post-commit observers are retained for the lifetime of the Manager.
+The adapter README documents these restrictions.
 
-## Required follow-up
-
-See [CFG02_CFG03_INTEGRATION.md](CFG02_CFG03_INTEGRATION.md) for the exact migration, registration-order caveat and acceptance tests. No production Fluxlog Go source, dependency graph, tags or releases were changed in this handoff. Confirm the documentation PR merge and CI status before claiming the new file is on main. Keep all repository files English and conversational explanations Persian.
+**Final process checks:** Verify final PR #18 head CI, merge status and
+post-merge main SHA/CI. Clean up temporary branches when possible. All
+committed files are English and explanations to the maintainer are Persian.
