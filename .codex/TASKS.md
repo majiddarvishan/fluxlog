@@ -8,7 +8,7 @@
 ## Current execution boundary
 
 - **Completed:** dependency upgrade to v1.6.0, Phase 1 characterization, FMT-01 human-readable Unix timestamp fix, Phase 2 LIFE-01/FILE-01/ERR-01/FMT-02 verification, and English CI evidence.
-- **Deferred:** CFG-02/CFG-03 behavior changes, unrelated API modifications, release/tag or speculative optimization. See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
+- **Deferred:** CFG-02/CFG-03 behavior changes, a new release/tag, unrelated API modifications or speculative optimization. **REL-01** is now a documentation-only completion; **DOC-01** remains open pending behavior policy. See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
 - **Not requested:** asynchronous logging, new exporters, queueing, broad architecture rewrites or new providers.
 
 ## P0 — dependency migration and baseline verification
@@ -35,8 +35,8 @@
 
 ## P3 — release hygiene and optional optimization (after correctness)
 
-- [ ] **REL-01 — Reconcile adapter release/version instructions.** Verified Git tag list includes `adapters/goconfig/v0.1.0` but **not** `adapters/goconfig/v0.2.1` as of 2026-10-18. Root README advertises adapter 0.1.0; adapter README advertises 0.2.1. Choose a truthful installation example referencing an actually available **adapter module tag**, or explicitly document branch-only installation; issue a new adapter tag **only on explicit approval** after successful validation. **Acceptance:** documentation and published tag state agree.
-- [ ] **DOC-01 — Update public docs after accepted behavior decisions.** Bring READMEs, configuration recipes, release notes and `.codex` snapshots into agreement, including dependency version and any supported multi-binding semantics. **Acceptance:** examples build against published versions or clearly describe development-only paths.
+- [x] **REL-01 — Reconcile adapter release/version instructions.** Verified repository tags: root `v0.1.0`/`v0.2.0`/`v0.2.1`; adapter **only** `adapters/goconfig/v0.1.0` as of 2026-10-18. Both READMEs now recommend `adapters/goconfig@v0.1.0` when installing a tagged adapter, and distinguish the published dependency graph (core `v0.1.0`, goconfig `v1.3.0`) from current `main` (core `v0.2.1`, goconfig `v1.6.0`). The development-only optional adapter configuration fields are clearly labeled. **Acceptance:** install references match verified tags; no new tag created. Documentation PR #16.
+- [ ] **DOC-01 — Finalize public docs after behavior decisions.** The release/version reconciliation and present-day CFG-02/CFG-03 limitations are now documented without claiming the defects were fixed. Still pending: explicit maintainer policy for multi-listener behavior and external side-effect rollback, plus any documentation/release notes accompanying approved fixes. **Acceptance:** supported behavior and public docs agree after those decisions; do not manufacture new versions or claim a passing SKIP.
 - [ ] **PERF-01 — Optional reproducible microbenchmark baseline.** Compare enabled/disabled-event benchmarks, multi-sink overhead and sink contention with pinned Go toolchain/hardware and a common benchmark harness. **Acceptance:** reproducible raw results; no speculative performance rewrites.
 - [ ] **CI-01 — Revisit fuzz/coverage policy only if maintenance needs justify it.** Avoid introducing more CI gates without a concrete requirement.
 

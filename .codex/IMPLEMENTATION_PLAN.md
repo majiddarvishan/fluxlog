@@ -96,3 +96,11 @@ PR [#14](https://github.com/majiddarvishan/fluxlog/pull/14) added focused, produ
 - **Still open:** CFG-02, CFG-03 and FMT-02; REL-01/DOC-01 release hygiene; optional PERF-01/CI-01.
 
 No production implementation changes or release tags were made. See [PHASE2_TEST_EVIDENCE_2026-10-18.md](PHASE2_TEST_EVIDENCE_2026-10-18.md). Do not re-run the full codebase audit in a new session.
+
+---
+
+## REL-01 release-documentation reconciliation — 2026-10-18
+
+The existing root `v0.2.1` tag does **not** publish the nested adapter at `v0.2.1`. The only verified adapter release tag is `adapters/goconfig/v0.1.0`, with core `v0.1.0` and goconfig `v1.3.0` dependencies. The current adapter source on main instead depends on core `v0.2.1` and goconfig `v1.6.0`; its optional `service` and `caller_max_length` field mappings are unreleased.
+
+REL-01 is satisfied by making both public README install commands truthful and documenting published-vs-unreleased behavior. This stage is **documentation only**, not a release or tagging event. DOC-01 remains **open** for unresolved CFG-02/CFG-03 behavior/support policy. Never silently mark known-issue SKIPs as fixes.

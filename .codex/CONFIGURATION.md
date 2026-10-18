@@ -73,13 +73,13 @@ The adapter forces `Timestamp=true`, `Caller=true`, console human format/auto co
 
 Root module name: `github.com/majiddarvishan/fluxlog` (root `go.mod`, Go 1.23). Adapter module name: `github.com/majiddarvishan/fluxlog/adapters/goconfig` (nested `go.mod`, Go 1.23).
 
-**Documentation discrepancy at the baseline:** root `README.md` suggests installing the adapter at `@v0.1.0`, whereas `adapters/goconfig/README.md` suggests `@v0.2.1` and the adapter `go.mod` requires fluxlog `v0.2.1`. Verify actual module tags and correct documentation before making a release recommendation; this is **not** proof of a runtime defect.
+**Verified module release state on 2026-10-18 (REL-01):** root tags `v0.1.0`, `v0.2.0`, `v0.2.1`; the only adapter tag is `adapters/goconfig/v0.1.0`. The published adapter module at that tag requires root Fluxlog `v0.1.0` and upstream goconfig `v1.3.0`. The current `main` adapter `go.mod` requires core `v0.2.1` and goconfig `v1.6.0`; its optional `service` and `caller_max_length` mappings are **not published** in adapter v0.1.0. Both READMEs now consistently recommend `github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.1.0` for the **tagged release**, clearly distinguishing it from unreleased source. No new tag was created.
 
 Evidence: `config.go`, `logger.go`, `adapters/goconfig/adapter.go`, both `go.mod` files, both README files.
 
 ## 2026-10-18 dependency direction
 
-The maintainer selected `github.com/majiddarvishan/goconfig v1.6.0` for the nested adapter. This is a dependency change, not a change in the legacy adapter's accepted JSON fields or runtime-reload contract. The post-tidy `go.mod`/`go.sum` pair was regenerated using the Go 1.23 GitHub Actions output and passed both CI jobs in [run 39144064913](https://github.com/majiddarvishan/fluxlog/actions/runs/39144064913). The upgrade removes the unused adapter-module indirect dependencies `gorilla/mux` and `rs/cors`. This verification applies to the PR branch until merged.
+The maintainer selected `github.com/majiddarvishan/goconfig v1.6.0` for the nested adapter. This is a dependency change, not a change in the legacy adapter's accepted JSON fields or runtime-reload contract. The post-tidy `go.mod`/`go.sum` pair was regenerated using the Go 1.23 GitHub Actions output and passed both CI jobs in [run 39144064913](https://github.com/majiddarvishan/fluxlog/actions/runs/39144064913). The upgrade removes the unused adapter-module indirect dependencies `gorilla/mux` and `rs/cors`. This dependency upgrade was merged in PR #10; it is present on `main` but remains unreleased in a new adapter module tag.
 
 **Tag verification:** GitHub listed `adapters/goconfig/v0.1.0` but not `adapters/goconfig/v0.2.1` on 2026-10-18. A root `v0.2.1` tag does not publish the nested adapter module. See `TASKS.md:REL-01`.
 
@@ -96,3 +96,14 @@ Human-readable `console` output always formats a timestamp according to `Console
 When zerolog's `TimeFieldFormat` encodes Unix seconds, milliseconds, microseconds or nanoseconds, the custom console writer converts its numeric JSON timestamp to a `time.Time` in the **process local timezone** and displays the configured human-readable layout. Subsecond precision is preserved when that layout includes it. String-formatted timestamps continue to use the original parsing path. JSON output remains raw/unchanged.
 
 FMT-01 is implemented and tested in [PR #13](https://github.com/majiddarvishan/fluxlog/pull/13). See [Actions run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603). No global timestamp format mutation was added to the core library.
+
+## Known current-source replacement restrictions
+
+The adapter's current `Manager.OnReplace` integration at goconfig v1.6.0
+updates only the first listener registered for the same path. Reusing one
+`level` node for several independently bound loggers does not fan out level
+changes. Separately, a `FileSource` persistence failure that occurs after
+`applyLevel` can leave the runtime level changed while the configuration
+node is restored. These are documented, reproducible known-issue cases
+`CFG-02` and `CFG-03`, not validated support guarantees. The behavior
+policy and possible fixes remain undecided; do not silently mark them complete.

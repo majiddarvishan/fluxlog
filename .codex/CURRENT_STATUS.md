@@ -1,32 +1,36 @@
 # Current status — Fluxlog
 
-**Date:** 2026-10-18  
+**Updated:** 2026-10-18  
 **Repository:** https://github.com/majiddarvishan/fluxlog  
-**Verified main SHA before FMT-02:** `5c972345043b5e315c8125a444f4c68754ffbaf9`  
-**Current PR:** [#15 — Console color contract tests](https://github.com/majiddarvishan/fluxlog/pull/15)  
-**Optional adapter:** `github.com/majiddarvishan/goconfig v1.6.0`.
+**Verified main baseline before release-doc corrections:** `5ad33a9d47d5c9ef44d4de8818f3e69e5759cb35`  
+**Current work:** Release/module install documentation, PR #16 (no Go implementation changes).  
+**Go modules:** root `github.com/majiddarvishan/fluxlog`; independent optional `github.com/majiddarvishan/fluxlog/adapters/goconfig`.
 
-## Completed and verified
+## Completed development and testing
 
-- PRs #9–#13 merged: documentation, dependency upgrade, source review, Phase 1 tests and human-readable numeric timestamp fix.
-- PR #14 merged: Phase 2 lifecycle, real file rotation/retention/compression and output-error tests, with [post-merge CI 39159303947](https://github.com/majiddarvishan/fluxlog/actions/runs/39159303947) **PASS**.
-- PR #15: completed FMT-02 console color contract testing. [CI 39159526896](https://github.com/majiddarvishan/fluxlog/actions/runs/39159526896) **PASS** for both `core` and `goconfig-adapter` (race, tidy, fmt, vet and examples), Core coverage 76.9%.
-- Executable evidence: [PHASE2_TEST_EVIDENCE_2026-10-18.md](PHASE2_TEST_EVIDENCE_2026-10-18.md).
+- PRs #9–#15 were merged. Phase 1/2 work includes human-readable Unix timestamp rendering, lifetime, rotation, output error and ANSI/color tests.
+- [Post-merge CI run 39159724197](https://github.com/majiddarvishan/fluxlog/actions/runs/39159724197) passed core and adapter jobs on the baseline above.
+- **REL-01:** tag and module dependency state verified, both README install references aligned to the published adapter tag, and published-vs-current-source differences documented. Verify this PR's final merge and post-merge CI before treating the correction as live on `main`.
 
-## Verification status by task
+## Verified published versions
 
-**DONE:** DEP-01, DEP-02, INV-01, CFG-01, LVL-01, FMT-01, LIFE-01, FILE-01, ERR-01, FMT-02.
+| Module | Existing published tag(s) | Tag/module dependency facts |
+| --- | --- | --- |
+| Root Fluxlog | `v0.1.0`, `v0.2.0`, `v0.2.1` | Latest verified root release `v0.2.1`, older than newer main-branch fixes |
+| Adapter | `adapters/goconfig/v0.1.0` only | Published `v0.1.0` requires core Fluxlog `v0.1.0` and goconfig `v1.3.0`; optional `service` and `caller_max_length` mappings not yet included |
+| Adapter on `main` | No newer tag | Source `go.mod` requires core `v0.2.1` and goconfig `v1.6.0`; source includes extra optional fields |
 
-**OPEN, known issues:** CFG-02 (multiple goconfig listeners on one path receive only one callback), CFG-03 (failed FileSource persistence can roll back the Node without restoring the Logger's external side effect). Both have known-issue SKIP evidence; they are not fixed.
+**Important:** a root `v0.2.1` tag is not `adapters/goconfig/v0.2.1`. The documented install command `go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.1.0` selects the tagged adapter, **not** the latest unreleased source changes. No release/tag was created in this iteration.
 
-**OPEN, release/documentation:** REL-01 (correct adapter nested-module release references), DOC-01 (reconcile public docs after accepted behavior decisions).
+## Open technical issues
 
-**OPTIONAL:** PERF-01, CI-01 (only if warranted by requirements).
+- **CFG-02: OPEN**, observed SKIP: goconfig v1.6.0 invokes the first registered OnReplace handler for a path; multiple loggers do not all update.
+- **CFG-03: OPEN**, observed SKIP: after a successful runtime level callback, failed FileSource persistence can leave Logger state out of sync with the restored node.
+- **DOC-01: PARTIAL/OPEN:** README/schema/tag clarity corrected; final supported multi-bind and rollback contracts need maintainer decisions and potential code fixes.
+- **PERF-01 / CI-01:** optional and not planned without a clear need.
 
-## Change boundaries
+## Workflow notes
 
-PR #15 contains **only** `console_contract_integration_test.go` and English `.codex` documentation. No production Go implementation, dependency, runtime configuration, public API, release or tag changed. Color tests cover Auto/Always/Never, NO_COLOR, service/caller fields and ANSI-free file console output. Results are from remote GitHub Actions, not a local Go run.
+Only READMEs and English `.codex` files were changed. Do not edit runtime Go code or create tags for release documentation work. Actual Go CI evidence must be checked on the final PR commit and post-merge main commit. After merge, verify and clean up the temporary branch.
 
-## Finalization and next chat
-
-Verify final PR #15 commit CI, merge result and post-merge CI before claiming that the work is in main. Check the temporary branch cleanup; report a manual deletion command if the connector cannot delete branches. Responses to the maintainer must be **Persian**; all repository files must be **English**.
+Explain progress to the user **in Persian**; all repository files and comments must remain **English**.

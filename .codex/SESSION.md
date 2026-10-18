@@ -138,3 +138,17 @@ The maintainer requested continuation following the Phase 2 hardening tests.
 - Formatted test file per gofmt output. [CI run 39159526896](https://github.com/majiddarvishan/fluxlog/actions/runs/39159526896) passed both core and adapter Go 1.23 jobs (tidy/fmt/vet/race/example builds). All FMT-02 tests PASS, core coverage 76.9%.
 - FMT-02 marked complete, no runtime fixes, no tag/release. Remaining known defects CFG-02 and CFG-03 still SKIP; REL-01/DOC-01 docs tasks are open.
 - Update CI evidence and verify final PR/merge/branch cleanup before closing this session.
+
+---
+
+# 2026-10-18 — REL-01: published module/version documentation
+
+The maintainer requested continued progress while keeping repository files in English and conversational updates in Persian.
+
+- Verified `main@5ad33a9d47d5c9ef44d4de8818f3e69e5759cb35`, no open PRs and only `main` branch after prior branch cleanup. PR #15 post-merge CI 39159724197 passed both modules.
+- Verified GitHub tag list: root `v0.1.0`, `v0.2.0`, `v0.2.1`; nested adapter **only** `adapters/goconfig/v0.1.0`.
+- Inspected adapter `go.mod` at the **published adapter tag**: core `v0.1.0`, goconfig `v1.3.0`. Published `adapter.go` does not map `service` or `caller_max_length`.
+- Inspected current main adapter module: core `v0.2.1`, goconfig `v1.6.0`, with optional `service` and `caller_max_length`. Current source is **not** a published adapter v0.2.1.
+- Prepared corrections to the root and adapter READMEs and `.codex` so installation commands refer only to the tagged module `@v0.1.0` while recent source changes are labeled unreleased.
+- Also recorded CFG-02 and CFG-03 as current-source limitations and explicitly **not fixed**. DOC-01 remains open for future accepted behavior policies. No Go code, Go modules, CI workflows, tags or releases were altered.
+- After creating a focused PR, verify actual CI/merge status and remote branch cleanup; never claim unrun or future test results.
