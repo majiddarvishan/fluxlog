@@ -152,3 +152,15 @@ The maintainer requested continued progress while keeping repository files in En
 - Prepared corrections to the root and adapter READMEs and `.codex` so installation commands refer only to the tagged module `@v0.1.0` while recent source changes are labeled unreleased.
 - Also recorded CFG-02 and CFG-03 as current-source limitations and explicitly **not fixed**. DOC-01 remains open for future accepted behavior policies. No Go code, Go modules, CI workflows, tags or releases were altered.
 - After creating a focused PR, verify actual CI/merge status and remote branch cleanup; never claim unrun or future test results.
+
+---
+
+# 2026-10-18 — goconfig post-commit upstream groundwork
+
+- Verified Fluxlog `main@e338798de9a572c3eb9b6698091347081e60f728`, with only `main` branch and no open PRs at the start.
+- Verified goconfig `v1.6.0` was still the latest published upstream tag.
+- Source inspection found the root cause of CFG-02 (first matching legacy `OnReplace` handler only) and CFG-03 (external level side effect executes before `FileSource.setConfig`).
+- Implemented additive `Manager.OnReplaceCommitted` in upstream goconfig with tests for multi-subscriber notifications, successful Replace and Batch final values, rejected writes, persistence failures, and registration during notification.
+- Merged [goconfig PR #1](https://github.com/majiddarvishan/goconfig/pull/1) into upstream `main@20a58eb9a426d0ed7d522b1e5848a0971ce58198`. Tested [Actions run 39162857364](https://github.com/majiddarvishan/goconfig/actions/runs/39162857364): Go 1.23 gofmt, unit tests under race detector, vet and build all PASSED. Removed temporary verification workflow before merging; did not add a permanent workflow.
+- No new upstream tag and no Fluxlog runtime/dependency changes. The existing two Fluxlog CFG tests still SKIP and UP-02 is blocked until a versioned upstream dependency and minimal integration are authorized.
+- Recorded the staged contract and acceptance tests in `.codex/CFG02_CFG03_INTEGRATION.md`. Conversation updates are Persian; all files English.

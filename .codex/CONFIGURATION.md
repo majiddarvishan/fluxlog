@@ -107,3 +107,9 @@ changes. Separately, a `FileSource` persistence failure that occurs after
 node is restored. These are documented, reproducible known-issue cases
 `CFG-02` and `CFG-03`, not validated support guarantees. The behavior
 policy and possible fixes remain undecided; do not silently mark them complete.
+
+## Upcoming upstream post-commit API (not in pinned v1.6.0)
+
+Upstream goconfig `main` now includes `Manager.OnReplaceCommitted` (merged PR #1), which notifies all listeners **after** successful persistence on `Replace` and `Batch`; failed persistence sends no notifications. This feature is **unreleased** as of 2026-10-18 and unavailable with the adapter's pinned `v1.6.0` dependency.
+
+No Fluxlog adapter behavior has changed yet. `CFG-02` and `CFG-03` are still reproduced and SKIPPED in the regression tests. See [CFG02_CFG03_INTEGRATION.md](CFG02_CFG03_INTEGRATION.md) for the follow-up, especially the legacy first-handler validation/registration-order caveat.

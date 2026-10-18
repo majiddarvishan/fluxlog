@@ -1,34 +1,24 @@
-# Fluxlog — next session handoff
+# Continue Fluxlog — post-commit goconfig integration
 
-Act as a **Senior Go Software Architect / Structured Logging Maintainer** for `https://github.com/majiddarvishan/fluxlog`.
+Act as a **Senior Go Software Architect / Logging and Configuration Reliability Engineer**. Explain results to the user in **Persian**; commit all repository files and comments **in English**.
 
-**Communication:** Explain progress to the maintainer in **Persian**; write all repository files and code comments in **English**.
+## Verified state — 2026-10-18
 
-## Baseline (2026-10-18)
+- Fluxlog repo: `github.com/majiddarvishan/fluxlog`, main baseline `e338798de9a572c3eb9b6698091347081e60f728` (PR #16 merged). Root and nested optional adapter are separate Go modules.
+- Current adapter still pins `github.com/majiddarvishan/goconfig v1.6.0`. **Do not change this silently.**
+- Upstream goconfig [PR #1](https://github.com/majiddarvishan/goconfig/pull/1) merged at `main@20a58eb9a426d0ed7d522b1e5848a0971ce58198`. Adds `Manager.OnReplaceCommitted` for multiple post-persistence subscribers. A temporary Actions workflow verified `gofmt`, `go test -race`, `go vet`, and `go build` in [run 39162857364](https://github.com/majiddarvishan/goconfig/actions/runs/39162857364). The workflow was removed before merge.
+- **No new goconfig tag/release was created**. The new API is **not available in v1.6.0**.
+- Fluxlog `CFG-02` and `CFG-03` integration tests remain known-issue SKIPs; they are not fixed.
 
-- Last verified `main` before release-doc work: `5ad33a9d47d5c9ef44d4de8818f3e69e5759cb35`.
-- PRs #9–#15 merged. Latest observed post-merge [CI 39159724197](https://github.com/majiddarvishan/fluxlog/actions/runs/39159724197) passed both core and adapter.
-- Current focused documentation change: branch `docs/fluxlog-adapter-release-clarity`, PR #16. Inspect actual GitHub status before claiming it is merged.
-- Root and nested adapter are separately versioned Go modules; goconfig is optional and not a core dependency.
+## Next implementation gates
 
-## Verified release/module facts
+Read [CFG02_CFG03_INTEGRATION.md](CFG02_CFG03_INTEGRATION.md), `TASKS.md`, `CURRENT_STATUS.md`, `CONFIGURATION.md` and `SESSION.md`.
 
-- Root tags: `v0.1.0`, `v0.2.0`, `v0.2.1`.
-- Nested adapter tag: only `adapters/goconfig/v0.1.0`, so the valid **tagged** install instruction is `go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.1.0`.
-- Published adapter `v0.1.0` requires Fluxlog core `v0.1.0` and `goconfig v1.3.0`; it lacks the optional `service` and `caller_max_length` adapter mapping.
-- Adapter source on main requires Fluxlog core `v0.2.1` and `goconfig v1.6.0` and includes the optional fields. These are **unreleased adapter changes**. Do not invent `adapters/goconfig/v0.2.1`.
-- Current root main includes fixes newer than the root published `v0.2.1` (human-readable Unix timestamp display); explicitly distinguish released tags from current source.
+1. Confirm actual GitHub HEAD, upstream tag list, and documentation PR state.
+2. Obtain explicit authorization before creating an upstream goconfig tag; choose a backward-compatible new version (e.g. `v1.7.0`) only upon approval.
+3. Once the tag exists, update **only** the nested Fluxlog adapter `go.mod`/`go.sum` from real Go resolution; avoid pseudo-version guesses and keep root module independent.
+4. Change `BindLevel` so initial level application is preserved, validation of candidate levels is side-effect-free, and Logger updates are registered using `OnReplaceCommitted`. Clarify registration-order issues for mixed external handlers.
+5. Change skipped CFG-02/CFG-03 tests to strict PASS assertions and test successful/failed persistence, invalid value and batch commit; verify both Go modules under race, vet, format, build.
+6. No new Fluxlog adapter tag without explicit approval. Update docs only after a verified compatible integration.
 
-## Task status and restrictions
-
-- **Completed:** DEP-01/02, INV-01, CFG-01, LVL-01, FMT-01, LIFE-01, FILE-01, ERR-01, FMT-02 and REL-01 (truthful published module documentation).
-- **Open known defects:** CFG-02 (only first goconfig listener receives update), CFG-03 (persistence error may leave runtime level changed); their integration tests deliberately report **SKIP**.
-- **Open:** DOC-01 until multi-listener and rollback support policies are approved and docs aligned; PERF-01/CI-01 optional.
-- No new release or tag was authorized. Do not quietly fix goconfig's transactional semantics or change unrelated runtime code.
-
-## Next steps
-
-1. Verify actual main HEAD, branch list and open PRs, complete CI on the final docs commit and post-merge main, and remove temporary branches if connector allows; otherwise give exact manual delete command.
-2. Read `.codex/START_HERE.md`, `CURRENT_STATUS.md`, `TASKS.md`, and `CONFIGURATION.md` before starting work.
-3. Do not start a new release, implement CFG-02/CFG-03, or add engineering complexity without the maintainer's explicit decision.
-4. Keep evidence precise: historical release tag vs current source and passing tests vs known-issue SKIPs are not interchangeable.
+Do not re-audit unrelated Fluxlog code. Keep the solution narrow and backwards-compatible; do not claim new API is tagged or the known issues already resolved.

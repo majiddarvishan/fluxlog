@@ -1,0 +1,47 @@
+# CFG-02 and CFG-03 — upstream implementation and adapter integration
+
+**Recorded:** 2026-10-18  
+**Fluxlog baseline:** `main@e338798de9a572c3eb9b6698091347081e60f728`  
+**Upstream:** `github.com/majiddarvishan/goconfig`  
+**Merged upstream PR:** [#1 — Post-commit replace listeners](https://github.com/majiddarvishan/goconfig/pull/1)  
+**Merged upstream main:** `20a58eb9a426d0ed7d522b1e5848a0971ce58198`  
+**Test evidence:** [GitHub Actions run 39162857364](https://github.com/majiddarvishan/goconfig/actions/runs/39162857364) — Go 1.23 formatting, `go test -race -v ./...`, `go vet ./...`, `go build ./...` **passed** on the tested source commit. The verification workflow was temporary and removed before the PR was merged.
+
+## What is implemented upstream
+
+A new additive `Manager.OnReplaceCommitted(node, func(*Node))` observer API runs **only after successful persistence**. It can notify **multiple observers registered on the same node**, unlike legacy `OnReplace`, which still chooses the first matching registration as a pre-commit callback.
+
+- A direct `Replace` notifies registered committed observers after validation, persistence, version increment and history update.
+- A successful `Batch` notifies committed observers once per replaced path, using the final value.
+- Validation failures, dry-run batches and persistence errors notify nobody.
+- The callback has no error result: validation must happen *before commit*, while side effects belong in committed observers.
+- The Manager retains observers for its lifetime. There is currently **no unregister method**. Callback code must treat nodes as read-only and must not mutate the same path while its path lock is held.
+
+This API is **not present in the pinned goconfig v1.6.0**. The upstream merge alone does not fix the running Fluxlog adapter.
+
+## Required downstream work after an explicitly approved upstream tag
+
+1. Publish a compatible upstream goconfig version (a minor version such as `v1.7.0` is a recommendation, **not a release created or authorized here**). Verify the actual tag before changing any dependency.
+2. Update `adapters/goconfig/go.mod` to the real tag; let Go generate `go.sum` and run `go mod tidy`. Leave Fluxlog core `go.mod` untouched.
+3. Refactor `BindLevel` to keep initial configuration application, make pre-commit validation **side-effect-free**, and register one post-commit observer per Logger to apply its level. Multiple loggers bound to one node should then all receive a committed level.
+4. **Registration-order caveat:** legacy `Manager.OnReplace` still runs only the first pre-commit callback. This is sufficient when Fluxlog owns the path's registration but does **not** ensure Fluxlog validation if unrelated code registered a handler first. Define whether shared registration with other components is a supported use case. If yes, use independent per-path `Manager.AddValidator` registration with a reliably resolved path or a narrowly scoped upstream API; do not assume every `OnReplace` callback executes.
+5. Replace the known-issue SKIPs in `TestCFG02MultipleLoggersOnOneLevelNode` and `TestCFG03FilePersistenceFailureDoesNotLeakRuntimeLevel` with genuine PASS assertions under `-race`; verify invalid input, successful persistence, failed persistence, and multiple observers.
+6. Update both module READMEs, `.codex`, and release documentation **only after** accepted behavior and verified tests. A new nested adapter tag requires separate explicit approval.
+
+## Acceptance criteria
+
+- A successful persisted level replacement updates both independently bound loggers.
+- Invalid level replacements are rejected without changing the persisted config or either runtime logger.
+- A forced `FileSource` write/rename failure restores the previous config and leaves all bound Logger levels unchanged.
+- A successful `Batch` with multiple replacements of the same level path applies the final level once to every registered Logger.
+- Existing goconfig validation and source behavior remain backwards compatible, and core Fluxlog does not gain a goconfig dependency.
+- Both modules pass real CI; known-issue `SKIP` statuses disappear **because the assertions pass**, never because tests are deleted or skipped differently.
+
+## Current task status
+
+**Upstream plumbing:** merged and tested.  
+**CFG-02:** OPEN in Fluxlog v1.6.0 adapter.  
+**CFG-03:** OPEN in Fluxlog v1.6.0 adapter.  
+**Tag/version migration and adapter integration:** blocked pending explicit upstream release decision.
+
+Do not invent a newer published goconfig version, update `go.mod` to a raw main pseudo-version without a deliberate reproducibility decision, or claim the two Fluxlog regressions are fixed by the upstream PR alone.
