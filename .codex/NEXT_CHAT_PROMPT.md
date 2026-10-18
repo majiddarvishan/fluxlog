@@ -1,28 +1,29 @@
-# Fluxlog — continuation prompt
+# Fluxlog — next session handoff
 
-Act as a **Senior Go Software Architect / Structured Logging Reliability Engineer** on `https://github.com/majiddarvishan/fluxlog`.
+Act as a **Senior Go Software Architect / Logging Reliability Engineer** on `https://github.com/majiddarvishan/fluxlog`.
 
-**Language policy:** Write progress and explanations to the maintainer in **Persian**; all repository files, source comments and `.codex` notes must be **English**.
+**Communication policy:** Explain work to the maintainer in **Persian**. Keep every repository file, `.codex` document and source comment **in English**.
 
-## Verifiable baseline — 2026-10-18
+## Verified context (2026-10-18)
 
-- Starting main for Phase 2: `7c6e796397da72b05260681cb9ba1b3cf47b4746`.
-- PRs #9–#13 are merged; main uses human-readable numeric Unix console timestamps (FMT-01) while preserving JSON.
-- Optional nested adapter remains pinned to `github.com/majiddarvishan/goconfig v1.6.0`. Core has no goconfig dependency.
-- Current [PR #14](https://github.com/majiddarvishan/fluxlog/pull/14): adds **four test files and English documentation only** to verify LIFE-01, FILE-01 and ERR-01.
-- [Actions run 39158993645](https://github.com/majiddarvishan/fluxlog/actions/runs/39158993645) passed both core and adapter CI jobs, including `-race`. Inspect actual PR head, merge state and post-merge run rather than assuming it is merged.
+- Main before FMT-02: `5c972345043b5e315c8125a444f4c68754ffbaf9`.
+- PRs #9–#14 are **merged**. Last post-merge CI #14: [39159303947](https://github.com/majiddarvishan/fluxlog/actions/runs/39159303947), PASS.
+- Current [PR #15](https://github.com/majiddarvishan/fluxlog/pull/15) adds only FMT-02 console ANSI/color contract tests and docs. [CI 39159526896](https://github.com/majiddarvishan/fluxlog/actions/runs/39159526896) passed both modules; check final commit/merge/post-merge status.
+- Nested optional adapter remains pinned to `goconfig v1.6.0`, core isolated.
+- Human-readable console timestamps support numeric Unix units and configured layout, RFC3339 by default; JSON output unchanged.
 
-## Verified task status
+## Task status
 
-- **DONE:** DEP-01/02, INV-01, CFG-01, LVL-01, FMT-01; new Phase 2 LIFE-01, FILE-01 and ERR-01 tested under race.
-- **OPEN:** CFG-02 (multiple goconfig callbacks on one node: only first receives update) and CFG-03 (failed persistence can leave runtime Logger level out-of-sync); both are known-issue SKIPs, **not fixes**.
-- **OPEN:** FMT-02 (console ANSI/color contract), REL-01 (adapter module tags/install docs), DOC-01 (accepted public docs).
-- **OPTIONAL:** PERF-01 and CI-01 only if justified.
+**Completed:** DEP-01/02, INV-01, CFG-01, LVL-01, FMT-01; Phase 2 **LIFE-01, FILE-01, ERR-01, FMT-02**. Evidence in `.codex/PHASE2_TEST_EVIDENCE_2026-10-18.md` and `TASKS.md`.
 
-## Immediate next steps
+**Open known defects:** CFG-02 (only first OnReplace callback gets invoked for multiple logger bindings at one goconfig path), CFG-03 (FileSource persistence failure rolls back config but leaves changed Logger level). Their regression tests are **SKIP**, not successful fixes. No contract decision yet.
 
-1. Verify actual GitHub main HEAD, PR #14 status, final and post-merge CI, and remote branch list. Do not leave temporary branches silently unmentioned.
-2. Read `.codex/START_HERE.md`, `CURRENT_STATUS.md`, `TASKS.md`, `PHASE2_TEST_EVIDENCE_2026-10-18.md`, `SESSION.md`. Inspect only relevant changes, not the complete repository.
-3. If asked to continue hardening without changes in expected API contracts, consider FMT-02 and REL-01 as limited follow-ups before touching open goconfig defects.
-4. Do **not** silently modify goconfig's multi-listener or rollback behavior; those still require explicit contract decisions. Avoid Async Logging, queueing or speculative refactoring.
-5. Keep tests deterministic and run CI on both Go modules. Mark tasks complete only after passing evidence; no new releases/tags without explicit approval. All files English; responses Persian.
+**Open administrative tasks:** REL-01 (nested module version/install instruction consistency), DOC-01 (accepted contract documentation). PERF-01 and CI-01 optional; no performance-driven rewrite requested.
+
+## Working method
+
+1. Confirm current GitHub main HEAD, PR #15 merge state and CI, remote branch cleanup before changing code.
+2. Read `.codex/START_HERE.md`, `CURRENT_STATUS.md`, `TASKS.md`, `PHASE2_TEST_EVIDENCE_2026-10-18.md`, and `SESSION.md`; inspect only changed areas since this baseline.
+3. Prioritize REL-01 documentation/tag accuracy. Do not create a new release or tag without authorization.
+4. Do **not** change CFG-02 / CFG-03 behavior until a support/transaction policy is settled; reproduce only if necessary using existing tests.
+5. Keep docs English, user explanations Persian, and record actual verification precisely. No unrequested architecture growth.

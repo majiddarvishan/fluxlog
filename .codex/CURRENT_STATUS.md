@@ -1,38 +1,32 @@
 # Current status — Fluxlog
 
-**Updated:** 2026-10-18  
+**Date:** 2026-10-18  
 **Repository:** https://github.com/majiddarvishan/fluxlog  
-**Verified main SHA before Phase 2 tests:** `7c6e796397da72b05260681cb9ba1b3cf47b4746`  
-**Active work:** [PR #14 — Lifecycle, file rotation and sink errors](https://github.com/majiddarvishan/fluxlog/pull/14)  
-**Pinned optional adapter:** `github.com/majiddarvishan/goconfig v1.6.0`. Core remains independent of goconfig.
+**Verified main SHA before FMT-02:** `5c972345043b5e315c8125a444f4c68754ffbaf9`  
+**Current PR:** [#15 — Console color contract tests](https://github.com/majiddarvishan/fluxlog/pull/15)  
+**Optional adapter:** `github.com/majiddarvishan/goconfig v1.6.0`.
 
-## Completed work and evidence
+## Completed and verified
 
-- PR #9: initial English engineering documentation, merged.
-- PR #10: goconfig v1.6.0 dependency update, merged.
-- PR #11: source-backed behavior review, merged.
-- PR #12: Phase 1 regression tests and global level contract, merged.
-- PR #13: human-readable Unix console timestamp conversion (FMT-01), merged. Post-merge CI [run 39147439513](https://github.com/majiddarvishan/fluxlog/actions/runs/39147439513) PASS.
-- PR #14: test-only Phase 2 hardening evidence. [Actions run 39158993645](https://github.com/majiddarvishan/fluxlog/actions/runs/39158993645) PASS for both core and goconfig adapter, race detector included. Phase 2 evidence: [PHASE2_TEST_EVIDENCE_2026-10-18.md](PHASE2_TEST_EVIDENCE_2026-10-18.md).
+- PRs #9–#13 merged: documentation, dependency upgrade, source review, Phase 1 tests and human-readable numeric timestamp fix.
+- PR #14 merged: Phase 2 lifecycle, real file rotation/retention/compression and output-error tests, with [post-merge CI 39159303947](https://github.com/majiddarvishan/fluxlog/actions/runs/39159303947) **PASS**.
+- PR #15: completed FMT-02 console color contract testing. [CI 39159526896](https://github.com/majiddarvishan/fluxlog/actions/runs/39159526896) **PASS** for both `core` and `goconfig-adapter` (race, tidy, fmt, vet and examples), Core coverage 76.9%.
+- Executable evidence: [PHASE2_TEST_EVIDENCE_2026-10-18.md](PHASE2_TEST_EVIDENCE_2026-10-18.md).
 
-## Phase 2 status
+## Verification status by task
 
-- **LIFE-01: complete** — blocked active writes vs Close, concurrent Close/Write, post-close ErrClosedPipe, resource ownership and SetDefault swaps PASS.
-- **FILE-01: complete within recorded scope** — real size rollover, on-disk backup preservation, retention MaxBackups, MaxAge deletion and gzip decompression PASS. LocalTime is tested as forwarded configuration; exact local-time filename string is not asserted.
-- **ERR-01: complete** — failing and short writers, partial multi-sink propagation, and invalid log parent path PASS.
+**DONE:** DEP-01, DEP-02, INV-01, CFG-01, LVL-01, FMT-01, LIFE-01, FILE-01, ERR-01, FMT-02.
 
-**No production logging source, dependency, CI workflow, public API or behavior changed in PR #14.** Four `*_test.go` files and documentation only. Coverage in remote Core run: 75.9% (not a performance claim).
+**OPEN, known issues:** CFG-02 (multiple goconfig listeners on one path receive only one callback), CFG-03 (failed FileSource persistence can roll back the Node without restoring the Logger's external side effect). Both have known-issue SKIP evidence; they are not fixed.
 
-## Outstanding tasks
+**OPEN, release/documentation:** REL-01 (correct adapter nested-module release references), DOC-01 (reconcile public docs after accepted behavior decisions).
 
-- **CFG-02: OPEN:** two loggers binding the same goconfig v1.6.0 path do not both receive a Replace callback; recorded SKIP still present.
-- **CFG-03: OPEN:** a failed FileSource persistence after a successful callback can leave runtime Logger level out of sync; recorded SKIP still present.
-- **FMT-02: OPEN:** additional ANSI/color contract tests.
-- **REL-01 / DOC-01: OPEN:** adapter tag and README release instructions, plus accepted contract documentation.
-- **PERF-01 / CI-01: OPTIONAL:** only on a concrete need.
+**OPTIONAL:** PERF-01, CI-01 (only if warranted by requirements).
 
-## Verification and handoff
+## Change boundaries
 
-Before considering PR #14 complete, verify final commit CI, merge result, post-merge CI and branch cleanup. If branch removal cannot be performed with the connected GitHub action, report the exact deletion command instead of claiming the branch was deleted. No new release tag has been created.
+PR #15 contains **only** `console_contract_integration_test.go` and English `.codex` documentation. No production Go implementation, dependency, runtime configuration, public API, release or tag changed. Color tests cover Auto/Always/Never, NO_COLOR, service/caller fields and ANSI-free file console output. Results are from remote GitHub Actions, not a local Go run.
 
-Respond to the maintainer in **Persian**; keep every committed repository file and code comment **in English**.
+## Finalization and next chat
+
+Verify final PR #15 commit CI, merge result and post-merge CI before claiming that the work is in main. Check the temporary branch cleanup; report a manual deletion command if the connector cannot delete branches. Responses to the maintainer must be **Persian**; all repository files must be **English**.
