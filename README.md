@@ -10,13 +10,12 @@ modify zerolog's process-global logger or global level.
 ## Install
 
 ```bash
-go get github.com/majiddarvishan/fluxlog@v0.2.1
+go get github.com/majiddarvishan/fluxlog@v0.3.0
 ```
 
-This installs the latest **tagged core module** as of 2026-10-18. The
-current `main` branch contains later improvements, including numeric Unix
-timestamps rendered as human-readable console time; these changes are **not
-included in `v0.2.1`** until a newer core release is tagged.
+This installs the published `v0.3.0` core module, including human-readable
+console handling for numeric Unix timestamps. Its annotated tag points to
+the CI-tested source commit `fe57c3e1271d5ada9339b255ac4ca0d727aef5bd`.
 
 ## Basic usage
 
@@ -200,11 +199,13 @@ go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.1.0
 
 **Published release vs source:** `v0.1.0` is the latest verified adapter
 module tag. Its `go.mod` requires Fluxlog core `v0.1.0` and `goconfig v1.3.0`.
-The current adapter source requires core `v0.2.1` and the now **published**
-`goconfig v1.7.0`, supporting post-commit level changes for multiple loggers
+The current adapter release-candidate source requires core `v0.3.0` and the
+published `goconfig v1.7.0`, supporting post-commit level changes for multiple loggers
 and optional `service` / `caller_max_length` fields. These adapter changes
-are not part of the published adapter `v0.1.0` release. A root Fluxlog `v0.2.1` tag does **not** publish an adapter
-`v0.2.1`; nested Go modules have independent tag prefixes.
+are not part of the published adapter `v0.1.0` release. From `v0.3.0` onward official adapters follow core's release version number
+while retaining separate Go modules. The next adapter tag is
+`adapters/goconfig/v0.3.0` (not yet published); publishing core does not
+publish a nested adapter.
 
 ```go
 logger, err := fluxgoconfig.New(manager, loggerConfigNode)

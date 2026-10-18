@@ -14,12 +14,13 @@ go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.1.0
 The command above installs the latest **tagged adapter release**, `v0.1.0`,
 from the independently versioned Go module under `adapters/goconfig`.
 The corresponding repository tag is `adapters/goconfig/v0.1.0`.
-A root-module tag such as `v0.2.1` is **not** an adapter tag, and
-`adapters/goconfig/v0.2.1` has not been published as of 2026-10-18.
+Core `v0.3.0` is already published, but this does not publish the nested
+adapter. Under lockstep versioning, the pending adapter tag is
+`adapters/goconfig/v0.3.0`, subject to CI, merge and separate tagging.
 
 | | Published adapter `v0.1.0` | Current `main` source |
 | --- | --- | --- |
-| Fluxlog core dependency | `v0.1.0` | `v0.2.1` |
+| Fluxlog core dependency | `v0.1.0` | `v0.3.0` |
 | goconfig dependency | `v1.3.0` | `v1.7.0` (published upstream release) |
 | Adapter `service` / `caller_max_length` settings | Not supported by adapter mapping | Supported as optional fields |
 | Release status | Existing tag | Unreleased changes |
@@ -83,8 +84,8 @@ A complete runnable program is available in [`examples/basic`](./examples/basic)
 Current source pins the **official upstream `goconfig v1.7.0` tag**, verified
 against the upstream annotated tag on commit
 `213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`.
-The tagged adapter `v0.1.0` still uses its earlier goconfig dependency and
-legacy behavior; this adapter update itself is not yet a published release.
+The published adapter `v0.1.0` retains its historical dependency graph and
+legacy behavior. The lockstep `v0.3.0` adapter update is not yet published.
 
 `BindLevel` applies the initial level, validates proposed replacements
 without changing Logger state, and uses `OnReplaceCommitted` to apply a new

@@ -7,6 +7,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+No changes recorded yet.
+
+## [0.3.0] - 2026-10-19
+
 ### Fixed
 
 - Render zerolog numeric Unix timestamps as human-readable local timestamps in
@@ -20,9 +24,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   and ANSI/NO_COLOR console formatting.
 - Verify root and nested adapter modules with Go race-detector CI.
 
-The next root version (proposed `v0.3.0`) is **not published**. Adapter changes
-are independently versioned and described in
-[`adapters/goconfig/CHANGELOG.md`](adapters/goconfig/CHANGELOG.md).
+Core `v0.3.0` is published as an annotated tag on the tested source commit.
+Starting at this release, official adapter versions match the core version,
+while retaining separate Go modules and nested tag names. Adapter changes
+are tracked in [`adapters/goconfig/CHANGELOG.md`](adapters/goconfig/CHANGELOG.md).
 
 ## [0.2.1] - 2026-08-25
 
@@ -55,6 +60,7 @@ are independently versioned and described in
 - Core and adapter examples, unit tests, race tests, fuzz seeds, and benchmarks.
 - GitHub Actions verification for both Go modules.
 
+[0.3.0]: https://github.com/majiddarvishan/fluxlog/releases/tag/v0.3.0
 [0.2.1]: https://github.com/majiddarvishan/fluxlog/releases/tag/v0.2.1
 [0.2.0]: https://github.com/majiddarvishan/fluxlog/releases/tag/v0.2.0
 [0.1.0]: https://github.com/majiddarvishan/fluxlog/releases/tag/v0.1.0
