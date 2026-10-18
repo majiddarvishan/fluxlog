@@ -7,7 +7,7 @@
 
 ## Current execution boundary
 
-- **Completed:** dependency upgrade to v1.6.0, Phase 1 characterization, FMT-01 human-readable Unix timestamp fix, and English CI evidence.
+- **Completed:** dependency upgrade to v1.6.0, Phase 1 characterization, FMT-01 human-readable Unix timestamp fix, Phase 2 LIFE-01/FILE-01/ERR-01 verification, and English CI evidence.
 - **Deferred:** CFG-02/CFG-03 behavior changes, unrelated API modifications, release/tag or speculative optimization. See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
 - **Not requested:** asynchronous logging, new exporters, queueing, broad architecture rewrites or new providers.
 
@@ -28,9 +28,9 @@
 
 ## P2 — lifecycle and sink reliability
 
-- [ ] **LIFE-01 — Concurrent Close/Write and default ownership tests.** Stress active writer vs Close, multiple Close calls, post-close events and `SetDefault` pointer swaps; include the race detector. **Acceptance:** no races or deadlocks, deterministic ownership expectations and controlled error outcomes.
-- [ ] **FILE-01 — Real rotation and retention tests.** Use temp dirs to verify size rollover, MaxBackups, MaxAgeDays, Compress and LocalTime where applicable. **Acceptance:** deterministic tests with bounded input and no arbitrary sleeps or dependency on external log directories.
-- [ ] **ERR-01 — Output-failure tests.** Cover failing custom `io.Writer`, parent directory/permission failure and partial multi-output failure. **Acceptance:** tests document observed error propagation and partial-write semantics; improvements considered only if an actual defect is identified.
+- [x] **LIFE-01 — Concurrent Close/Write and default ownership tests.** Stress active writer vs Close, multiple Close calls, post-close events and `SetDefault` pointer swaps; include the race detector. **Acceptance:** no races or deadlocks, deterministic ownership expectations and controlled error outcomes. **Evidence:** 3 PASS in Actions [run 39158993645](https://github.com/majiddarvishan/fluxlog/actions/runs/39158993645); includes blocked active writer, concurrent Close/Write, default logger swap and post-close error.
+- [x] **FILE-01 — Real rotation and retention tests.** Use temp dirs to verify size rollover, MaxBackups, MaxAgeDays, Compress and LocalTime where applicable. **Acceptance:** temporary-directory tests and bounded observable-completion polling for asynchronous retention. **Evidence:** 4 PASS in Actions run 39158993645: size rotation, option propagation, actual MaxBackups cleanup, MaxAge deletion and gzip content. **Caveat:** LocalTime filename timezone only checked via configuration forwarding.
+- [x] **ERR-01 — Output-failure tests.** Cover failing custom `io.Writer`, parent directory/permission failure and partial multi-output failure. **Acceptance:** 3 PASS (with two subcases) in Actions run 39158993645: failing/short stream, partial multi-sink failure and invalid directory. Event.Msg error reporting remains zerolog-owned; no new Fluxlog API.
 - [ ] **FMT-02 — Complete ANSI/color contract tests.** Test Auto/Always/Never modes, `NO_COLOR`, file console-formatted output, and service/caller formatting. **Acceptance:** clear compatibility contract with tests on a CI-compatible platform.
 
 ## P3 — release hygiene and optional optimization (after correctness)
@@ -62,4 +62,4 @@ DEP-01 -> DEP-02
 
 Each follow-up should be narrowly scoped: first reproduce (or document expected behavior), then decide whether code change is warranted, then add regression tests and verify both modules. Prefer one focused PR per coherent correction. **Do not merge speculative fixes** and do not tag a release implicitly. After PR merge, verify `main`, remove temporary remote branches if possible, and update `CURRENT_STATUS.md` / `SESSION.md`.
 
-See [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for phases and gates, [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md) for source paths, and [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md) for actual PASS/SKIP outcomes.
+See [PHASE2_TEST_EVIDENCE_2026-10-18.md](PHASE2_TEST_EVIDENCE_2026-10-18.md) for the verified Phase 2 results, [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for phases and gates, [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md) for source paths, and [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md) for actual PASS/SKIP outcomes.

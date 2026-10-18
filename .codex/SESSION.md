@@ -108,3 +108,20 @@ The maintainer confirmed temporary-branch cleanup and explicitly requested times
 - [Actions run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603) PASSED both Go 1.23 CI jobs (tidy, gofmt, vet, race tests and example builds). The four formerly skipped Unix cases and all new FMT-01 checks PASS.
 - FMT-01 marked complete. CFG-02 and CFG-03 remain **open** and their tests SKIP by design; no fixes were made to them.
 - No local test run or release/tag was performed. After final docs commit, verify the final PR run, merge and post-merge CI.
+
+---
+
+# 2026-10-18 — Phase 2 reliability tests
+
+The maintainer asked to continue, after the human-readable timestamp PR #13 merged and its temporary branch had been removed.
+
+- Verified `main@7c6e796397da72b05260681cb9ba1b3cf47b4746`, only branch `main`, no open PRs before work.
+- Opened `test/fluxlog-p2-lifecycle-rotation-errors`, [PR #14](https://github.com/majiddarvishan/fluxlog/pull/14).
+- Added four root test files: `writer_lifecycle_integration_test.go`, `file_rotation_integration_test.go`, `file_retention_integration_test.go`, `output_error_integration_test.go`.
+- Initial CI pass required gofmt corrections for newly added tests. No production source was edited to satisfy CI.
+- [GitHub Actions run 39158993645](https://github.com/majiddarvishan/fluxlog/actions/runs/39158993645) **PASSED** both root and goconfig-adapter jobs (tidy/format, vet, race tests, examples).
+- PASS observed for three LIFE-01 scenarios, four FILE-01 scenarios and three ERR-01 tests (the custom-writer test contains two passing subcases). Core coverage 75.9%.
+- MaxBackups and MaxAge/Compress were tested against actual lumberjack asynchronous file operations, not simply checking configuration fields.
+- No runtime Go code changes, no dependency updates, no release or tag, and no local Go execution. Detailed evidence: [PHASE2_TEST_EVIDENCE_2026-10-18.md](PHASE2_TEST_EVIDENCE_2026-10-18.md).
+- CFG-02 and CFG-03 remain reproduced, unresolved known-issue SKIPs. Future contract decisions are needed before behavior changes.
+- Final step: verify PR #14 final CI, merge to main if clean, check post-merge CI and remote branch cleanup.
