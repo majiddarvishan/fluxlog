@@ -18,7 +18,7 @@ This is **not** an application, network service, remote log collector, asynchron
 5. [CODEBASE_MAP.md](CODEBASE_MAP.md) — source files and responsibilities.
 6. [TESTING.md](TESTING.md) — how to verify both Go modules and evidence status.
 7. [DECISIONS.md](DECISIONS.md) — existing design invariants inferred from implementation.
-8. [CURRENT_STATUS.md](CURRENT_STATUS.md) and [TASKS.md](TASKS.md) — current baseline and ranked follow-ups.
+8. [CURRENT_STATUS.md](CURRENT_STATUS.md), [TASKS.md](TASKS.md), and [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) — actual status, ranked tasks, bounded execution gates.
 9. [SESSION.md](SESSION.md) and [NEXT_CHAT_PROMPT.md](NEXT_CHAT_PROMPT.md) — reproducible handoff.
 
 ## Source of truth and refresh protocol
@@ -38,4 +38,4 @@ This is **not** an application, network service, remote log collector, asynchron
 - CI: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
 - Development: [Makefile](../Makefile).
 
-**Important:** this repository's `main` was protected when this snapshot was taken. Documentation was prepared on a dedicated branch; check whether it has been merged before treating it as present on `main`.
+**Status:** documentation PR #9 is merged in `main`. For the goconfig v1.6.0 dependency iteration, inspect PR #10 and its CI; never assume that a development branch is already merged.

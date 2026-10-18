@@ -1,37 +1,31 @@
-# Continuation prompt — Fluxlog
+# Fluxlog — next chat handoff
 
-You are a **Senior Go Software Architect / Logging and Reliability Engineer**. Continue working on **github.com/majiddarvishan/fluxlog**.
+Act as a **Senior Go Software Architect / Structured Logging Reliability Engineer**. Continue the project at `git@github.com:majiddarvishan/fluxlog.git`.
 
-## Canonical repository and review baseline
+## Grounded state (2026-10-18)
 
-- Git SSH: `git@github.com:majiddarvishan/fluxlog.git`
-- Default branch: `main`
-- Last fully audited source baseline: `f0b79fcd7afeb0406e75a1c2ca5fe1e15243e881` (2026-08-25)
-- Knowledge base initially authored 2026-10-18 in `.codex/`.
-- Initial documentation branch: `docs/fluxlog-codebase-knowledge-20261018`.
-- Two modules: root core `fluxlog`; separate `adapters/goconfig`.
-- Last recorded changelog version: `v0.2.1` (not independent proof of a published tag).
-- Source CI evidence: successful GitHub Actions [run 32868901673](https://github.com/majiddarvishan/fluxlog/actions/runs/32868901673).
+- Default branch: `main`.
+- Verified main HEAD **before** dependency work: `93e0945e14a34a72ab93d8d048cd1131c523c6b6`.
+- Core runtime audit baseline: `f0b79fcd7afeb0406e75a1c2ca5fe1e15243e881`; documentation PR #9 merged without changing runtime code.
+- Active change branch: `chore/goconfig-1.6.0-and-hardening-plan`, PR [#10](https://github.com/majiddarvishan/fluxlog/pull/10).
+- **Maintainer choice:** Use `github.com/majiddarvishan/goconfig v1.6.0` in the **nested adapter module**. **Other improvements are to be planned only** until a new implementation instruction.
+- Two Go modules: core root, separate `adapters/goconfig`. Core must never gain goconfig as a dependency.
+- Latest recorded core changelog entry is v0.2.1. The adapter has a verified Git tag `adapters/goconfig/v0.1.0` but not `adapters/goconfig/v0.2.1`.
 
-## Mandatory first actions
+## Required first steps
 
-1. Inspect the **actual** current GitHub `main` SHA and repository state, plus the documentation branch/PR merge status. Never assume the SHA above is still HEAD.
-2. Read `.codex/START_HERE.md`, `CURRENT_STATUS.md`, `ARCHITECTURE.md`, `API_REFERENCE.md`, `CONFIGURATION.md`, `TESTING.md`, `DECISIONS.md`, `TASKS.md` and `SESSION.md`.
-3. **Do not re-audit the full repository by default.** Compare changed files/commits against the last reviewed baseline; inspect those files deeply and update only impacted docs. If the baseline or access differs substantially, explain and expand the audit as necessary.
-4. Preserve public API compatibility, per-instance runtime severity, writer-close synchronization, formatting, and optional adapter isolation.
-5. On implementation work, verify both Go modules, Go formatting, tests (including race), vet, and examples as relevant; clearly distinguish executed checks from historical remote CI.
-6. Keep **all `.codex` files in English**, with source-backed facts and explicit uncertainty. Update the snapshot SHA, session log, and actionable task state after meaningful changes.
+1. Inspect actual `main` SHA, PR #10 commit/CI state and remote branch status. Do not assume the PR has or has not merged.
+2. Read `.codex/START_HERE.md`, `CURRENT_STATUS.md`, `TASKS.md`, `IMPLEMENTATION_PLAN.md`, and `SESSION.md`; use architecture/configuration docs only where relevant.
+3. If dependency upgrade is unverified, prioritize exact Go-generated `adapters/goconfig/go.mod` and `go.sum`, then complete adapter/core CI. Never invent checksum lines.
+4. Other tasks remain **planning only**: live replace and rollback, multi-bind callback behavior, external zerolog global level, numeric timestamps, Close/Write, rotation, output errors, release docs and optional benchmarks.
+5. After any PR merge, verify main HEAD and CI, update status/handoff, and delete remote temporary branches when supported; if not, report the manual cleanup command.
+6. Do not re-audit all source files: inspect the diff from the recorded baseline and narrowly relevant code.
+7. Keep repository docs and plans **in English**. Report only tests actually executed and changes truly merged.
 
-## Project in one paragraph
+## Core architecture (short reference)
 
-Fluxlog is an instance-based Go structured logging package wrapping zerolog; events fan out synchronously to optional console and lumberjack-rotated file sinks. An atomic per-instance minimum level and mutex-managed output/Close avoid process-global level mutation and protect lifecycle. It also offers atomic default logger convenience functions with lightweight printf semantics and an optional independent goconfig adapter that maps legacy keys and binds runtime level updates. There is no network logging service or asynchronous delivery subsystem.
+Fluxlog is a synchronous, structured Go logger built on zerolog. Logger-specific atomic minimum-level filtering sends events to console and optional lumberjack-rotated file sinks with mutex-coordinated writer lifecycle; package functions use an atomic default pointer. The optional goconfig adapter parses a legacy flat config object and binds the manager's `level` node to runtime level changes.
 
-## Known follow-ups
+## Delivery standard
 
-- Root README references adapter `@v0.1.0`; adapter README references `@v0.2.1`. Verify published module tags before editing docs.
-- Broaden targeted verification for rotation/retention, active write-vs-Close, goconfig replace/rollback, and output errors if prioritized.
-- See `.codex/TASKS.md` for the non-committed proposals and priorities.
-
-## Reporting format
-
-Respond in Persian unless explicitly instructed otherwise. Keep repository documentation in English. State baseline/HEAD, what was inspected or changed, evidence of actual tests, commit/PR links, and anything unresolved. Do not claim implementation or tests that did not occur.
+For each task, show evidence, actual commit/PR, tested commands or CI links, remaining blockers and an accurate state (planned, implemented, verified, merged). Never claim published adapter tags based on changelog text alone.

@@ -1,34 +1,61 @@
-# Prioritized follow-ups / engineering backlog
+# Fluxlog — prioritized engineering backlog
 
-This is a **proposed backlog**, derived from source review, not a record of accepted product requirements. Do not modify runtime code merely to clear this list without prioritization.
+**Planning date:** 2026-10-18  
+**Scope:** `github.com/majiddarvishan/fluxlog` (core plus independently versioned `adapters/goconfig`).  
+**Maintainer decision:** Use **`github.com/majiddarvishan/goconfig v1.6.0`**. All other items are **planned**, not authorized as implemented changes.  
+**Tracking:** task IDs below are stable; update checkboxes only when acceptance criteria have actually been met.
 
-## P1 — Documentation correctness and release hygiene
+## Current execution boundary
 
-- [ ] **DOC-01 — Verify adapter module tag/version instructions.** Root `README.md` says `adapters/goconfig@v0.1.0`; adapter README says `@v0.2.1`, while nested `go.mod` requires root `v0.2.1`. Verify published module tags and reconcile instructions, with a documentation-only change.
-- [ ] **DOC-02 — Validate the new `.codex` snapshot after merge.** Confirm `main` contains these files and update `CURRENT_STATUS.md` with merged SHA and CI results.
-- [ ] **DOC-03 — Keep changelog/release language precise.** Check real Git tags before claiming adapter versions are installable; GitHub releases endpoint returned no release objects during the review.
+- **In scope now:** dependency upgrade to goconfig v1.6.0, canonical module/checksum files, compatibility verification, this English plan and handoff documentation.
+- **Deferred:** every runtime implementation, new test, public API modification, release/tag, and optimization described below. Those remain separate follow-up tasks.
+- **Not requested:** asynchronous logging, new exporters, queueing, broad architecture rewrites or new providers.
 
-## P2 — Contract-critical test gaps
+## P0 — dependency migration and baseline verification
 
-- [ ] **TEST-01 — Rotation/retention integration tests.** Verify actual rollover, max backups, age and compression across file-sink lifecycle; use temporary directories, bounded test data and OS-compatible assertions.
-- [ ] **TEST-02 — Close/write race tests.** Assert concurrency guarantees for active writes, repeated Close, writes after Close, and returned errors.
-- [ ] **TEST-03 — Adapter live replacement.** Exercise actual manager updates after `BindLevel`, both success and invalid-value rollback, and document listener ownership/lifecycle.
-- [ ] **TEST-04 — Error paths.** Cover failing console writers, filesystem permissions and closers without terminating applications.
-- [ ] **TEST-05 — Level/format boundary tests.** Validate external zerolog global-level interaction and complete ANSI behavior under `NO_COLOR`/color modes before changing color or filter code.
+- [x] **DEP-01 — Pin goconfig v1.6.0 in the adapter module.** The tag `v1.6.0` exists in the upstream goconfig repository. Update **`adapters/goconfig/go.mod`**, regenerate `go.sum` with real Go tooling, verify `go mod tidy` is clean; do not guess checksums. Leave root `go.mod` untouched. **Acceptance:** adapter module graph is reproducible, the referenced upstream version is exactly 1.6.0, and no new runtime source code has changed. **Status:** complete in PR #10; tidy and exact checksums verified by CI run 39144064913.
+- [x] **DEP-02 — Validate adapter and core with Go 1.23 CI.** Run adapter `go mod tidy`, `go test -race ./...`, `go vet ./...`, `go build ./examples/...`; root `make verify` and `go build ./examples/...`. Confirm CI is green on the final PR commit. **Acceptance:** both modules pass; record exact runs. **Depends on:** DEP-01. **Status:** both root and adapter CI jobs passed on commit `27cfb35b20158e5fa59050f309c41aeccd7307b0` (run 39144064913).
 
-## P3 — Optional improvements after requirements exist
+## P1 — correctness and existing API contracts (tests first)
 
-- [ ] **PERF-01 — Baseline benchmarks.** Run `BenchmarkEnabledLog` and `BenchmarkDisabledLog` under pinned Go version/hardware and preserve comparable data. Do not assert a speedup without matched evidence.
-- [ ] **CI-01 — Consider automated fuzz smoke or an explicit coverage gate** if maintaining this library warrants the additional CI overhead.
-- [ ] **DOC-04 — Optional public API recipes** for `WithContext`, multi-output service integration and graceful shutdown, using tests as the reference.
+- [ ] **CFG-01 — Test runtime goconfig replacement on v1.6.0.** Exercise `Manager.Replace` after `BindLevel`: successful `info -> debug`, invalid level rejection and rollback; check new/current level and persisted node consistency. **Acceptance:** focused integration tests reproduce expected states (including invalid input) under `-race`. **Depends on:** DEP-02.
+- [ ] **CFG-02 — Characterize multi-logger binding and callback lifetime.** Bind two loggers to one manager level node, replace once and observe both; examine `OnReplace` registration and whether manager retains callbacks after Logger.Close. v1.6.0 still appends handler registrations and selects a matching path, so **do not assume** fan-out or deregistration. **Acceptance:** tests + explicit documented support policy; only then propose minimal fix if a supported use case fails. **Depends on:** CFG-01.
+- [ ] **LVL-01 — Define effective per-instance threshold with zerolog global level.** Test a fluxlog logger after external `zerolog.SetGlobalLevel` calls (restore original global state; avoid parallel pollution). Decide whether the contract promises independence from **other fluxlog instances** or also from **external zerolog global filtering**. **Acceptance:** reproducible test and explicit contract; defer code changes until the expected policy is approved.
+- [ ] **FMT-01 — Characterize Unix-format timestamps.** Test console formatting when `zerolog.TimeFieldFormat` uses numeric Unix variants, versus RFC3339 strings; also confirm JSON output is unaffected. **Acceptance:** expected output documented and regression tests; avoid changing behavior until reproduced.
 
-## Constraints
+## P2 — lifecycle and sink reliability
 
-- Preserve source-backed invariants in [DECISIONS.md](DECISIONS.md).
-- Core must remain independent of `goconfig`.
-- Always test **both** modules. Never confuse remote CI success for local execution.
-- No implicit new feature commitments, breaking changes, tags, or releases.
+- [ ] **LIFE-01 — Concurrent Close/Write and default ownership tests.** Stress active writer vs Close, multiple Close calls, post-close events and `SetDefault` pointer swaps; include the race detector. **Acceptance:** no races or deadlocks, deterministic ownership expectations and controlled error outcomes.
+- [ ] **FILE-01 — Real rotation and retention tests.** Use temp dirs to verify size rollover, MaxBackups, MaxAgeDays, Compress and LocalTime where applicable. **Acceptance:** deterministic tests with bounded input and no arbitrary sleeps or dependency on external log directories.
+- [ ] **ERR-01 — Output-failure tests.** Cover failing custom `io.Writer`, parent directory/permission failure and partial multi-output failure. **Acceptance:** tests document observed error propagation and partial-write semantics; improvements considered only if an actual defect is identified.
+- [ ] **FMT-02 — Complete ANSI/color contract tests.** Test Auto/Always/Never modes, `NO_COLOR`, file console-formatted output, and service/caller formatting. **Acceptance:** clear compatibility contract with tests on a CI-compatible platform.
 
-## Task status as of this review
+## P3 — release hygiene and optional optimization (after correctness)
 
-No runtime tasks were implemented by this documentation effort. These unchecked items are suggestions; prioritization is still a maintainer decision.
+- [ ] **REL-01 — Reconcile adapter release/version instructions.** Verified Git tag list includes `adapters/goconfig/v0.1.0` but **not** `adapters/goconfig/v0.2.1` as of 2026-10-18. Root README advertises adapter 0.1.0; adapter README advertises 0.2.1. Choose a truthful installation example referencing an actually available **adapter module tag**, or explicitly document branch-only installation; issue a new adapter tag **only on explicit approval** after successful validation. **Acceptance:** documentation and published tag state agree.
+- [ ] **DOC-01 — Update public docs after accepted behavior decisions.** Bring READMEs, configuration recipes, release notes and `.codex` snapshots into agreement, including dependency version and any supported multi-binding semantics. **Acceptance:** examples build against published versions or clearly describe development-only paths.
+- [ ] **PERF-01 — Optional reproducible microbenchmark baseline.** Compare enabled/disabled-event benchmarks, multi-sink overhead and sink contention with pinned Go toolchain/hardware and a common benchmark harness. **Acceptance:** reproducible raw results; no speculative performance rewrites.
+- [ ] **CI-01 — Revisit fuzz/coverage policy only if maintenance needs justify it.** Avoid introducing more CI gates without a concrete requirement.
+
+## Suggested execution order
+
+```text
+DEP-01 -> DEP-02
+               |
+               +-> CFG-01 -> CFG-02
+               +-> LVL-01
+               +-> FMT-01
+               |
+               +-> LIFE-01 -> ERR-01
+               +-> FILE-01
+               +-> FMT-02
+               |
+               +-> REL-01 -> DOC-01
+               +-> PERF-01 / CI-01 (optional)
+```
+
+## Work-item discipline
+
+Each follow-up should be narrowly scoped: first reproduce (or document expected behavior), then decide whether code change is warranted, then add regression tests and verify both modules. Prefer one focused PR per coherent correction. **Do not merge speculative fixes** and do not tag a release implicitly. After PR merge, verify `main`, remove temporary remote branches if possible, and update `CURRENT_STATUS.md` / `SESSION.md`.
+
+See [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for phases, change boundaries and final acceptance gates.
