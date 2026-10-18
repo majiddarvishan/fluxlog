@@ -1,24 +1,24 @@
-# Continue Fluxlog — post-commit goconfig integration
+# Fluxlog — next chat handoff
 
-Act as a **Senior Go Software Architect / Logging and Configuration Reliability Engineer**. Explain results to the user in **Persian**; commit all repository files and comments **in English**.
+Use Persian to explain progress; commit all code and repository documents in English.
 
-## Verified state — 2026-10-18
+## Baseline and current work
 
-- Fluxlog repo: `github.com/majiddarvishan/fluxlog`, main baseline `e338798de9a572c3eb9b6698091347081e60f728` (PR #16 merged). Root and nested optional adapter are separate Go modules.
-- Current adapter still pins `github.com/majiddarvishan/goconfig v1.6.0`. **Do not change this silently.**
-- Upstream goconfig [PR #1](https://github.com/majiddarvishan/goconfig/pull/1) merged at `main@20a58eb9a426d0ed7d522b1e5848a0971ce58198`. Adds `Manager.OnReplaceCommitted` for multiple post-persistence subscribers. A temporary Actions workflow verified `gofmt`, `go test -race`, `go vet`, and `go build` in [run 39162857364](https://github.com/majiddarvishan/goconfig/actions/runs/39162857364). The workflow was removed before merge.
-- **No new goconfig tag/release was created**. The new API is **not available in v1.6.0**.
-- Fluxlog `CFG-02` and `CFG-03` integration tests remain known-issue SKIPs; they are not fixed.
+- Fluxlog source: `github.com/majiddarvishan/fluxlog`; baseline `main@3c3b38352e44eb311f7841f670c8071ae7cf41a7`.
+- Working branch: `feature/fluxlog-postcommit-level-binding`. Verify actual PR and main state before acting.
+- Upstream `goconfig` merged `OnReplaceCommitted` at `20a58eb9a426d0ed7d522b1e5848a0971ce58198`. No upstream tag newer than `v1.6.0` was verified.
+- Adapter development module pins that upstream commit via Go canonical pseudo-version `v1.6.1-0.20261018202246-20a58eb9a426`; checksum generated from real Go tooling in checksum-only Actions run `39165338586`. This is an unreleased dependency: do not describe it as tagged `v1.7.0`.
+- `BindLevel` now validates before and applies Logger level only after successful commit, enabling multiple subscribed loggers and avoiding FileSource side-effect drift. Strict no-SKIP CFG-02/CFG-03 tests cover Replace, Batch and failure paths.
+- Root Go module and unrelated production code unchanged. No release or tag requested.
 
-## Next implementation gates
+## Verification and release gate
 
-Read [CFG02_CFG03_INTEGRATION.md](CFG02_CFG03_INTEGRATION.md), `TASKS.md`, `CURRENT_STATUS.md`, `CONFIGURATION.md` and `SESSION.md`.
+1. Verify the current branch's final consolidated CI: `gofmt`, dependency tidy/sum, `go vet`, `go test -race`, example builds for both modules. Do **not** assume it succeeded.
+2. If the CI passes, mark UP-02/CFG-02/CFG-03 done and record the exact CI evidence; merge when appropriate, then verify post-merge CI and branch cleanup.
+3. If it fails, inspect exact failing step and correct only that issue.
+4. A final upstream goconfig `v1.7.0` and a new nested Fluxlog adapter tag are **not** authorized. Ask explicitly before creating tags. A future tagged migration can replace the pinned pseudo-version without adding a new feature.
+5. Read `.codex/CFG02_CFG03_INTEGRATION.md`, `TASKS.md`, `CURRENT_STATUS.md`, and `SESSION.md` as needed. Do not re-audit unrelated core code.
 
-1. Confirm actual GitHub HEAD, upstream tag list, and documentation PR state.
-2. Obtain explicit authorization before creating an upstream goconfig tag; choose a backward-compatible new version (e.g. `v1.7.0`) only upon approval.
-3. Once the tag exists, update **only** the nested Fluxlog adapter `go.mod`/`go.sum` from real Go resolution; avoid pseudo-version guesses and keep root module independent.
-4. Change `BindLevel` so initial level application is preserved, validation of candidate levels is side-effect-free, and Logger updates are registered using `OnReplaceCommitted`. Clarify registration-order issues for mixed external handlers.
-5. Change skipped CFG-02/CFG-03 tests to strict PASS assertions and test successful/failed persistence, invalid value and batch commit; verify both Go modules under race, vet, format, build.
-6. No new Fluxlog adapter tag without explicit approval. Update docs only after a verified compatible integration.
+## Known limitation
 
-Do not re-audit unrelated Fluxlog code. Keep the solution narrow and backwards-compatible; do not claim new API is tagged or the known issues already resolved.
+`Manager.OnReplace` executes the first pre-commit callback registered on a level path. The new Fluxlog adapter's validator must own that first handler; shared validation with externally registered handlers is not generally guaranteed. The post-commit API broadcasts to all subscribed observers. There is no unsubscribe API; callbacks remain retained until the Manager is disposed.

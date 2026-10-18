@@ -164,3 +164,19 @@ The maintainer requested continued progress while keeping repository files in En
 - Merged [goconfig PR #1](https://github.com/majiddarvishan/goconfig/pull/1) into upstream `main@20a58eb9a426d0ed7d522b1e5848a0971ce58198`. Tested [Actions run 39162857364](https://github.com/majiddarvishan/goconfig/actions/runs/39162857364): Go 1.23 gofmt, unit tests under race detector, vet and build all PASSED. Removed temporary verification workflow before merging; did not add a permanent workflow.
 - No new upstream tag and no Fluxlog runtime/dependency changes. The existing two Fluxlog CFG tests still SKIP and UP-02 is blocked until a versioned upstream dependency and minimal integration are authorized.
 - Recorded the staged contract and acceptance tests in `.codex/CFG02_CFG03_INTEGRATION.md`. Conversation updates are Persian; all files English.
+
+
+---
+
+# 2026-10-19 — bounded CFG-02 / CFG-03 adapter integration
+
+The maintainer requested implementation of as many remaining tasks as practical,
+with **one consolidated test run at the end**.
+
+- Verified Fluxlog `main@3c3b38352e44eb311f7841f670c8071ae7cf41a7`; no extra branches. Upstream goconfig `main@20a58eb9a426d0ed7d522b1e5848a0971ce58198`, latest tag still `v1.6.0`.
+- Used the exact commit's canonical Go pseudo-version
+  `v1.6.1-0.20261018202246-20a58eb9a426`, not a floating branch or fabricated release.
+- A temporary checksum-only workflow successfully ran `go mod tidy` in [Actions run 39165338586](https://github.com/majiddarvishan/fluxlog/actions/runs/39165338586). Go-generated sums are used; the workflow is removed from the final diff.
+- Implemented post-commit level binding and strict CFG-02/CFG-03 tests, including Batch, invalid rollback and failed persistence. Only the nested adapter module changes; no root runtime source changes.
+- The final full CI was **not yet executed at the time of these notes**. See current PR Actions for the actual result; do not report an unverified pass.
+- No goconfig or Fluxlog tag/release was created. Existing root/adapter published tags are unchanged.

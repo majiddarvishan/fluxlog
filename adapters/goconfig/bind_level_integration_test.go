@@ -213,7 +213,6 @@ func TestCFG03FilePersistenceFailureDoesNotLeakRuntimeLevel(t *testing.T) {
 	}
 }
 
-
 // CFG-02/CFG-03: a successful multi-step batch publishes the final level to
 // every bound logger once, after persistence. Rejected input changes neither
 // configuration nor the runtime level.
