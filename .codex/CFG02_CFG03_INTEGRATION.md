@@ -68,3 +68,29 @@ API hardening question, not part of the current bounded fix.
 
 After a separately authorized upstream tagged release, pin that real tag and
 regenerate module sums; no new tag is created by this PR.
+
+
+---
+
+## Verified integration result — 2026-10-19 (PR #18)
+
+The development adapter is now integrated at the immutable goconfig
+pseudo-version `v1.6.1-0.20261018202246-20a58eb9a426`.
+Go-generated module checksums are recorded, and the checksum bootstrap
+workflow was removed from the final PR diff.
+
+`BindLevel` uses pure candidate validation before persistence, then
+`OnReplaceCommitted` to apply each committed level to every bound Logger.
+Both original known-issue tests and the new Batch and FileSource failure
+cases now **PASS** as strict assertions; no `t.Skipf` remains in this file.
+
+[Actions run 39165664802](https://github.com/majiddarvishan/fluxlog/actions/runs/39165664802) passed both core and optional adapter
+Go 1.23 CI jobs: dependency tidy, formatting, vet, race tests and examples.
+**CFG-02, CFG-03, UP-02 and development-source DOC-01 are complete.**
+The independent legacy-first-handler registration constraint is explicitly
+outside the supported shared-handler contract; see the adapter README.
+
+The latest tagged goconfig release remains `v1.6.0`; this feature consumes
+an immutable, **unreleased** upstream commit. The published Fluxlog adapter
+`v0.1.0` is also unchanged. Publishing new versions is a separate task
+requiring explicit authorization, not implied by successful CI.

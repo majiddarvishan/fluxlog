@@ -97,19 +97,29 @@ When zerolog's `TimeFieldFormat` encodes Unix seconds, milliseconds, microsecond
 
 FMT-01 is implemented and tested in [PR #13](https://github.com/majiddarvishan/fluxlog/pull/13). See [Actions run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603). No global timestamp format mutation was added to the core library.
 
-## Known current-source replacement restrictions
+## Runtime level replacement: current development source
 
-The adapter's current `Manager.OnReplace` integration at goconfig v1.6.0
-updates only the first listener registered for the same path. Reusing one
-`level` node for several independently bound loggers does not fan out level
-changes. Separately, a `FileSource` persistence failure that occurs after
-`applyLevel` can leave the runtime level changed while the configuration
-node is restored. These are documented, reproducible known-issue cases
-`CFG-02` and `CFG-03`, not validated support guarantees. The behavior
-policy and possible fixes remain undecided; do not silently mark them complete.
+The nested adapter pins the exact goconfig upstream revision
+`v1.6.1-0.20261018202246-20a58eb9a426` (not a published tag).
+Unlike the previous v1.6.0 adapter integration, `BindLevel` validates
+proposed levels *before persistence*, then uses `OnReplaceCommitted` to
+apply successful committed changes to **every bound Logger**.
+If the FileSource write/rename fails, no committed observers run and
+the previous runtime levels remain intact. A successful Batch with repeated
+updates to one level path dispatches only the final value.
 
-## Upcoming upstream post-commit API (not in pinned v1.6.0)
+**Pre-commit registration constraint:** goconfig's legacy `OnReplace`
+selects the first registered handler for a path. To guarantee rejection
+of invalid level values, Fluxlog's validation callback must be the first
+pre-commit handler registered for that managed level node. Unrelated
+pre-registered, nonvalidating callbacks on the same path are unsupported.
+Observers remain registered for the lifetime of the Manager; there is
+no unsubscribe API yet.
 
-Upstream goconfig `main` now includes `Manager.OnReplaceCommitted` (merged PR #1), which notifies all listeners **after** successful persistence on `Replace` and `Batch`; failed persistence sends no notifications. This feature is **unreleased** as of 2026-10-18 and unavailable with the adapter's pinned `v1.6.0` dependency.
-
-No Fluxlog adapter behavior has changed yet. `CFG-02` and `CFG-03` are still reproduced and SKIPPED in the regression tests. See [CFG02_CFG03_INTEGRATION.md](CFG02_CFG03_INTEGRATION.md) for the follow-up, especially the legacy first-handler validation/registration-order caveat.
+Tests: `TestCFG02MultipleLoggersOnOneLevelNode`,
+`TestCFG03FilePersistenceFailureDoesNotLeakRuntimeLevel`,
+`TestCFG02BatchMultipleLoggersAndInvalidRollback`,
+`TestCFG03FileSourceBatchFailureKeepsBothLoggersUnchanged`.
+All PASS (no SKIP) with race detector in [CI run 39165664802](https://github.com/majiddarvishan/fluxlog/actions/runs/39165664802).
+Root Fluxlog `go.mod` remains independent of goconfig. Published adapter
+`v0.1.0` is unchanged and must not be described as including this feature.

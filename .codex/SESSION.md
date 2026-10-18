@@ -180,3 +180,11 @@ with **one consolidated test run at the end**.
 - Implemented post-commit level binding and strict CFG-02/CFG-03 tests, including Batch, invalid rollback and failed persistence. Only the nested adapter module changes; no root runtime source changes.
 - The final full CI was **not yet executed at the time of these notes**. See current PR Actions for the actual result; do not report an unverified pass.
 - No goconfig or Fluxlog tag/release was created. Existing root/adapter published tags are unchanged.
+
+
+### Verification result for PR #18
+
+- [Full GitHub Actions run 39165664802](https://github.com/majiddarvishan/fluxlog/actions/runs/39165664802) completed **successfully** for both `core` and `goconfig-adapter` (tidy, formatting, vet, race tests and example builds).
+- `TestCFG02MultipleLoggersOnOneLevelNode`, `TestCFG03FilePersistenceFailureDoesNotLeakRuntimeLevel`, `TestCFG02BatchMultipleLoggersAndInvalidRollback`, and `TestCFG03FileSourceBatchFailureKeepsBothLoggersUnchanged` all **PASS**, without SKIP.
+- Go-generated pseudo-version sums were verified in checksum-only run 39165338586. The temporary workflow is excluded from PR diff.
+- All work is bounded to the optional adapter and documentation. No root runtime changes, no new release/tag, no floating branch dependency.

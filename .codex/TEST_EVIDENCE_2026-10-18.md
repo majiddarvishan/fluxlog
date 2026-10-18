@@ -49,3 +49,21 @@ This addendum **supersedes only FMT-01's historical SKIP outcomes above**; earli
 - **Passing checks:** `TestFMT01ConsoleUnixTimestampFormats` (all four cases PASS), `TestFMT01ConsoleRFC3339Timestamp`, `TestFMT01CustomHumanReadableTimeLayout`, `TestFMT01UnixTimestampPrecisionAndNegativeEpoch` (all four cases PASS), `TestFMT01LoggerRendersUnixTimestampAsHumanReadable`.
 - **CI evidence:** [Actions run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603), both core and adapter jobs PASS, including fmt, vet, race tests and examples.
 - **Remaining known-issue SKIPs:** **two**, CFG-02 and CFG-03. They are not fixed by this change. No tag or release created.
+
+
+---
+
+## CFG-02 / CFG-03 implementation verification — 2026-10-19
+
+This section supersedes the **historical** known-issue SKIP statuses for
+CFG-02 and CFG-03 earlier in this record, but only for development source
+containing the upstream post-commit integration, **not** the published
+adapter `v0.1.0` or goconfig `v1.6.0`.
+
+- **Dependency:** immutable goconfig commit `20a58eb9a426d0ed7d522b1e5848a0971ce58198`, encoded as Go pseudo-version `v1.6.1-0.20261018202246-20a58eb9a426`. Generated sums: [bootstrap run 39165338586](https://github.com/majiddarvishan/fluxlog/actions/runs/39165338586).
+- **CFG-01:** both normal and FileSource validation/rollback tests **PASS**.
+- **CFG-02:** `TestCFG02MultipleLoggersOnOneLevelNode` and `TestCFG02BatchMultipleLoggersAndInvalidRollback` **PASS** — shared binding receives the committed level for every Logger.
+- **CFG-03:** `TestCFG03FilePersistenceFailureDoesNotLeakRuntimeLevel` and `TestCFG03FileSourceBatchFailureKeepsBothLoggersUnchanged` **PASS** — no external Logger state leak after a failed persist.
+- **Overall:** root and adapter CI jobs passed `go mod tidy`, gofmt, go vet, `go test -race` and example builds in [Actions run 39165664802](https://github.com/majiddarvishan/fluxlog/actions/runs/39165664802). **No CFG SKIPs remain.**
+- **Scope caveat:** legacy goconfig OnReplace uses the first pre-commit handler registered on a path. Fluxlog validation must own that first handler; mixing an unrelated validator registered earlier is unsupported. Post-commit listeners are retained for the Manager lifetime.
+- **No new tag or release** was created for goconfig or either Fluxlog module.
