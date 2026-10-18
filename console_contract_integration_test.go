@@ -14,8 +14,8 @@ import (
 func TestFMT02ConsoleColorModes(t *testing.T) {
 	t.Setenv("NO_COLOR", "")
 	for _, tc := range []struct {
-		name      string
-		color     ColorMode
+		name       string
+		color      ColorMode
 		expectANSI bool
 	}{
 		{name: "auto-buffer", color: AutoColor, expectANSI: false},
@@ -66,17 +66,17 @@ func TestFMT02DualOutputKeepsFilePlainText(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "human.log")
 	var console bytes.Buffer
 	logger, err := New(Config{
-		Level: InfoLevel,
+		Level:   InfoLevel,
 		Service: "gateway",
-		Caller: true,
+		Caller:  true,
 		Console: &ConsoleConfig{
 			Writer: &console,
 			Format: ConsoleFormat,
-			Color: AlwaysColor,
+			Color:  AlwaysColor,
 		},
 		File: &FileConfig{
-			Path: path,
-			Format: ConsoleFormat,
+			Path:      path,
+			Format:    ConsoleFormat,
 			MaxSizeMB: 1,
 		},
 	})
