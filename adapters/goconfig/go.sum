@@ -2,8 +2,8 @@ github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/iancoleman/orderedmap v0.3.0 h1:5cbR2grmZR/DiVt+VJopEhtVs9YGInGIxAoMJn+Ichc=
 github.com/iancoleman/orderedmap v0.3.0/go.mod h1:XuLcCUkdL5owUCQeF2Ue9uuw1EptkJDkXXS7VoV7XGE=
-github.com/majiddarvishan/fluxlog v0.2.1 h1:Aq7JVBRFO+kqf/TmsvhaftzYVNLj6aBNz3c/2VNoT3Y=
-github.com/majiddarvishan/fluxlog v0.2.1/go.mod h1:h6VsXjbX6Rp3Tr+jgHPgGIeCgPrtL5Icq//uf1qpMgA=
+github.com/majiddarvishan/fluxlog v0.3.0 h1:tIr7JSBU9a1TtRZOe6PrWXQrsQpIuuZ94n7tJhcW6MA=
+github.com/majiddarvishan/fluxlog v0.3.0/go.mod h1:h6VsXjbX6Rp3Tr+jgHPgGIeCgPrtL5Icq//uf1qpMgA=
 github.com/majiddarvishan/goconfig v1.7.0 h1:Utm3i4JkNtxBr0VYDmNf0xY1+0A+cMLlxsBllbKMkww=
 github.com/majiddarvishan/goconfig v1.7.0/go.mod h1:oNFfQuyPt3xp2tdZSl3vutSXxnsHNvgOBBSnpqrMYuc=
 github.com/mattn/go-colorable v0.1.14 h1:9A9LHSqF/7dyVVX6g0U9cwm9pG3kP9gSzcuIPHPsaIE=
