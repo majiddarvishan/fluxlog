@@ -215,3 +215,13 @@ with **one consolidated test run at the end**.
   Verify actual post-PR and post-merge results before closing REL-03.
 
 - The official-tag migration **PASSED** [GitHub Actions run 39168203987](https://github.com/majiddarvishan/fluxlog/actions/runs/39168203987) for both root and adapter jobs (tidy, fmt, vet, race, examples). The strict CFG-01/02/03 tests all passed, no SKIPs. This is a PR-run outcome; final main CI will be checked separately.
+
+---
+# Session update — 2026-10-19: lockstep v0.3.0 release
+
+- Verified `main@fe57c3e1271d5ada9339b255ac4ca0d727aef5bd` with both core and adapter jobs successful in [post-merge CI 39168420174](https://github.com/majiddarvishan/fluxlog/actions/runs/39168420174).
+- Verified annotated core `v0.3.0` tag object `6ad7581ac7fe611689b6087a183d10f6f4ba06b6` points to that exact HEAD. No tag was rewritten or created for core.
+- Maintainer-approved lockstep policy: same version number for official core and adapter releases starting at `v0.3.0`; keep independent Go module paths and nested tag prefixes. The old adapter v0.2.0 proposal is superseded.
+- The release branch `release/fluxlog-lockstep-v0.3.0` updates documentation and plans the adapter's core dependency transition from v0.2.1 to v0.3.0.
+- The local container could not resolve GitHub; do not claim a local `go get`, tidy, or test run. Use Go's actual CI output to obtain checksums, then verify both jobs before merge and separately tag `adapters/goconfig/v0.3.0`.
+- Existing upstream goconfig first-`OnReplace` validator registration constraint and Manager-lifetime listeners are unchanged.

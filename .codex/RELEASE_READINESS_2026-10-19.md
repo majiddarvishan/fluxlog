@@ -1,49 +1,21 @@
-# Fluxlog — independent release readiness (2026-10-19)
+# Fluxlog v0.3.0 lockstep release readiness — 2026-10-19
 
-## Verified upstream release
+## Confirmed evidence
 
-The upstream `github.com/majiddarvishan/goconfig` **v1.7.0** annotated tag
-exists, object `f3263dd3160cf226ec0f3371d7753615862d0c32`, pointing to
-commit `213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`.
-Upstream main CI [39167180503](https://github.com/majiddarvishan/goconfig/actions/runs/39167180503)
-passed. A GitHub Release object was not found; the Go module tag itself
-exists and is resolvable.
-
-In [module resolution CI 39167874434](https://github.com/majiddarvishan/fluxlog/actions/runs/39167874434),
-Go 1.23 resolved `goconfig v1.7.0` and verified its VCS origin commit.
-Go-generated module hashes are recorded in the nested `go.sum`:
-
-```text
-github.com/majiddarvishan/goconfig v1.7.0 h1:Utm3i4JkNtxBr0VYDmNf0xY1+0A+cMLlxsBllbKMkww=
-github.com/majiddarvishan/goconfig v1.7.0/go.mod h1:oNFfQuyPt3xp2tdZSl3vutSXxnsHNvgOBBSnpqrMYuc=
-```
-
-## Migration and release state
-
-- Official upstream module upgrade to `v1.7.0` is prepared in the
-  `release/fluxlog-goconfig-v1.7.0-migration` branch, replacing the
-  earlier development pseudo-version. Runtime Go source and root module
-  dependency files are unchanged. The checksum-only temporary workflow
-  is removed from the final diff.
-- Existing Fluxlog `main@70b17302e5cc5b2974fff502227552ed8cf4d694`
-  passed [CI 39167270820](https://github.com/majiddarvishan/fluxlog/actions/runs/39167270820)
-  for both core and adapter before this migration.
-- The migration source passed both modules in [CI run 39168203987](https://github.com/majiddarvishan/fluxlog/actions/runs/39168203987), including tidy/format/vet/race/example-build gates. Strict CFG-01/CFG-02/CFG-03 tests all PASS. Final docs commit and post-merge main still require verification.
-- The current *published* Fluxlog root version is `v0.2.1`. The current
-  *published* nested adapter is `adapters/goconfig/v0.1.0`. Neither is
-  automatically updated by an upstream goconfig tag.
-- The recommended next root `v0.3.0` and nested
-  `adapters/goconfig/v0.2.0` tags are not published. Tagging them is a
-  separate step after the gates in [RELEASING.md](../RELEASING.md).
+- Fluxlog `main`: `fe57c3e1271d5ada9339b255ac4ca0d727aef5bd`.
+- Core annotated `v0.3.0` tag object `6ad7581ac7fe611689b6087a183d10f6f4ba06b6` peels to this commit.
+- Both jobs passed [post-merge CI 39168420174](https://github.com/majiddarvishan/fluxlog/actions/runs/39168420174), including tidy, formatting, vet, race and examples.
+- [PR #20](https://github.com/majiddarvishan/fluxlog/pull/20) merged. CFG-02/CFG-03 passed without SKIP.
+- Upstream `goconfig v1.7.0` annotated tag object `f3263dd3160cf226ec0f3371d7753615862d0c32` points to `213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`. [Upstream CI 39167180503](https://github.com/majiddarvishan/goconfig/actions/runs/39167180503) passed.
 
 ## Remaining work
 
-1. **DONE:** official tagged upstream dependency migrated and verified by Go CI 39168203987; confirm post-merge CI before release tagging.
-2. Publish Fluxlog root `v0.3.0` at the exact tested main commit using
-   an authorized Git client.
-3. Migrate the adapter's dependency on root Fluxlog `v0.2.1` to `v0.3.0`;
-   run CI again and publish the nested adapter tag at that verified commit.
-4. Remove merged working branches and create release objects where supported.
+Core and official adapters follow **lockstep version numbers** from `v0.3.0`, remaining separate modules with distinct Go-compliant tag names and potentially different release commits.
 
-Do not invent checksums, tags or successful CI. Preserve the goconfig
-first-precommit-handler limitation and Manager-lifetime listener retention.
+1. Verify public Go module resolution for already-published core `v0.3.0`.
+2. Upgrade the nested adapter's core dependency from `v0.2.1` to `v0.3.0`, regenerate sums with Go, and retain upstream `goconfig v1.7.0`.
+3. Pass full final PR CI for both modules including CFG-02/CFG-03; merge and verify post-merge `main` CI.
+4. Publish annotated `adapters/goconfig/v0.3.0` at that tested post-merge commit. This tag was absent at the checkpoint. Existing adapter `v0.1.0` remains immutable.
+5. Update published-version documentation only after actual tag verification.
+
+The first registered legacy `OnReplace` validation handler caveat and Manager-lifetime post-commit observer retention remain supported documented limitations.

@@ -1,82 +1,43 @@
-# Fluxlog independent release procedure
+# Fluxlog lockstep release procedure
 
-Fluxlog contains two independently versioned Go modules:
+Starting with `v0.3.0`, Fluxlog core and every official adapter release use the **same version number** even if a module has no code changes. They remain separate Go modules; core never depends on goconfig. Distinct tag commits are allowed.
 
-| Module | Module path | Suggested next tag (not published) |
+| Component | Module path | Git tag |
 | --- | --- | --- |
 | Core | `github.com/majiddarvishan/fluxlog` | `v0.3.0` |
-| Optional goconfig adapter | `github.com/majiddarvishan/fluxlog/adapters/goconfig` | `adapters/goconfig/v0.2.0` |
+| goconfig adapter | `github.com/majiddarvishan/fluxlog/adapters/goconfig` | `adapters/goconfig/v0.3.0` |
 
-**Verified 2026-10-19:** upstream goconfig `v1.7.0` exists as an
-annotated tag on commit `213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`.
-The tagged Go module was resolved with verified checksums in
-[Actions run 39167874434](https://github.com/majiddarvishan/fluxlog/actions/runs/39167874434).
-The current core tag is `v0.2.1`; the existing nested adapter tag is
-`adapters/goconfig/v0.1.0`. Proposed new Fluxlog tags have **not** been created.
+## Verified publication state — 2026-10-19
 
-## Release stages and gates
+- Annotated core `v0.3.0` already exists and points to `fe57c3e1271d5ada9339b255ac4ca0d727aef5bd`; both core and adapter CI jobs passed in [39168420174](https://github.com/majiddarvishan/fluxlog/actions/runs/39168420174). **Do not recreate or move this tag.**
+- Upstream `goconfig v1.7.0` is published at `213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`.
+- Previous adapter tag: `adapters/goconfig/v0.1.0`. The new `adapters/goconfig/v0.3.0` tag has not yet been published at this checkpoint. Skip adapter v0.2.0.
 
-1. **DONE — Publish upstream goconfig.** The official upstream `v1.7.0`
-   annotated tag exists at the CI-verified main commit. Its Go module
-   resolves against GitHub and its checksums were generated with Go.
-2. **DONE in the migration PR — Pin the upstream tag.** The nested
-   `adapters/goconfig/go.mod` now requires `goconfig v1.7.0`, and its
-   `go.sum` contains the Go-generated checksums. Verify the PR and
-   post-merge CI for both modules before treating this step as merged.
-   The root `go.mod` must not gain a goconfig dependency.
-3. **NEXT — Tag Fluxlog core.** After both root and adapter CI jobs succeed
-   on the exact `main` commit, create and push an annotated root
-   `v0.3.0` tag. Confirm the tag's peeled commit equals the tested main SHA
-   and the Go module resolves:
+## Release gates
 
-   ```bash
-   GOPROXY=https://proxy.golang.org go list -m github.com/majiddarvishan/fluxlog@v0.3.0
-   ```
+1. Verify the core tag and module resolution with `GOPROXY=https://proxy.golang.org go list -m github.com/majiddarvishan/fluxlog@v0.3.0`.
+2. In `adapters/goconfig` run `go get github.com/majiddarvishan/fluxlog@v0.3.0` and `go mod tidy`. Only commit Go-generated checksums. Keep `goconfig v1.7.0` and leave the root `go.mod` untouched.
+3. Verify **both modules**: clean `go mod tidy`, gofmt, `go vet ./...`, `go test -race ./...`, and `go build ./examples/...`. CFG-02/CFG-03 must PASS without SKIP.
+4. Merge the PR only after CI passes on its final HEAD, then verify both jobs pass on the merged `main` commit.
+5. Using an authorized Git client, create the annotated nested tag on that *exact tested post-merge commit*. Verify its peeled target and `GOPROXY=https://proxy.golang.org go list -m github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.0`.
+6. Reconcile READMEs, changelogs and `.codex` with *actual* tags. A GitHub Release object is optional and is not the same as a Git tag.
 
-4. **NEXT — Update the nested adapter core dependency.** After the root tag
-   is visible to Go, change the **nested** `adapters/goconfig/go.mod` from
-   core Fluxlog `v0.2.1` to `v0.3.0` using:
-
-   ```bash
-   cd adapters/goconfig
-   go get github.com/majiddarvishan/fluxlog@v0.3.0
-   go mod tidy
-   cd ../..
-   ```
-
-   Regenerate `go.sum` using Go, verify both modules including strict
-   CFG-02/CFG-03 tests, and merge the exact tested change.
-5. **NEXT — Tag the nested adapter.** Create and push a separate annotated
-   `adapters/goconfig/v0.2.0` tag **at the post-migration tested main
-   commit**, never at the root `v0.3.0` commit unless they are identical
-   and the dependency gate is satisfied. Verify that the Go module
-   `github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.2.0`
-   resolves against the pushed tag.
-6. **Publish notes.** The root release uses `CHANGELOG.md`; the nested
-   adapter release uses `adapters/goconfig/CHANGELOG.md`. Do not claim a
-   GitHub Release has been published unless a release object exists.
-
-A source commit that has not passed both CI jobs cannot be tagged by this
-procedure. Never overwrite an existing release tag.
-
-## Annotated tag commands
-
-Execute only after the applicable gate is verified. Replace `TAG` with
-the exact approved release tag, one release at a time.
+## Safe adapter tagging (only after passing post-merge CI)
 
 ```bash
 git fetch origin --tags
 git switch main
 git pull --ff-only origin main
-git status --short
-git log -1 --format='%H %s'
-git ls-remote --tags origin "refs/tags/$TAG"
-# Confirm the exact HEAD passed CI and the tag does not exist.
-git tag -a "$TAG" -m "Release $TAG"
+test -z "$(git status --porcelain)" || { echo "Dirty worktree"; exit 1; }
+git rev-parse HEAD
+TAG=adapters/goconfig/v0.3.0
+EXPECTED_SHA=<CI_VERIFIED_POST_MERGE_MAIN_SHA>
+test "$(git rev-parse HEAD)" = "$EXPECTED_SHA" || { echo "Unexpected HEAD"; exit 1; }
+test -z "$(git ls-remote --tags origin "refs/tags/$TAG")" || { echo "Tag exists"; exit 1; }
+git tag -a "$TAG" "$EXPECTED_SHA" -m "Release Fluxlog goconfig adapter v0.3.0"
 git push origin "refs/tags/$TAG"
 git ls-remote --tags origin "refs/tags/$TAG" "refs/tags/$TAG^{}"
+GOPROXY=https://proxy.golang.org go list -m github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.0
 ```
 
-The GitHub connector may lack tag/release creation actions. If it does,
-run this through an authorized Git client or an approved release UI and
-verify the resulting remote tag. **Never force-push or silently move tags.**
+Never force-push a release tag, even if core and adapter tags point to different commits.

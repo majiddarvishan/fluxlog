@@ -107,3 +107,14 @@ The adapter migration branch replaces the historical pseudo-version with
 Full root+adapter regression CI remains the acceptance gate.
 The legacy first-precommit-handler limitation is unchanged, and
 a new independently versioned adapter release is still pending.
+
+## Lockstep release update — 2026-10-19
+
+The earlier pseudo-version and pending goconfig-release paragraphs above are
+historical implementation notes. Official goconfig `v1.7.0` was published;
+Fluxlog PR #20 merged and both jobs passed in CI 39168420174, including
+strict CFG-02 and CFG-03 regressions. Fluxlog core `v0.3.0` is already
+published as an annotated tag. The approved next adapter tag is
+`adapters/goconfig/v0.3.0`, matching core `v0.3.0` while preserving
+independent modules. The first legacy `OnReplace` validator limitation
+is unchanged and remains documented.
