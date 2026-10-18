@@ -1,6 +1,7 @@
 package goconfig
 
 import (
+	"encoding/json"
 	"io"
 	"os"
 	"path/filepath"
@@ -72,6 +73,65 @@ func TestCFG01BindLevelRuntimeReplacementAndInvalidRollback(t *testing.T) {
 	if got := logger.Level(); got != fluxlog.DebugLevel {
 		t.Fatalf("runtime level after rejected replacement = %q, want debug", got)
 	}
+}
+
+// CFG-01: the successful update must reach a real FileSource; a rejected
+// subsequent value must change neither the runtime logger nor stored JSON.
+func TestCFG01FileSourcePersistsValidLevelAndRejectsInvalid(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "logging.json")
+	if err := os.WriteFile(path, []byte("{\"level\":\"info\"}\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	source, err := config.NewFileSource(path, "{}")
+	if err != nil {
+		t.Fatal(err)
+	}
+	manager, err := config.NewManager(source)
+	if err != nil {
+		t.Fatal(err)
+	}
+	node, err := manager.Config().At("level")
+	if err != nil {
+		t.Fatal(err)
+	}
+	logger := newLevelIntegrationLogger(t)
+	if err := BindLevel(manager, node, logger); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := manager.Replace("/level", "debug"); err != nil {
+		t.Fatal(err)
+	}
+	if got := logger.Level(); got != fluxlog.DebugLevel {
+		t.Fatalf("logger level after valid replacement = %q, want debug", got)
+	}
+	checkStored := func() {
+		t.Helper()
+		data, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var document struct {
+			Level string `json:"level"`
+		}
+		if err := json.Unmarshal(data, &document); err != nil {
+			t.Fatal(err)
+		}
+		if document.Level != "debug" {
+			t.Fatalf("stored level = %q, want debug", document.Level)
+		}
+	}
+	checkStored()
+	if err := manager.Replace("/level", "not-a-level"); err == nil {
+		t.Fatal("expected invalid level to be rejected")
+	}
+	if got := levelValue(t, node); got != "debug" {
+		t.Fatalf("node level after rejection = %q, want debug", got)
+	}
+	if got := logger.Level(); got != fluxlog.DebugLevel {
+		t.Fatalf("logger level after rejection = %q, want debug", got)
+	}
+	checkStored()
 }
 
 // CFG-02: the current goconfig v1.6.0 implementation finds the first
