@@ -61,3 +61,17 @@ The maintainer explicitly selected goconfig **v1.6.0** and requested that remain
 - On commit `27cfb35b20158e5fa59050f309c41aeccd7307b0`, remote GitHub Actions [run 39144064913](https://github.com/majiddarvishan/fluxlog/actions/runs/39144064913) passed **both** `core` and `goconfig-adapter` jobs, including dependency consistency, formatting, vet, `go test -race`, and example builds.
 - Marked `DEP-01` and `DEP-02` complete in the backlog. All other functional hardening tasks remain planned only. Local network isolation prevented a fresh local run; do not claim otherwise.
 - The final documentation-status update changes only Markdown and requires final PR CI verification before merge.
+
+---
+
+# 2026-10-18 — Phase 1 source investigation
+
+The maintainer requested continuation with explanations in Persian and repository files in English. Previous instruction not to modify runtime code remains in effect for this investigation.
+
+- Confirmed `main@3323e1316764477b2bb1644aa397cef2fe00d575` and a clean branch list containing only `main`. PR #10 was merged, and both CI jobs passed in run `39144285233`.
+- Re-read the v1.6.0 adapter integration and current task list.
+- Inspected pinned `goconfig v1.6.0` `Manager.OnReplace`, `findModifiableLocked`, `replaceLocked`, `FileSource.setConfig`, plus `zerolog v1.35.1` `Logger.should`, `ConsoleWriter` timestamp handling and color functions.
+- Documented first-handler selection, post-handler persistence-failure side effects, numeric timestamp formatter mismatch, external global level filtering, and corrected speculative NO_COLOR concern in `REVIEW_2026-10-18.md`.
+- Added `INV-01` (completed source investigation) and `CFG-03` (new, unimplemented regression/fix task); adjusted Phase 1 order.
+- No .go, module, CI or runtime configuration files were changed in this review. No new Go tests were executed; previous CI evidence is historical. Findings must be verified with focused tests before changing code.
+- Follow-up: implement focused tests only when the maintainer authorizes code changes. Start CFG-01, CFG-03, CFG-02 and keep their code review separate.

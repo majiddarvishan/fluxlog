@@ -1,41 +1,39 @@
 # Current status — Fluxlog
 
-**Date:** 2026-10-18  
+**Updated:** 2026-10-18  
 **Repository:** https://github.com/majiddarvishan/fluxlog  
-**Verified main HEAD before this iteration:** `93e0945e14a34a72ab93d8d048cd1131c523c6b6`  
-**Review baseline for runtime implementation:** `f0b79fcd7afeb0406e75a1c2ca5fe1e15243e881` (runtime unchanged by docs PR #9).  
-**Documentation PR #9:** merged on `main`; GitHub Actions [run 39141256243](https://github.com/majiddarvishan/fluxlog/actions/runs/39141256243) succeeded.
+**Verified main HEAD at start of this review:** `3323e1316764477b2bb1644aa397cef2fe00d575`  
+**Active development branch at review start:** only `main`; previously merged temporary branches were no longer present.  
+**Versioned adapter dependency:** `github.com/majiddarvishan/goconfig v1.6.0` in `adapters/goconfig/go.mod`.  
+**Latest core changelog entry:** v0.2.1.
 
-## Current requested work
+## Completed baseline work
 
-The maintainer specifically chose **`goconfig v1.6.0`**, with all other findings to become an **English task list and execution plan**, not implementation work.
+- PR [#9](https://github.com/majiddarvishan/fluxlog/pull/9): permanent English `.codex` architecture and handoff; merged.
+- PR [#10](https://github.com/majiddarvishan/fluxlog/pull/10): upgraded nested adapter from goconfig v1.3.0 to v1.6.0, tidied module dependencies, and published a phased English hardening plan; merged.
+- Both `core` and `goconfig-adapter` jobs passed after PR #10 merged: [GitHub Actions run 39144285233](https://github.com/majiddarvishan/fluxlog/actions/runs/39144285233).
+- Upstream `goconfig v1.6.0` tag is real. Root module remains independent of goconfig.
 
-**Working branch:** `chore/goconfig-1.6.0-and-hardening-plan`  
-**PR:** [#10](https://github.com/majiddarvishan/fluxlog/pull/10)  
-**Completed on the PR branch:** `adapters/goconfig/go.mod` and canonical `go.sum` updated to goconfig v1.6.0, with now-unused `gorilla/mux` and `rs/cors` removed; the `.codex` execution plan updated. Logging runtime source remains untouched.
+## Current review deliverable
 
-The upstream goconfig Git tag `v1.6.0` was verified. Core module still has no dependency on goconfig. The v1.6 upstream `Manager.OnReplace` registration API remains present. Initial full compatibility gate PASSED: [GitHub Actions run 39144064913](https://github.com/majiddarvishan/fluxlog/actions/runs/39144064913) on commit `27cfb35b20158e5fa59050f309c41aeccd7307b0` (both core and adapter tidy, vet, race tests and example builds).
+**Read-only Phase 1 behavior analysis**, recorded in [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md), based on Fluxlog main, goconfig v1.6.0, and zerolog v1.35.1 source:
 
-## Release/version findings
+- **OBS-01:** a single goconfig `Replace` dispatches the first matching registered handler for a path, so multi-Logger binding requires an explicit contract.
+- **OBS-02:** a successful runtime level callback can precede a failed persistence operation; goconfig rolls back the config node without compensating the Logger side effect.
+- **OBS-03:** fluxlog custom console timestamp formatter handles strings, not zerolog's numeric Unix timestamps.
+- **OBS-04:** zerolog global filtering still applies before fluxlog per-instance output filtering.
+- **OBS-05:** zerolog itself honors `NO_COLOR`, so the earlier speculative color bug is not confirmed.
 
-The GitHub tag list showed `adapters/goconfig/v0.1.0` and core tags `v0.1.0`, `v0.2.0` and `v0.2.1`, but **no adapter tag v0.2.1**. Public adapter README advice to install `adapters/goconfig@v0.2.1` is therefore not currently supported by a verified Git tag. Do not create new tags as part of this dependency update.
+The above are **source inspection findings**, not freshly executed runtime regression tests. No Go source/tests were changed as part of this review.
 
-## Known bounded follow-ups
+## Planned next work (not yet completed)
 
-- Actual manager replacement/rollback, multi-logger binding and callback lifetime need focused tests at v1.6.0.
-- External zerolog global-level interaction and numeric timestamp formatting are contract questions to test before fixing.
-- Concurrent Close/Write, file rotation, output errors and console colors merit targeted verification.
-- Release documentation hygiene and benchmarks are later phases, not new implementation authorization.
+`CFG-01` (live replacement/invalid rollback), `CFG-03` (persistence failure with external level drift), `CFG-02` (multiple listeners/lifetime), `FMT-01` (Unix timestamps), `LVL-01` (global filtering), then lifecycle/rotation/error tasks. Do not mark them done until tests actually run and pass.
 
-See [TASKS.md](TASKS.md) and [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+## Release considerations
 
-## Verification status
+GitHub tags previously showed adapter module tag `adapters/goconfig/v0.1.0`, but not adapter v0.2.1. Public README version instructions are inconsistent. No new adapter tag or release was authorized. See `REL-01`.
 
-- **Source-backed:** main source tree, modules and upstream goconfig v1.6.0 API and tag inspected.
-- **Historical:** main CI and documentation PR #9 passed.
-- **Current PR:** successful complete remote CI run **39144064913** on the dependency-and-plan commit. The final documentation-status commit still requires its own successful CI before merge; verify PR #10 merge state before treating the upgrade as in `main`.
-- **Not performed here:** local verification from the network-isolated runtime, which cannot resolve github.com.
+## Verification and next-session rules
 
-## Continuation rule
-
-Before future work, verify the actual main/PR HEAD and CI status. Only diff new files since the baseline and read relevant `.codex` docs; do not re-audit the entire repository by default. After merging PR #10, update the final main HEAD and retire the temporary branch.
+The current source review is **not** local Go test execution, benchmark evidence or a fix. Inspect actual HEAD and any outstanding documentation PR/CI before claiming these new documents are merged. Read `TASKS.md`, `IMPLEMENTATION_PLAN.md`, and `REVIEW_2026-10-18.md` first; inspect only changed code since this baseline.

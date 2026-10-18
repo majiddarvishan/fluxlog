@@ -82,3 +82,9 @@ Evidence: `config.go`, `logger.go`, `adapters/goconfig/adapter.go`, both `go.mod
 The maintainer selected `github.com/majiddarvishan/goconfig v1.6.0` for the nested adapter. This is a dependency change, not a change in the legacy adapter's accepted JSON fields or runtime-reload contract. The post-tidy `go.mod`/`go.sum` pair was regenerated using the Go 1.23 GitHub Actions output and passed both CI jobs in [run 39144064913](https://github.com/majiddarvishan/fluxlog/actions/runs/39144064913). The upgrade removes the unused adapter-module indirect dependencies `gorilla/mux` and `rs/cors`. This verification applies to the PR branch until merged.
 
 **Tag verification:** GitHub listed `adapters/goconfig/v0.1.0` but not `adapters/goconfig/v0.2.1` on 2026-10-18. A root `v0.2.1` tag does not publish the nested adapter module. See `TASKS.md:REL-01`.
+
+## Phase 1 source-review caveat (2026-10-18)
+
+At goconfig v1.6.0, an invalid `level` replacement is rejected by `applyLevel` and the config node is reverted. However, if the callback **succeeds** and subsequent `FileSource.setConfig` **fails**, goconfig reverts its node without compensating the externally changed `fluxlog.Logger` level. This is a source-backed consistency risk, distinct from invalid-value rollback; executable regression test is still pending.
+
+Registering two `BindLevel` callbacks for the same goconfig path does not make them broadcast listeners: v1.6.0 manager selects the first matching handler on replacement. See `REVIEW_2026-10-18.md`; define a supported binding policy before making changes.

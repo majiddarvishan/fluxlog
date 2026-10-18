@@ -1,7 +1,7 @@
 # Fluxlog — bounded hardening implementation plan
 
 **Created:** 2026-10-18  
-**Baseline:** `main@93e0945e14a34a72ab93d8d048cd1131c523c6b6`  
+**Initial baseline:** `main@93e0945e14a34a72ab93d8d048cd1131c523c6b6` (post-upgrade baseline: `main@3323e1316764477b2bb1644aa397cef2fe00d575`)  
 **Authorized action for this iteration:** upgrade optional goconfig dependency to **v1.6.0** and plan all other work. **No other runtime source changes**.
 
 ## Goals and constraints
@@ -26,14 +26,15 @@
 
 ## Phase 1 — behavior characterization (later, tests first)
 
-**Order:** `CFG-01` -> `CFG-02`, plus `LVL-01` and `FMT-01` independently.
+**Order:** `CFG-01` -> `CFG-03` and `CFG-02`, plus `LVL-01` and `FMT-01` independently. Source findings and reproducible scenarios: [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md).
 
 - **CFG-01:** End-to-end `Manager.Replace` with actual `OnReplace` callbacks, including rejection and transactional rollback. Watch for runtime/logger state divergence if persistence fails *after* callback success.
-- **CFG-02:** Demonstrate whether two bindings on the same path get callbacks; check what the manager retains after `Logger.Close`. If the supported API is one logger per node, document the limitation instead of introducing unnecessary fan-out.
+- **CFG-02:** Demonstrate whether two bindings on the same path get callbacks; source inspection shows first-match dispatch in goconfig v1.6.0. Check what the manager retains after `Logger.Close`. If the supported API is one logger per node, document the limitation instead of introducing unnecessary fan-out.
+- **CFG-03:** Reproduce a file-persistence error after a successful level-change handler. goconfig v1.6.0 reverts the config node but does not compensate external Logger state. Decide and test the desired rollback guarantee before implementing.
 - **LVL-01:** Explicitly define independence: other fluxlog instances vs changes made via zerolog's **process-global** level. State supported semantics before changing filtering.
 - **FMT-01:** Reproduce what numeric `zerolog.TimeFieldFormat` values do to console timestamps. Clarify whether Fluxlog is expected to support those configurations.
 
-**Gate:** tests and expected contracts written; fixes only for proven, prioritized and approved issues.
+**Gate:** tests and expected contracts written; fixes only for proven, prioritized and approved issues. The 2026-10-18 Phase 1 **source review** does not satisfy this gate by itself.
 
 ## Phase 2 — lifecycle/output hardening (later)
 
