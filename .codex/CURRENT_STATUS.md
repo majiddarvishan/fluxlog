@@ -12,9 +12,9 @@ The maintainer specifically chose **`goconfig v1.6.0`**, with all other findings
 
 **Working branch:** `chore/goconfig-1.6.0-and-hardening-plan`  
 **PR:** [#10](https://github.com/majiddarvishan/fluxlog/pull/10)  
-**Current scope:** `adapters/goconfig/go.mod`, its generated `go.sum` and `.codex` knowledge/plan only.
+**Completed on the PR branch:** `adapters/goconfig/go.mod` and canonical `go.sum` updated to goconfig v1.6.0, with now-unused `gorilla/mux` and `rs/cors` removed; the `.codex` execution plan updated. Logging runtime source remains untouched.
 
-The upstream goconfig Git tag `v1.6.0` was verified. Core module still has no dependency on goconfig. The v1.6 upstream `Manager.OnReplace` registration API remains present. Formal compatibility requires the final CI checks; source inspection alone is insufficient.
+The upstream goconfig Git tag `v1.6.0` was verified. Core module still has no dependency on goconfig. The v1.6 upstream `Manager.OnReplace` registration API remains present. Initial full compatibility gate PASSED: [GitHub Actions run 39144064913](https://github.com/majiddarvishan/fluxlog/actions/runs/39144064913) on commit `27cfb35b20158e5fa59050f309c41aeccd7307b0` (both core and adapter tidy, vet, race tests and example builds).
 
 ## Release/version findings
 
@@ -33,7 +33,7 @@ See [TASKS.md](TASKS.md) and [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 - **Source-backed:** main source tree, modules and upstream goconfig v1.6.0 API and tag inspected.
 - **Historical:** main CI and documentation PR #9 passed.
-- **Current PR:** final adapter tidy/checksums, race, vet, examples and CI **must be checked before any merge**; if not complete, report the exact blocker.
+- **Current PR:** successful complete remote CI run **39144064913** on the dependency-and-plan commit. The final documentation-status commit still requires its own successful CI before merge; verify PR #10 merge state before treating the upgrade as in `main`.
 - **Not performed here:** local verification from the network-isolated runtime, which cannot resolve github.com.
 
 ## Continuation rule

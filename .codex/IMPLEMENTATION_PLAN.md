@@ -12,7 +12,7 @@
 4. Separate discovery, verification and code fixes. A hypothesis is not automatically a bug.
 5. Keep each stage small and reviewable; avoid a general refactor or major feature expansion.
 
-## Phase 0 — dependency upgrade (current scope)
+## Phase 0 — dependency upgrade (verified in PR #10)
 
 **Input:** `adapters/goconfig/go.mod` currently requires goconfig `v1.3.0`; upstream `v1.6.0` is an existing Git tag with compatible exported `Manager`, `Node`, `NewManager`, `NewStrSource` and `OnReplace` entry points. The upstream module's `go.mod` still declares Go 1.18; fluxlog adapter declares Go 1.23.
 
@@ -22,7 +22,7 @@
 3. Verify adapter test suite with `-race`, vet and example build; verify root Go module CI independently.
 4. Record reproducible evidence, commit and merge only once CI passes. Neither core code nor `adapter.go` needs an anticipatory rewrite just to bump a dependency.
 
-**Gate:** PR's final commit passes both CI jobs, `go mod tidy` causes no diff, and only the intended module files/docs have changed.
+**Gate:** Dependency-and-plan commit `27cfb35b20158e5fa59050f309c41aeccd7307b0` passed both CI jobs in [run 39144064913](https://github.com/majiddarvishan/fluxlog/actions/runs/39144064913); tidy causes no diff. A final documentation-status commit still requires successful PR CI and merging to main.
 
 ## Phase 1 — behavior characterization (later, tests first)
 

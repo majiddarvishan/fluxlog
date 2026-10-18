@@ -79,6 +79,6 @@ Evidence: `config.go`, `logger.go`, `adapters/goconfig/adapter.go`, both `go.mod
 
 ## 2026-10-18 dependency direction
 
-The maintainer selected `github.com/majiddarvishan/goconfig v1.6.0` for the nested adapter. This is a dependency change, not a change in the legacy adapter's accepted JSON fields or runtime-reload contract. The exact post-tidy `go.mod`/`go.sum` and successful CI must be verified before considering the upgrade complete.
+The maintainer selected `github.com/majiddarvishan/goconfig v1.6.0` for the nested adapter. This is a dependency change, not a change in the legacy adapter's accepted JSON fields or runtime-reload contract. The post-tidy `go.mod`/`go.sum` pair was regenerated using the Go 1.23 GitHub Actions output and passed both CI jobs in [run 39144064913](https://github.com/majiddarvishan/fluxlog/actions/runs/39144064913). The upgrade removes the unused adapter-module indirect dependencies `gorilla/mux` and `rs/cors`. This verification applies to the PR branch until merged.
 
 **Tag verification:** GitHub listed `adapters/goconfig/v0.1.0` but not `adapters/goconfig/v0.2.1` on 2026-10-18. A root `v0.2.1` tag does not publish the nested adapter module. See `TASKS.md:REL-01`.

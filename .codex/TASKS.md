@@ -13,8 +13,8 @@
 
 ## P0 — dependency migration and baseline verification
 
-- [ ] **DEP-01 — Pin goconfig v1.6.0 in the adapter module.** The tag `v1.6.0` exists in the upstream goconfig repository. Update **`adapters/goconfig/go.mod`**, regenerate `go.sum` with real Go tooling, verify `go mod tidy` is clean; do not guess checksums. Leave root `go.mod` untouched. **Acceptance:** adapter module graph is reproducible, the referenced upstream version is exactly 1.6.0, and no new runtime source code has changed. **Status:** version selected in PR #10; tidy/CI verification must be confirmed.
-- [ ] **DEP-02 — Validate adapter and core with Go 1.23 CI.** Run adapter `go mod tidy`, `go test -race ./...`, `go vet ./...`, `go build ./examples/...`; root `make verify` and `go build ./examples/...`. Confirm CI is green on the final PR commit. **Acceptance:** both modules pass; record exact runs. **Depends on:** DEP-01.
+- [x] **DEP-01 — Pin goconfig v1.6.0 in the adapter module.** The tag `v1.6.0` exists in the upstream goconfig repository. Update **`adapters/goconfig/go.mod`**, regenerate `go.sum` with real Go tooling, verify `go mod tidy` is clean; do not guess checksums. Leave root `go.mod` untouched. **Acceptance:** adapter module graph is reproducible, the referenced upstream version is exactly 1.6.0, and no new runtime source code has changed. **Status:** complete in PR #10; tidy and exact checksums verified by CI run 39144064913.
+- [x] **DEP-02 — Validate adapter and core with Go 1.23 CI.** Run adapter `go mod tidy`, `go test -race ./...`, `go vet ./...`, `go build ./examples/...`; root `make verify` and `go build ./examples/...`. Confirm CI is green on the final PR commit. **Acceptance:** both modules pass; record exact runs. **Depends on:** DEP-01. **Status:** both root and adapter CI jobs passed on commit `27cfb35b20158e5fa59050f309c41aeccd7307b0` (run 39144064913).
 
 ## P1 — correctness and existing API contracts (tests first)
 
