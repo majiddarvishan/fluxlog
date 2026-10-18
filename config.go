@@ -32,7 +32,7 @@ type ConsoleConfig struct {
 	Writer          io.Writer
 	Format          OutputFormat
 	Color           ColorMode
-	TimeFormat      string
+	TimeFormat      string // Go time layout for human-readable output; defaults to RFC3339.
 	CallerMaxLength int
 }
 

@@ -140,6 +140,19 @@ shortened from the left so the filename and line number remain visible:
 2026-08-25T18:22:43+03:30 INF [ …_server.go:272 ] (Gateway) Web server starting on 0.0.0.0:4567
 ```
 
+Console timestamps use a human-readable time layout (RFC3339 by default),
+including when zerolog encodes its internal timestamp as Unix seconds,
+milliseconds, microseconds, or nanoseconds. To display a simpler 24-hour
+local-time layout, configure:
+
+```go
+TimeFormat: "2006-01-02 15:04:05",
+```
+
+For example, this produces `2026-10-18 20:30:45 INF (Gateway) started`
+in the process's local timezone. Set `Timestamp: true` to include it.
+JSON output keeps zerolog's original timestamp encoding unchanged.
+
 `CallerMaxLength` defaults to `15`. JSON output is unchanged and retains the
 full `caller` and `service` fields. The parenthesized service name is cyan when
 color output is enabled; `NeverColor` and the `NO_COLOR` environment variable
