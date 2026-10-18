@@ -225,3 +225,14 @@ with **one consolidated test run at the end**.
 - The release branch `release/fluxlog-lockstep-v0.3.0` updates documentation and plans the adapter's core dependency transition from v0.2.1 to v0.3.0.
 - The local container could not resolve GitHub; do not claim a local `go get`, tidy, or test run. Use Go's actual CI output to obtain checksums, then verify both jobs before merge and separately tag `adapters/goconfig/v0.3.0`.
 - Existing upstream goconfig first-`OnReplace` validator registration constraint and Manager-lifetime listeners are unchanged.
+
+---
+
+# Session update — 2026-10-19: completed public v0.3.0 publication
+
+- Maintainer published the nested adapter annotated tag `adapters/goconfig/v0.3.0`. Verified Git tag object `0cf414a7adf067db8c870f6a30f32030d7240622` peels to `0b5c2f46dfaf1b6ca2ae08a832d855dffe51582e`, the [PR #21](https://github.com/majiddarvishan/fluxlog/pull/21) merge commit.
+- Before the tag, [PR CI 39170725761](https://github.com/majiddarvishan/fluxlog/actions/runs/39170725761) and [post-merge CI 39170859081](https://github.com/majiddarvishan/fluxlog/actions/runs/39170859081) both passed the core and adapter jobs, including tidy, formatting, vet, race tests, example builds and strict CFG-02/CFG-03 tests.
+- The maintainer ran `GOPROXY=https://proxy.golang.org go list -m github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.0`; it returned the published `v0.3.0` module. A separate GitHub fetch confirmed the annotated tag and its target.
+- Core `v0.3.0` annotated tag object `6ad7581ac7fe611689b6087a183d10f6f4ba06b6` remains at `fe57c3e1271d5ada9339b255ac4ca0d727aef5bd`, with [CI 39168420174](https://github.com/majiddarvishan/fluxlog/actions/runs/39168420174) PASS.
+- Both modules are publicly tagged at matching version `v0.3.0`, with distinct CI-tested commits as permitted by lockstep versioning. Historical tags were not moved; there is no adapter v0.2.0.
+- No standalone GitHub Release object was found. This follow-up updates English documentation and release status only, leaving Go source, module manifests, CI definitions and published tags unchanged.

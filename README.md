@@ -190,22 +190,20 @@ outside the core module. This ensures applications that do not use a provider
 do not inherit its dependencies.
 
 The goconfig adapter preserves the original configuration keys and binds the
-`level` node to runtime-safe per-instance level changes. Install the latest
-verified **published** adapter version with:
+`level` node to runtime-safe per-instance level changes. Install the
+published lockstep `v0.3.0` adapter with:
 
 ```bash
-go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.1.0
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.0
 ```
 
-**Published release vs source:** `v0.1.0` is the latest verified adapter
-module tag. Its `go.mod` requires Fluxlog core `v0.1.0` and `goconfig v1.3.0`.
-The current adapter release-candidate source requires core `v0.3.0` and the
-published `goconfig v1.7.0`, supporting post-commit level changes for multiple loggers
-and optional `service` / `caller_max_length` fields. These adapter changes
-are not part of the published adapter `v0.1.0` release. From `v0.3.0` onward official adapters follow core's release version number
-while retaining separate Go modules. The next adapter tag is
-`adapters/goconfig/v0.3.0` (not yet published); publishing core does not
-publish a nested adapter.
+The published nested module tag is `adapters/goconfig/v0.3.0`, independent
+from the core `v0.3.0` Git tag. The adapter requires Fluxlog core `v0.3.0`
+and upstream `goconfig v1.7.0`; it supports post-commit level updates for
+multiple loggers and optional `service` / `caller_max_length` fields.
+The historical adapter `v0.1.0` remains available with its earlier
+dependency graph and behavior. Official modules share release **numbers**
+but retain separate Go module paths and tag prefixes.
 
 ```go
 logger, err := fluxgoconfig.New(manager, loggerConfigNode)

@@ -136,3 +136,13 @@ Go-generated hashes were verified in
 The nested adapter's published `v0.1.0` tag is not changed by this
 dependency upgrade; `main` source and tagged adapter releases must not
 be confused. The legacy first-`OnReplace`-handler constraint remains.
+
+## Official v0.3.0 module publication (2026-10-19)
+
+The earlier version comparisons in this document are timestamped historical
+snapshots. The current published root release is `v0.3.0`; the current
+published nested adapter release is `adapters/goconfig/v0.3.0`.
+Their Go module paths remain separate. The v0.3.0 adapter uses core
+`v0.3.0` and upstream `goconfig v1.7.0`. The legacy first-handler validation
+constraint and Manager-lifetime committed observers continue to apply.
+See [CURRENT_STATUS.md](CURRENT_STATUS.md) and [RELEASING.md](../RELEASING.md).

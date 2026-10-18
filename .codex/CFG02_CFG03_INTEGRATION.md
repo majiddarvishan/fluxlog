@@ -118,3 +118,14 @@ published as an annotated tag. The approved next adapter tag is
 `adapters/goconfig/v0.3.0`, matching core `v0.3.0` while preserving
 independent modules. The first legacy `OnReplace` validator limitation
 is unchanged and remains documented.
+
+## Published adapter integration — v0.3.0
+
+The preceding development and proposed-release sections are historical.
+The official `adapters/goconfig/v0.3.0` annotated tag has been published
+on merge commit `0b5c2f46dfaf1b6ca2ae08a832d855dffe51582e`.
+The matching core `v0.3.0` was previously published on a separately
+CI-tested commit. Both modules passed [post-merge CI 39170859081](https://github.com/majiddarvishan/fluxlog/actions/runs/39170859081).
+Four strict CFG-02/CFG-03 scenarios passed without SKIP. The original
+first-`OnReplace` pre-commit validator constraint and manager-owned committed
+observer lifetime remain unchanged.

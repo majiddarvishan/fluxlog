@@ -38,4 +38,4 @@ This is **not** an application, network service, remote log collector, asynchron
 - CI: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
 - Development: [Makefile](../Makefile).
 
-**Current release checkpoint (2026-10-19):** root `v0.3.0` is already published on the tested main commit. The next nested adapter tag is `adapters/goconfig/v0.3.0` after its own CI and merge gates. See `CURRENT_STATUS.md` and `RELEASING.md`.
+**Published release checkpoint (2026-10-19):** both core `v0.3.0` and the independent nested `adapters/goconfig/v0.3.0` tag are published and CI-verified. See `CURRENT_STATUS.md`, `RELEASE_READINESS_2026-10-19.md` and `RELEASING.md` for exact commits, tests and versioning policy.

@@ -26,7 +26,9 @@ No changes recorded yet.
 
 Core `v0.3.0` is published as an annotated tag on the tested source commit.
 Starting at this release, official adapter versions match the core version,
-while retaining separate Go modules and nested tag names. Adapter changes
+while retaining separate Go modules and nested tag names. The matching
+adapter `adapters/goconfig/v0.3.0` tag is also published, and both modules
+passed [post-merge CI 39170859081](https://github.com/majiddarvishan/fluxlog/actions/runs/39170859081). Adapter changes
 are tracked in [`adapters/goconfig/CHANGELOG.md`](adapters/goconfig/CHANGELOG.md).
 
 ## [0.2.1] - 2026-08-25
@@ -60,7 +62,7 @@ are tracked in [`adapters/goconfig/CHANGELOG.md`](adapters/goconfig/CHANGELOG.md
 - Core and adapter examples, unit tests, race tests, fuzz seeds, and benchmarks.
 - GitHub Actions verification for both Go modules.
 
-[0.3.0]: https://github.com/majiddarvishan/fluxlog/releases/tag/v0.3.0
+[0.3.0]: https://github.com/majiddarvishan/fluxlog/tree/v0.3.0
 [0.2.1]: https://github.com/majiddarvishan/fluxlog/releases/tag/v0.2.1
 [0.2.0]: https://github.com/majiddarvishan/fluxlog/releases/tag/v0.2.0
 [0.1.0]: https://github.com/majiddarvishan/fluxlog/releases/tag/v0.1.0

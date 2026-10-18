@@ -4,33 +4,21 @@ This optional module creates a `fluxlog.Logger` from
 `github.com/majiddarvishan/goconfig` and updates only that logger instance when
 the `level` node is successfully persisted.
 
+## Install
+
 ```bash
-go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.1.0
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.0
 ```
 
+The published annotated adapter tag is `adapters/goconfig/v0.3.0`.
+It points to CI-tested commit `0b5c2f46dfaf1b6ca2ae08a832d855dffe51582e`
+and is Go-module-resolvable. Under lockstep versioning, this separate
+adapter module requires Fluxlog core `v0.3.0` and upstream
+`goconfig v1.7.0`. Core never depends on goconfig.
 
-## Published module vs current source
-
-The command above installs the latest **tagged adapter release**, `v0.1.0`,
-from the independently versioned Go module under `adapters/goconfig`.
-The corresponding repository tag is `adapters/goconfig/v0.1.0`.
-Core `v0.3.0` is already published, but this does not publish the nested
-adapter. Under lockstep versioning, the pending adapter tag is
-`adapters/goconfig/v0.3.0`, subject to CI, merge and separate tagging.
-
-| | Published adapter `v0.1.0` | Current `main` source |
-| --- | --- | --- |
-| Fluxlog core dependency | `v0.1.0` | `v0.3.0` |
-| goconfig dependency | `v1.3.0` | `v1.7.0` (published upstream release) |
-| Adapter `service` / `caller_max_length` settings | Not supported by adapter mapping | Supported as optional fields |
-| Release status | Existing tag | Unreleased changes |
-
-The configuration and usage below describe the **current `main` source**.
-For the tagged `v0.1.0` version, consult its
-[release-tag README](https://github.com/majiddarvishan/fluxlog/blob/adapters/goconfig/v0.1.0/adapters/goconfig/README.md).
-To test unreleased source, check out the repository and set up a Go workspace
-or local module replacements for the root and nested adapter modules; do not
-assume the published `v0.1.0` dependency contains the current changes.
+The earlier adapter `v0.1.0` remains published as historical compatibility
+with core `v0.1.0` and goconfig `v1.3.0`; it does not include the
+v0.3.0 integration improvements.
 
 ## Current-source configuration
 
@@ -79,13 +67,11 @@ The core `github.com/majiddarvishan/fluxlog` module has no dependency on
 
 A complete runnable program is available in [`examples/basic`](./examples/basic).
 
-## Runtime level updates in current development source
+## Runtime level updates in v0.3.0
 
-Current source pins the **official upstream `goconfig v1.7.0` tag**, verified
-against the upstream annotated tag on commit
+The published adapter requires the official upstream `goconfig v1.7.0` tag,
+verified against its annotated tag on commit
 `213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`.
-The published adapter `v0.1.0` retains its historical dependency graph and
-legacy behavior. The lockstep `v0.3.0` adapter update is not yet published.
 
 `BindLevel` applies the initial level, validates proposed replacements
 without changing Logger state, and uses `OnReplaceCommitted` to apply a new
@@ -101,7 +87,7 @@ for that path. Do not register an unrelated `OnReplace` callback before
 `BindLevel` for the same level node. Committed observers are retained
 until the Manager is discarded (there is no unsubscribe method).
 
-No release has yet been tagged for the new **adapter** behavior. To use the
-current source before its own release, work from a local checkout or a Go
-workspace; the upstream `goconfig` dependency is now a stable, tagged module
-version. Do not confuse a root Fluxlog tag with a nested adapter tag.
+The `v0.3.0` adapter behavior is published as an independently tagged Go
+module. Its version number matches core, but the two tags legitimately point
+to different CI-tested commits. No source checkout or local replacement is
+necessary to install the published module.
