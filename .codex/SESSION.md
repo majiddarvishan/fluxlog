@@ -75,3 +75,19 @@ The maintainer requested continuation with explanations in Persian and repositor
 - Added `INV-01` (completed source investigation) and `CFG-03` (new, unimplemented regression/fix task); adjusted Phase 1 order.
 - No .go, module, CI or runtime configuration files were changed in this review. No new Go tests were executed; previous CI evidence is historical. Findings must be verified with focused tests before changing code.
 - Follow-up: implement focused tests only when the maintainer authorizes code changes. Start CFG-01, CFG-03, CFG-02 and keep their code review separate.
+
+---
+
+# 2026-10-18 — Phase 1 executable tests (PR #12)
+
+The user requested continuation in Persian, with all created/modified repository files kept in English, and no change to production logging behavior.
+
+- Verified starting `main@78274ee19a1668a71ac563b0e64b69b86b9f0ff9`; only `main` branch existed, with no open PRs.
+- Added focused runtime/configuration characterization tests (three new `*_test.go` files), leaving all production Go files untouched.
+- Added `-v` to both existing CI race-test commands to expose real PASS and known SKIP statuses without rerunning suites twice.
+- Initial remote CI run `39145750281`: successful. Verbose run `39145924506`: success with six confirmed SKIPs and two key PASS results.
+- Added a real FileSource CFG-01 success/invalid rollback assertion; latest Actions [run 39146082868](https://github.com/majiddarvishan/fluxlog/actions/runs/39146082868): core and adapter jobs both success, two CFG-01 tests PASS; CFG-02 and CFG-03 remain SKIP.
+- FMT-01: four Unix timestamps SKIP; RFC3339 PASS. LVL-01 PASS and global zerolog threshold documented in README.
+- Reproduced defects are **not fixed**; only CFG-01 and LVL-01 are marked complete. Remaining work awaits explicit API/behavior decisions.
+- Full evidence and precise names: [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
+- No local execution or release/tag was performed.

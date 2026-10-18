@@ -75,3 +75,7 @@ The GitHub CI workflow performs both modules' vet, race tests, example builds an
 ## Documentation protocol
 
 After each merged PR, record the final `main` SHA, tests actually run, whether the behavior changed, and follow-up status in `CURRENT_STATUS.md`, `TASKS.md`, `SESSION.md`, and `NEXT_CHAT_PROMPT.md`. Treat upstream `goconfig` behavior as version-specific; refresh the analysis only if dependency versions change.
+
+## Executed Phase 1 testing — 2026-10-18
+
+See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md). The focused tests have now been added and executed with a race detector in remote CI. **CFG-01 and LVL-01 passed and are complete.** CFG-02, CFG-03 and four FMT-01 Unix numeric cases reproduced known defects and remain **SKIP/open**, not completed fixes. An RFC3339 positive test passed. No production code changes were made. The next implementation phase needs explicit product decisions about callback fan-out, persistence rollback consistency and supported Unix timestamp formats before code can be changed.

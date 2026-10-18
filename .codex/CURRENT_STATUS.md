@@ -1,39 +1,40 @@
 # Current status — Fluxlog
 
-**Updated:** 2026-10-18  
+**Date:** 2026-10-18  
 **Repository:** https://github.com/majiddarvishan/fluxlog  
-**Verified main HEAD at start of this review:** `3323e1316764477b2bb1644aa397cef2fe00d575`  
-**Active development branch at review start:** only `main`; previously merged temporary branches were no longer present.  
-**Versioned adapter dependency:** `github.com/majiddarvishan/goconfig v1.6.0` in `adapters/goconfig/go.mod`.  
-**Latest core changelog entry:** v0.2.1.
+**Verified main HEAD before Phase 1 test PR:** `78274ee19a1668a71ac563b0e64b69b86b9f0ff9`  
+**Current development PR:** [#12 — Phase 1 behavior regression tests](https://github.com/majiddarvishan/fluxlog/pull/12)  
+**Pinned adapter dependency:** `github.com/majiddarvishan/goconfig v1.6.0`  
+**Source-only review:** [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md)  
+**Executed CI evidence:** [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
 
-## Completed baseline work
+## Completed upstream and baseline changes
 
-- PR [#9](https://github.com/majiddarvishan/fluxlog/pull/9): permanent English `.codex` architecture and handoff; merged.
-- PR [#10](https://github.com/majiddarvishan/fluxlog/pull/10): upgraded nested adapter from goconfig v1.3.0 to v1.6.0, tidied module dependencies, and published a phased English hardening plan; merged.
-- Both `core` and `goconfig-adapter` jobs passed after PR #10 merged: [GitHub Actions run 39144285233](https://github.com/majiddarvishan/fluxlog/actions/runs/39144285233).
-- Upstream `goconfig v1.6.0` tag is real. Root module remains independent of goconfig.
+- PR #9: permanent English `.codex` documentation.
+- PR #10: goconfig 1.6.0 nested-adapter dependency; no core goconfig dependency.
+- PR #11: evidence-backed code-path review and new CFG-03 task.
+- All three preceding PRs were merged. Last confirmed main before this work: `78274ee19a1668a71ac563b0e64b69b86b9f0ff9`.
 
-## Current review deliverable
+## Current Phase 1 executable result
 
-**Read-only Phase 1 behavior analysis**, recorded in [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md), based on Fluxlog main, goconfig v1.6.0, and zerolog v1.35.1 source:
+Two existing-module GitHub Actions jobs (`core`, `goconfig-adapter`) passed in [run 39146082868](https://github.com/majiddarvishan/fluxlog/actions/runs/39146082868). Race detector, vet, tidy/format gates and examples all passed. CI is now verbose to surface known-issue skips.
 
-- **OBS-01:** a single goconfig `Replace` dispatches the first matching registered handler for a path, so multi-Logger binding requires an explicit contract.
-- **OBS-02:** a successful runtime level callback can precede a failed persistence operation; goconfig rolls back the config node without compensating the Logger side effect.
-- **OBS-03:** fluxlog custom console timestamp formatter handles strings, not zerolog's numeric Unix timestamps.
-- **OBS-04:** zerolog global filtering still applies before fluxlog per-instance output filtering.
-- **OBS-05:** zerolog itself honors `NO_COLOR`, so the earlier speculative color bug is not confirmed.
+- **CFG-01: complete** — valid runtime level replacement and invalid rollback both pass, including FileSource persistence.
+- **LVL-01: complete** — external zerolog global filtering verified and documented in root README.
+- **CFG-02: OPEN** — reproducible multi-binding limitation, reported as SKIP.
+- **CFG-03: OPEN** — reproducible persistence-failure/runtime-level drift, reported as SKIP.
+- **FMT-01: OPEN** — four numeric Unix timestamp console cases reported as SKIP; RFC3339 passes.
 
-The above are **source inspection findings**, not freshly executed runtime regression tests. No Go source/tests were changed as part of this review.
+The targeted suite therefore contains **six expected, explicitly identified SKIPs**. They are **not successful fixes**. See the complete matrix and test names in the evidence file.
 
-## Planned next work (not yet completed)
+## Change boundary
 
-`CFG-01` (live replacement/invalid rollback), `CFG-03` (persistence failure with external level drift), `CFG-02` (multiple listeners/lifetime), `FMT-01` (Unix timestamps), `LVL-01` (global filtering), then lifecycle/rotation/error tasks. Do not mark them done until tests actually run and pass.
+- Added only focused `*_test.go` files, English documents, one README clarification and verbose output for existing CI race-test commands.
+- No production `.go` source changes, dependency bumps, refactors, new features, tags or releases.
+- This was verified on GitHub Actions, **not** a newly executed local `go test`.
 
-## Release considerations
+## Pending decisions and next phase
 
-GitHub tags previously showed adapter module tag `adapters/goconfig/v0.1.0`, but not adapter v0.2.1. Public README version instructions are inconsistent. No new adapter tag or release was authorized. See `REL-01`.
+Decide supported semantics for multiple bindings, persistence-side-effect rollback, and numeric timestamp encodings before modifying source. Other open tasks: `LIFE-01`, `FILE-01`, `ERR-01`, `FMT-02`, adapter release docs, optional performance work.
 
-## Verification and next-session rules
-
-The current source review is **not** local Go test execution, benchmark evidence or a fix. Inspect actual HEAD and any outstanding documentation PR/CI before claiming these new documents are merged. Read `TASKS.md`, `IMPLEMENTATION_PLAN.md`, and `REVIEW_2026-10-18.md` first; inspect only changed code since this baseline.
+After merging PR #12, verify the actual `main` SHA, post-merge CI, and deletion of its temporary branch. If branch deletion is not available through the connector, provide the exact manual command rather than claiming it succeeded.
