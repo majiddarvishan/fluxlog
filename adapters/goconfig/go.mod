@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/majiddarvishan/fluxlog v0.2.1
-	github.com/majiddarvishan/goconfig v1.6.0
+	github.com/majiddarvishan/goconfig v1.6.1-0.20261018202246-20a58eb9a426
 )
 
 require (

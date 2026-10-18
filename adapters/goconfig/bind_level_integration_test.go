@@ -134,9 +134,7 @@ func TestCFG01FileSourcePersistsValidLevelAndRejectsInvalid(t *testing.T) {
 	checkStored()
 }
 
-// CFG-02: the current goconfig v1.6.0 implementation finds the first
-// registered OnReplace callback for a path. The known limitation is SKIP,
-// not PASS: a future fix should make this test pass without changing it.
+// CFG-02: all loggers bound to the same node receive the committed update.
 func TestCFG02MultipleLoggersOnOneLevelNode(t *testing.T) {
 	manager, root := managerFromJSON(t, "{\"level\":\"info\"}")
 	node, err := root.At("level")
@@ -160,9 +158,6 @@ func TestCFG02MultipleLoggersOnOneLevelNode(t *testing.T) {
 		t.Fatalf("first logger level = %q, want debug", got)
 	}
 	if got := second.Level(); got != fluxlog.DebugLevel {
-		if got == fluxlog.InfoLevel {
-			t.Skipf("KNOWN LIMITATION CFG-02: goconfig v1.6.0 dispatches only the first registered OnReplace handler; second logger remains %q", got)
-		}
 		t.Fatalf("unexpected second logger level = %q", got)
 	}
 }
@@ -214,9 +209,107 @@ func TestCFG03FilePersistenceFailureDoesNotLeakRuntimeLevel(t *testing.T) {
 		t.Fatalf("config file changed after failed persistence: %q", after)
 	}
 	if got := logger.Level(); got != fluxlog.InfoLevel {
-		if got == fluxlog.DebugLevel {
-			t.Skipf("KNOWN DEFECT CFG-03: failed FileSource persist restored config to info but left runtime logger at %q", got)
-		}
 		t.Fatalf("unexpected runtime level after failed persistence = %q", got)
+	}
+}
+
+
+// CFG-02/CFG-03: a successful multi-step batch publishes the final level to
+// every bound logger once, after persistence. Rejected input changes neither
+// configuration nor the runtime level.
+func TestCFG02BatchMultipleLoggersAndInvalidRollback(t *testing.T) {
+	manager, root := managerFromJSON(t, `{"level":"info"}`)
+	node, err := root.At("level")
+	if err != nil {
+		t.Fatal(err)
+	}
+	first := newLevelIntegrationLogger(t)
+	second := newLevelIntegrationLogger(t)
+	for _, logger := range []*fluxlog.Logger{first, second} {
+		if err := BindLevel(manager, node, logger); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	version := manager.Version()
+	ops := []config.Operation{
+		{Op: "replace", Path: "/level", Value: "warn"},
+		{Op: "replace", Path: "/level", Value: "debug"},
+	}
+	if err := manager.Batch(ops, true); err != nil {
+		t.Fatal(err)
+	}
+	if manager.Version() != version || first.Level() != fluxlog.InfoLevel || second.Level() != fluxlog.InfoLevel {
+		t.Fatal("dry-run modified config or either logger")
+	}
+	if err := manager.Batch(ops, false); err != nil {
+		t.Fatal(err)
+	}
+	if manager.Version() != version+1 {
+		t.Fatalf("version after successful batch = %d, want %d", manager.Version(), version+1)
+	}
+	if got := levelValue(t, node); got != "debug" {
+		t.Fatalf("final batch level = %q, want debug", got)
+	}
+	if first.Level() != fluxlog.DebugLevel || second.Level() != fluxlog.DebugLevel {
+		t.Fatalf("after batch: first=%q second=%q, want debug/debug", first.Level(), second.Level())
+	}
+
+	if err := manager.Replace("/level", "invalid"); err == nil {
+		t.Fatal("expected invalid level to be rejected")
+	}
+	if levelValue(t, node) != "debug" || first.Level() != fluxlog.DebugLevel || second.Level() != fluxlog.DebugLevel {
+		t.Fatal("invalid level changed config or logger state after a committed batch")
+	}
+}
+
+// CFG-03: a failed FileSource batch must not notify any registered logger.
+func TestCFG03FileSourceBatchFailureKeepsBothLoggersUnchanged(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "batch.json")
+	original := "{\"level\":\"info\"}\n"
+	if err := os.WriteFile(path, []byte(original), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	source, err := config.NewFileSource(path, "{}")
+	if err != nil {
+		t.Fatal(err)
+	}
+	manager, err := config.NewManager(source)
+	if err != nil {
+		t.Fatal(err)
+	}
+	node, err := manager.Config().At("level")
+	if err != nil {
+		t.Fatal(err)
+	}
+	first := newLevelIntegrationLogger(t)
+	second := newLevelIntegrationLogger(t)
+	for _, logger := range []*fluxlog.Logger{first, second} {
+		if err := BindLevel(manager, node, logger); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := os.Mkdir(path+".tmp", 0o700); err != nil {
+		t.Fatal(err)
+	}
+	version := manager.Version()
+	if err := manager.Batch([]config.Operation{{Op: "replace", Path: "/level", Value: "debug"}}, false); err == nil {
+		t.Fatal("expected FileSource batch persistence to fail")
+	}
+	if got := levelValue(t, node); got != "info" {
+		t.Fatalf("rolled-back node = %q, want info", got)
+	}
+	if manager.Version() != version {
+		t.Fatalf("failed batch changed version from %d to %d", version, manager.Version())
+	}
+	if first.Level() != fluxlog.InfoLevel || second.Level() != fluxlog.InfoLevel {
+		t.Fatalf("failed batch changed runtime levels: first=%q second=%q", first.Level(), second.Level())
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(data) != original {
+		t.Fatalf("failed batch modified persisted file: %q", data)
 	}
 }

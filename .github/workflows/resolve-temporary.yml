@@ -1,0 +1,23 @@
+name: Temporary module checksum resolution
+on:
+  push:
+    branches: [feature/fluxlog-postcommit-level-binding]
+permissions:
+  contents: read
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.x"
+      - name: Resolve pinned upstream revision
+        working-directory: adapters/goconfig
+        run: |
+          go mod tidy
+          printf '%s\n' '=== VERIFIED-GOCONFIG-CHECKSUMS ==='
+          grep -F 'github.com/majiddarvishan/goconfig v1.6.1-0.20261018202246-20a58eb9a426 ' go.sum
+          grep -F 'github.com/majiddarvishan/goconfig v1.6.1-0.20261018202246-20a58eb9a426/go.mod ' go.sum
+          printf '%s\n' '=== GO-MOD-DIFF ==='
+          git diff -- go.mod go.sum

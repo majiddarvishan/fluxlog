@@ -37,9 +37,14 @@ func New(manager *config.Manager, node *config.Node) (*fluxlog.Logger, error) {
 	return logger, nil
 }
 
-// BindLevel connects a goconfig string node to a logger's runtime level. When
-// a replacement is invalid, the callback returns an error and goconfig rolls
-// the configuration change back.
+// BindLevel connects a managed level node to one Logger. A pre-commit
+// callback validates candidate levels without modifying runtime state; an
+// independent post-commit observer applies each successfully persisted level.
+//
+// Multiple loggers may share one level node: every committed observer runs.
+// goconfig retains handlers for the Manager's lifetime. The Manager's legacy
+// OnReplace callback selection is first-match: callers must not register an
+// unrelated, nonvalidating handler for this path before BindLevel.
 func BindLevel(manager *config.Manager, levelNode *config.Node, logger *fluxlog.Logger) error {
 	if manager == nil {
 		return fmt.Errorf("fluxlog/goconfig: manager is nil")
@@ -54,10 +59,26 @@ func BindLevel(manager *config.Manager, levelNode *config.Node, logger *fluxlog.
 	if err := applyLevel(levelNode, logger); err != nil {
 		return err
 	}
-	if err := manager.OnReplace(levelNode, func(replacement *config.Node) error {
-		return applyLevel(replacement, logger)
+	if err := manager.OnReplace(levelNode, validateLevel); err != nil {
+		return fmt.Errorf("fluxlog/goconfig: register level validation: %w", err)
+	}
+	if err := manager.OnReplaceCommitted(levelNode, func(committed *config.Node) {
+		// This level was already validated by the pre-commit handler.
+		// The post-commit API cannot return an error to the Manager.
+		_ = applyLevel(committed, logger)
 	}); err != nil {
-		return fmt.Errorf("fluxlog/goconfig: register level replacement: %w", err)
+		return fmt.Errorf("fluxlog/goconfig: register committed level update: %w", err)
+	}
+	return nil
+}
+
+func validateLevel(node *config.Node) error {
+	level, err := node.GetString()
+	if err != nil {
+		return fmt.Errorf("fluxlog/goconfig: read level: %w", err)
+	}
+	if _, err := fluxlog.ParseLevel(level); err != nil {
+		return fmt.Errorf("fluxlog/goconfig: validate level: %w", err)
 	}
 	return nil
 }
