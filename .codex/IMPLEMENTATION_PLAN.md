@@ -83,3 +83,16 @@ See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md). The focused test
 ## FMT-01 resolution — 2026-10-18
 
 The maintainer authorized human-readable timestamps in console output. [PR #13](https://github.com/majiddarvishan/fluxlog/pull/13) implements conversion from zerolog numeric Unix timestamp encodings to process-local time in `ConsoleConfig.TimeFormat`, without changing JSON output or the default RFC3339 layout. Full [CI run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603) passed; all four previously skipped numeric cases, custom layout, fractional/negative conversion and live logger tests now pass. **FMT-01 is complete.** No changes were made to open CFG-02/CFG-03 cases.
+
+---
+
+## Phase 2 verification — 2026-10-18
+
+PR [#14](https://github.com/majiddarvishan/fluxlog/pull/14) added focused, production-code-free tests for `LIFE-01`, `FILE-01` and `ERR-01`. Both modules passed GitHub Actions [run 39158993645](https://github.com/majiddarvishan/fluxlog/actions/runs/39158993645) with race detector, vet, formatting, dependency and example-build checks.
+
+- **LIFE-01: DONE**: Close waits on an active write, Post-Close ErrClosedPipe, concurrent write vs Close and default logger ownership.
+- **FILE-01: DONE within scope**: actual size rollover, MaxBackups cleanup, MaxAge deletion, gzip output content, and forwarding of Compress and LocalTime options. Async retention tests use bounded condition polling; exact LocalTime filename timezone is not asserted.
+- **ERR-01: DONE**: custom writer failures and short writes, partial sink fan-out, and invalid parent path.
+- **Still open:** CFG-02, CFG-03 and FMT-02; REL-01/DOC-01 release hygiene; optional PERF-01/CI-01.
+
+No production implementation changes or release tags were made. See [PHASE2_TEST_EVIDENCE_2026-10-18.md](PHASE2_TEST_EVIDENCE_2026-10-18.md). Do not re-run the full codebase audit in a new session.
