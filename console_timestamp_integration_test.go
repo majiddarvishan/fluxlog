@@ -14,9 +14,9 @@ import (
 func TestFMT01ConsoleUnixTimestampFormats(t *testing.T) {
 	want := time.Unix(1700000000, 0).Local().Format(time.RFC3339)
 	for _, tc := range []struct {
-		name      string
+		name     string
 		timestamp string
-		format    string
+		format   string
 	}{
 		{name: "seconds", timestamp: "1700000000", format: zerolog.TimeFormatUnix},
 		{name: "milliseconds", timestamp: "1700000000000", format: zerolog.TimeFormatUnixMs},
@@ -62,7 +62,6 @@ func TestFMT01ConsoleRFC3339Timestamp(t *testing.T) {
 	}
 }
 
-
 // FMT-01: use the application-configured layout for an integer timestamp,
 // rather than exposing the raw epoch value in human-readable output.
 func TestFMT01CustomHumanReadableTimeLayout(t *testing.T) {
@@ -89,8 +88,8 @@ func TestFMT01UnixTimestampPrecisionAndNegativeEpoch(t *testing.T) {
 	for _, tc := range []struct {
 		name      string
 		format    string
-		value     string
-		expected  time.Time
+		value    string
+		expected time.Time
 	}{
 		{name: "millisecond-fraction", format: zerolog.TimeFormatUnixMs, value: "1700000000123", expected: time.Unix(1700000000, 123_000_000)},
 		{name: "microsecond-fraction", format: zerolog.TimeFormatUnixMicro, value: "1700000000123456", expected: time.Unix(1700000000, 123_456_000)},
@@ -130,12 +129,12 @@ func TestFMT01LoggerRendersUnixTimestampAsHumanReadable(t *testing.T) {
 	const layout = "2006-01-02 15:04:05.000"
 	var output bytes.Buffer
 	logger, err := New(Config{
-		Level: InfoLevel,
+		Level:     InfoLevel,
 		Timestamp: true,
 		Console: &ConsoleConfig{
-			Writer: &output,
-			Format: ConsoleFormat,
-			Color: NeverColor,
+			Writer:     &output,
+			Format:     ConsoleFormat,
+			Color:      NeverColor,
 			TimeFormat: layout,
 		},
 	})
