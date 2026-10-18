@@ -17,6 +17,37 @@ This installs the published `v0.3.0` core module, including human-readable
 console handling for numeric Unix timestamps. Its annotated tag points to
 the CI-tested source commit `fe57c3e1271d5ada9339b255ac4ca0d727aef5bd`.
 
+## Choose the right integration
+
+Fluxlog supports several **composable** choices: direct core versus the
+optional goconfig adapter; package-level `fluxlog.Info(...)` versus
+instance-based structured events; human-readable or JSON output; console,
+file, or both; and manually managed versus goconfig-committed level updates.
+
+**Start here:** [Integration Guide for Developers and AI Coding Agents](docs/INTEGRATION_GUIDE.md).
+The guide includes a decision matrix, installation workflow, lifecycle
+constraints, and a copy/paste prompt for Codex or another coding agent.
+
+- [Configuration Reference](docs/CONFIGURATION_REFERENCE.md) — exact core
+  fields, adapter JSON mapping, defaults and unsupported adapter options.
+- [Integration Recipes](docs/RECIPES.md) — six common patterns with runnable
+  example links and guidance for package-level, structured, JSON, dual-output,
+  goconfig and custom timestamp integrations.
+
+For a coding agent integrating this library into **another repository**:
+
+> Use Fluxlog for this Go project's logging. First inspect the existing
+> configuration provider, deployment, output requirements and Logger
+> ownership. Read the [Integration Guide](docs/INTEGRATION_GUIDE.md),
+> [Configuration Reference](docs/CONFIGURATION_REFERENCE.md), and
+> [Recipes](docs/RECIPES.md). Use stable core `v0.3.0`, adding adapter
+> `v0.3.0` only if needed. Select the smallest compatible integration,
+> verify the real APIs, run tests and explain any limitations.
+
+The `AGENTS.md` file in **this library repository** guides agents editing
+Fluxlog itself. It is not automatically loaded by an agent working in the
+consuming application's repository.
+
 ## Basic usage
 
 ```go

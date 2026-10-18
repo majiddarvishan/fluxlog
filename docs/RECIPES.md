@@ -2,8 +2,8 @@
 
 Use [Integration Guide](INTEGRATION_GUIDE.md) to pick a pattern and
 [Configuration Reference](CONFIGURATION_REFERENCE.md) for supported
-fields and defaults. Examples below use the published core \`v0.3.0\`
-and, where relevant, independent goconfig adapter \`v0.3.0\`.
+fields and defaults. Examples below use the published core `v0.3.0`
+and, where relevant, independent goconfig adapter `v0.3.0`.
 
 ## Recipe 1 — Small application, package-level Info
 
@@ -33,11 +33,11 @@ defer func() {
 fluxlog.Info("server started on port %d", 8080)
 ~~~
 
-Put the deferred cleanup in the **long-lived owner** (often \`main\`).
-The stock package default works without \`SetDefault\`, but it does not
+Put the deferred cleanup in the **long-lived owner** (often `main`).
+The stock package default works without `SetDefault`, but it does not
 automatically inherit custom service, output, or timestamps.
 
-**Run:** from the repository root \`go run ./examples/package-level\`.
+**Run:** from the repository root `go run ./examples/package-level`.
 The [full example](../examples/package-level/main.go) includes manual
 runtime level changes and structured events.
 
@@ -54,12 +54,12 @@ logger.Info().
     Msg("request completed")
 ~~~
 
-Prefer a \`*fluxlog.Logger\` injected into a component rather than having
+Prefer a `*fluxlog.Logger` injected into a component rather than having
 each component modify the process's package default. Use type-appropriate
-structured fields; \`fluxlog.Info("request %s", id)\` remains a text
-message and does not create an indexed \`request_id\` field.
+structured fields; `fluxlog.Info("request %s", id)` remains a text
+message and does not create an indexed `request_id` field.
 
-**Run:** \`go run ./examples/basic\` at the repository root.
+**Run:** `go run ./examples/basic` at the repository root.
 
 ## Recipe 3 — JSON stdout for container collection
 
@@ -78,9 +78,9 @@ logger, err := fluxlog.New(fluxlog.Config{
 })
 ~~~
 
-Handle \`err\` and close the Logger at the end of its owned lifetime.
+Handle `err` and close the Logger at the end of its owned lifetime.
 This is a **core** feature. The stock goconfig adapter selects human-readable
-console formatting; it does not accept \`console_format\` as a JSON key.
+console formatting; it does not accept `console_format` as a JSON key.
 For a goconfig-based app needing JSON stdout, customize the parsed core
 config before construction and bind its level separately.
 
@@ -109,16 +109,16 @@ logger, err := fluxlog.New(fluxlog.Config{
 })
 ~~~
 
-Check destination permissions and retention policy. \`New\` creates the
+Check destination permissions and retention policy. `New` creates the
 parent directory but can fail on a read-only filesystem. The file uses
 lumberjack size rotation, not a remote/guaranteed delivery service.
 This fully customizable setup uses the core module.
 
-**Run:** \`go run ./examples/file\` from the root.
+**Run:** `go run ./examples/file` from the root.
 
 ## Recipe 5 — Existing goconfig application with runtime level changes
 
-**Choose when:** the project already owns a \`*goconfig.Manager\`, and the
+**Choose when:** the project already owns a `*goconfig.Manager`, and the
 adapter's accepted JSON fields cover the logging requirements.
 
 ~~~json
@@ -154,7 +154,7 @@ if err := manager.Replace("/logger/level", "debug"); err != nil {
 fluxlog.Debug("debug enabled after committed update")
 ~~~
 
-The \`manager\` above is created by the **consuming application**. A complete
+The `manager` above is created by the **consuming application**. A complete
 standalone source/manager setup is in the
 [runnable adapter example](../adapters/goconfig/examples/basic/main.go):
 
@@ -163,9 +163,9 @@ cd adapters/goconfig
 go run ./examples/basic
 ~~~
 
-This example uses an in-memory JSON \`StrSource\`. Do not interpret it as
-automatic on-disk file watching. The example's \`both\` mode writes a JSON
-log file under \`./logs/\` relative to the running working directory.
+This example uses an in-memory JSON `StrSource`. Do not interpret it as
+automatic on-disk file watching. The example's `both` mode writes a JSON
+log file under `./logs/` relative to the running working directory.
 Pre-commit validation must be registered first for that level path;
 failed persistence and invalid levels do not update runtime loggers.
 
@@ -194,7 +194,7 @@ if err := fluxgoconfig.BindLevel(manager, levelNode, logger); err != nil {
 ~~~
 
 This retains the adapter's **level-only** runtime binding; it does not
-create a new \`time_format\` goconfig key or make TimeFormat hot-reloadable.
+create a new `time_format` goconfig key or make TimeFormat hot-reloadable.
 Manage default installation, request lifetimes, and cleanup just as with
 the other recipes.
 
@@ -202,18 +202,18 @@ the other recipes.
 
 - Importing goconfig into a core-only application for no operational reason.
 - Assuming a package function returns an event; use
-  \`logger.Info().Str(...).Msg(...)\` for structured fields.
-- Setting \`TimeFormat\` in the stock adapter's JSON; the adapter does not
+  `logger.Info().Str(...).Msg(...)` for structured fields.
+- Setting `TimeFormat` in the stock adapter's JSON; the adapter does not
   consume it.
-- Calling \`logger.Close()\` while it remains the installed default or while
+- Calling `logger.Close()` while it remains the installed default or while
   active goroutines still use it.
 - Deferring Logger cleanup in a short-lived initialization helper.
-- Calling \`manager.Replace\` and assuming **all** construction fields
-  update live; only \`level\` is bound.
-- Registering another legacy \`OnReplace\` for the same path before the
+- Calling `manager.Replace` and assuming **all** construction fields
+  update live; only `level` is bound.
+- Registering another legacy `OnReplace` for the same path before the
   adapter's level validator.
-- Assuming a new README on \`main\` exists in a previously tagged release.
-- Using \`Fatal\` or \`Panic\` in reusable logging or cleanup code.
+- Assuming a new README on `main` exists in a previously tagged release.
+- Using `Fatal` or `Panic` in reusable logging or cleanup code.
 
 For a reusable AI coding-agent prompt, see the
 [Integration Guide](INTEGRATION_GUIDE.md#7-copypaste-request-for-a-coding-agent).

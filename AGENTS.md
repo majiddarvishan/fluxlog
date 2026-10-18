@@ -9,15 +9,15 @@ documentation.
 
 ## Product boundaries
 
-Fluxlog core (\`github.com/majiddarvishan/fluxlog\`) is a small Go structured
+Fluxlog core (`github.com/majiddarvishan/fluxlog`) is a small Go structured
 logging library built on zerolog and lumberjack. The optional goconfig adapter
-(\`github.com/majiddarvishan/fluxlog/adapters/goconfig\`) is a **separate**
+(`github.com/majiddarvishan/fluxlog/adapters/goconfig`) is a **separate**
 Go module. The core must not import goconfig.
 
-As of the published lockstep \`v0.3.0\` release, the adapter requires core
-\`v0.3.0\` and upstream \`goconfig v1.7.0\`. Modules use matching release
-version numbers but distinct tags: root \`vX.Y.Z\` and nested
-\`adapters/goconfig/vX.Y.Z\`. Do not create or move release tags without
+As of the published lockstep `v0.3.0` release, the adapter requires core
+`v0.3.0` and upstream `goconfig v1.7.0`. Modules use matching release
+version numbers but distinct tags: root `vX.Y.Z` and nested
+`adapters/goconfig/vX.Y.Z`. Do not create or move release tags without
 explicit maintainer authorization.
 
 ## Reading order
@@ -33,20 +33,20 @@ explicit maintainer authorization.
 4. [RELEASING.md](RELEASING.md) for version/tag policy, plus
    [.codex/CURRENT_STATUS.md](.codex/CURRENT_STATUS.md) and
    [.codex/TASKS.md](.codex/TASKS.md) for maintenance context.
-5. For API changes, inspect \`config.go\`, \`logger.go\`, \`default.go\` and
-   \`adapters/goconfig/adapter.go\` before claiming support.
+5. For API changes, inspect `config.go`, `logger.go`, `default.go` and
+   `adapters/goconfig/adapter.go` before claiming support.
 
 ## Implementation rules
 
 - Prefer small, justified changes. Preserve instance independence,
   concurrency/lifecycle guarantees, structured output and existing contracts.
 - Do not silently add goconfig to core or assume the adapter supports all
-  core settings; the stock adapter binds only \`level\` dynamically.
+  core settings; the stock adapter binds only `level` dynamically.
 - Preserve the adapter's pre-commit validation / post-commit application
-  behavior and the first-registered legacy \`OnReplace\` handler caveat.
-- \`SetDefault\` is not ownership transfer. Restore it before closing an
+  behavior and the first-registered legacy `OnReplace` handler caveat.
+- `SetDefault` is not ownership transfer. Restore it before closing an
   installed Logger and do not leave callers using a closed instance.
-- Distinguish code at \`main\` from behavior actually published in immutable
+- Distinguish code at `main` from behavior actually published in immutable
   release tags; avoid describing future/unreleased work as published.
 - Repository source code, documentation, commit messages and PR descriptions
   are written in English.

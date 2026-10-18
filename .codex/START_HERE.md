@@ -30,6 +30,16 @@ This is **not** an application, network service, remote log collector, asynchron
 - Do not silently alter public APIs, output formatting, concurrency/lifecycle guarantees, or adapter configuration compatibility.
 - Root and `adapters/goconfig` are **separate Go modules**: validate both.
 
+## Public consumer and agent integration guides
+
+The user-facing integration documentation is in
+[docs/INTEGRATION_GUIDE.md](../docs/INTEGRATION_GUIDE.md),
+[docs/CONFIGURATION_REFERENCE.md](../docs/CONFIGURATION_REFERENCE.md) and
+[docs/RECIPES.md](../docs/RECIPES.md). The root
+[AGENTS.md](../AGENTS.md) supplies repository-scoped contributor instructions;
+a consumer-project coding agent must be explicitly directed to the public docs.
+Keep source/API details, release tags and integration examples consistent.
+
 ## Repository entry points
 
 - Root: [README.md](../README.md), [logger.go](../logger.go), [config.go](../config.go), [writer.go](../writer.go).

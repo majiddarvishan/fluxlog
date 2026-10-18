@@ -20,6 +20,21 @@ The earlier adapter `v0.1.0` remains published as historical compatibility
 with core `v0.1.0` and goconfig `v1.3.0`; it does not include the
 v0.3.0 integration improvements.
 
+## Choose and validate an integration
+
+- [Integration Guide](../../docs/INTEGRATION_GUIDE.md) — decision matrix
+  for core vs adapter, default vs instance API and runtime-level management.
+- [Configuration Reference](../../docs/CONFIGURATION_REFERENCE.md) — the
+  **exact** adapter JSON mapping; it does not expose every core setting.
+- [Recipes](../../docs/RECIPES.md) — examples for an existing goconfig
+  Manager and custom core settings via `Parse` + `BindLevel`.
+
+The stock adapter dynamically binds only the `level` field. For example,
+`time_format` is **not** an adapter JSON option. To customize the console
+time layout, parse the node into a core Config, set
+`Config.Console.TimeFormat` before construction, then bind the returned
+level node explicitly.
+
 ## Current-source configuration
 
 Expected configuration:
