@@ -20,7 +20,7 @@ A root-module tag such as `v0.2.1` is **not** an adapter tag, and
 | | Published adapter `v0.1.0` | Current `main` source |
 | --- | --- | --- |
 | Fluxlog core dependency | `v0.1.0` | `v0.2.1` |
-| goconfig dependency | `v1.3.0` | `v1.6.1-0.20261018202246-20a58eb9a426` (immutable pre-release revision) |
+| goconfig dependency | `v1.3.0` | `v1.7.0` (published upstream release) |
 | Adapter `service` / `caller_max_length` settings | Not supported by adapter mapping | Supported as optional fields |
 | Release status | Existing tag | Unreleased changes |
 
@@ -80,10 +80,11 @@ A complete runnable program is available in [`examples/basic`](./examples/basic)
 
 ## Runtime level updates in current development source
 
-This development branch pins an **immutable upstream commit**
-(`goconfig@20a58eb9a426d0ed7d522b1e5848a0971ce58198`) using a Go
-pseudo-version. This is **not a published goconfig release** and the tagged
-adapter `v0.1.0` still uses the legacy behavior.
+Current source pins the **official upstream `goconfig v1.7.0` tag**, verified
+against the upstream annotated tag on commit
+`213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`.
+The tagged adapter `v0.1.0` still uses its earlier goconfig dependency and
+legacy behavior; this adapter update itself is not yet a published release.
 
 `BindLevel` applies the initial level, validates proposed replacements
 without changing Logger state, and uses `OnReplaceCommitted` to apply a new
@@ -99,6 +100,7 @@ for that path. Do not register an unrelated `OnReplace` callback before
 `BindLevel` for the same level node. Committed observers are retained
 until the Manager is discarded (there is no unsubscribe method).
 
-No release has been tagged for the new adapter behavior. To use the code
-here before an adapter release, work from a local checkout or a Go workspace
-and follow the exact source revision in this module's `go.mod`.
+No release has yet been tagged for the new **adapter** behavior. To use the
+current source before its own release, work from a local checkout or a Go
+workspace; the upstream `goconfig` dependency is now a stable, tagged module
+version. Do not confuse a root Fluxlog tag with a nested adapter tag.
