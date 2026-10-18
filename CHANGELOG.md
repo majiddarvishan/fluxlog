@@ -9,6 +9,22 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 No changes recorded yet.
 
+## [0.3.1] - 2026-10-19
+
+### Documentation and examples
+
+- Add runnable package-level Fluxlog and goconfig usage examples with
+  `SetDefault` ownership, runtime level changes and structured logging.
+- Publish the developer/AI coding-agent integration decision guide, a
+  configuration reference, practical recipes and reusable Codex prompt.
+- No core API, implementation, or dependency changes since v0.3.0.
+
+**Core published:** annotated `v0.3.1` tag points to
+`fdb55d6d48ed9a8fc24b8c1e00994278b7fd1785`.
+[Core source CI 39176344867](https://github.com/majiddarvishan/fluxlog/actions/runs/39176344867)
+passed both Go module jobs. The matching nested goconfig adapter v0.3.1
+publication is prepared separately; see its changelog and `RELEASING.md`.
+
 ## [0.3.0] - 2026-10-19
 
 ### Fixed
@@ -62,6 +78,7 @@ are tracked in [`adapters/goconfig/CHANGELOG.md`](adapters/goconfig/CHANGELOG.md
 - Core and adapter examples, unit tests, race tests, fuzz seeds, and benchmarks.
 - GitHub Actions verification for both Go modules.
 
+[0.3.1]: https://github.com/majiddarvishan/fluxlog/tree/v0.3.1
 [0.3.0]: https://github.com/majiddarvishan/fluxlog/tree/v0.3.0
 [0.2.1]: https://github.com/majiddarvishan/fluxlog/releases/tag/v0.2.1
 [0.2.0]: https://github.com/majiddarvishan/fluxlog/releases/tag/v0.2.0

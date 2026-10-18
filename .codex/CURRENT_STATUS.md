@@ -4,6 +4,19 @@
 **Main release baseline:** `0b5c2f46dfaf1b6ca2ae08a832d855dffe51582e`.
 **Lockstep v0.3.0 publication:** complete for core and goconfig adapter.
 
+**Current v0.3.1 release progress (2026-10-19):**
+- Core annotated `v0.3.1` tag object `4ccbe38d44cb97930caf80eb593edd0d16dd6070`
+  peels to `fdb55d6d48ed9a8fc24b8c1e00994278b7fd1785`; both CI jobs
+  passed in [39176344867](https://github.com/majiddarvishan/fluxlog/actions/runs/39176344867).
+- `v0.3.1` records examples, documentation, integration guidance and a
+  reusable coding-agent prompt, without core API/behavior change.
+- Adapter `adapters/goconfig/v0.3.1` is pending independent tagging.
+  Its Go module must require core `v0.3.1` and goconfig `v1.7.0`,
+  pass CI in the final PR and on post-merge main, then have its annotated
+  tag and public Go module resolution verified.
+- The following table records the **completed v0.3.0** historical baseline,
+  not the currently pending v0.3.1 adapter publication.
+
 ## Published Go modules
 
 | Module | Version | Annotated repository tag | Peeled commit |

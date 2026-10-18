@@ -10,6 +10,24 @@ Their release tags need not target the same Git commit.
 | Core | `github.com/majiddarvishan/fluxlog` | `v0.3.0` |
 | goconfig adapter | `github.com/majiddarvishan/fluxlog/adapters/goconfig` | `adapters/goconfig/v0.3.0` |
 
+## v0.3.1 publication status — 2026-10-19
+
+- **Core published:** `v0.3.1` is an annotated tag (object
+  `4ccbe38d44cb97930caf80eb593edd0d16dd6070`) which peels to
+  `fdb55d6d48ed9a8fc24b8c1e00994278b7fd1785`.
+  [Core source CI 39176344867](https://github.com/majiddarvishan/fluxlog/actions/runs/39176344867)
+  passed both Go module jobs. No core code changes beyond v0.3.0; the
+  patch release captures examples and public agent integration docs.
+- **Adapter pending:** publish a **new** annotated
+  `adapters/goconfig/v0.3.1` tag at the final verified **post-merge**
+  main commit, after updating the nested `go.mod` to core `v0.3.1`,
+  regenerating `go.sum` from the Go toolchain, and running both CI jobs.
+  The existing goconfig requirement remains v1.7.0.
+- **Do not invent or move tags:** the existing
+  `adapters/goconfig/v0.3.0` and root `v0.3.0` are immutable. Update
+  this status **only after** GitHub and Go module resolution confirm the
+  nested release.
+
 ## Verified v0.3.0 publication — 2026-10-19
 
 - **Core published:** annotated tag `v0.3.0` (tag object `6ad7581ac7fe611689b6087a183d10f6f4ba06b6`) peels to `fe57c3e1271d5ada9339b255ac4ca0d727aef5bd`. [Core release source CI 39168420174](https://github.com/majiddarvishan/fluxlog/actions/runs/39168420174) passed both jobs.

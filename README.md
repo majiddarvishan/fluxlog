@@ -10,12 +10,15 @@ modify zerolog's process-global logger or global level.
 ## Install
 
 ```bash
-go get github.com/majiddarvishan/fluxlog@v0.3.0
+go get github.com/majiddarvishan/fluxlog@v0.3.1
 ```
 
-This installs the published `v0.3.0` core module, including human-readable
-console handling for numeric Unix timestamps. Its annotated tag points to
-the CI-tested source commit `fe57c3e1271d5ada9339b255ac4ca0d727aef5bd`.
+This installs the published `v0.3.1` core module, including human-readable
+console timestamps and the library's documented core API. Its annotated tag
+points to CI-tested commit `fdb55d6d48ed9a8fc24b8c1e00994278b7fd1785`
+and includes the public integration guide, recipes and coding-agent prompt.
+The nested goconfig adapter is versioned separately; confirm its matching
+tag is published before requesting `adapters/goconfig@v0.3.1`.
 
 ## Choose the right integration
 
