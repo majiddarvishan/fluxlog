@@ -105,7 +105,7 @@ func TestLIFE01CloseWaitsForActiveWrite(t *testing.T) {
 func TestLIFE01ConcurrentWritesAndClose(t *testing.T) {
 	closer := &lifecycleCountingCloser{}
 	managed := &managedWriter{
-		writer: zerolog.MultiLevelWriter(io.Discard),
+		writer:  zerolog.MultiLevelWriter(io.Discard),
 		closers: []io.Closer{closer},
 	}
 	var wg sync.WaitGroup

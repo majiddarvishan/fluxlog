@@ -17,7 +17,7 @@ func TestFILE01SizeRotationPreservesRecords(t *testing.T) {
 	path := filepath.Join(dir, "application.log")
 	logger, err := New(Config{
 		Level: InfoLevel,
-		File: &FileConfig{Path: path, Format: JSONFormat, MaxSizeMB: 1, MaxBackups: 3},
+		File:  &FileConfig{Path: path, Format: JSONFormat, MaxSizeMB: 1, MaxBackups: 3},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -78,13 +78,13 @@ func TestFILE01RotationConfigurationIsForwarded(t *testing.T) {
 	logger, err := New(Config{
 		Level: InfoLevel,
 		File: &FileConfig{
-			Path: filepath.Join(t.TempDir(), "audit.log"),
-			Format: JSONFormat,
-			MaxSizeMB: 2,
+			Path:       filepath.Join(t.TempDir(), "audit.log"),
+			Format:     JSONFormat,
+			MaxSizeMB:  2,
 			MaxBackups: 2,
 			MaxAgeDays: 7,
-			Compress: true,
-			LocalTime: true,
+			Compress:   true,
+			LocalTime:  true,
 		},
 	})
 	if err != nil {

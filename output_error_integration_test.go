@@ -30,16 +30,16 @@ func (outputShortWriter) Write(p []byte) (int, error) {
 func TestERR01CustomWriterFailureAndShortWrite(t *testing.T) {
 	sentinel := errors.New("sink failure")
 	for _, tc := range []struct {
-		name string
+		name   string
 		writer io.Writer
-		want error
+		want   error
 	}{
 		{name: "error", writer: outputFailingWriter{err: sentinel}, want: sentinel},
 		{name: "short-write", writer: outputShortWriter{}, want: io.ErrShortWrite},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			logger, err := New(Config{
-				Level: InfoLevel,
+				Level:   InfoLevel,
 				Console: &ConsoleConfig{Writer: tc.writer, Format: JSONFormat},
 			})
 			if err != nil {
@@ -60,9 +60,9 @@ func TestERR01MultiSinkPartialFailure(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "application.log")
 	sentinel := errors.New("console down")
 	logger, err := New(Config{
-		Level: InfoLevel,
+		Level:   InfoLevel,
 		Console: &ConsoleConfig{Writer: outputFailingWriter{err: sentinel}, Format: JSONFormat},
-		File: &FileConfig{Path: path, Format: JSONFormat},
+		File:    &FileConfig{Path: path, Format: JSONFormat},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -90,7 +90,7 @@ func TestERR01CreateLogDirectoryFailure(t *testing.T) {
 		t.Fatal(err)
 	}
 	logger, err := New(Config{Level: InfoLevel, File: &FileConfig{
-		Path: filepath.Join(base, "log.json"),
+		Path:   filepath.Join(base, "log.json"),
 		Format: JSONFormat,
 	}})
 	if err == nil {
