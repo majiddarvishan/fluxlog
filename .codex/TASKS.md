@@ -2,7 +2,8 @@
 
 **Planning date:** 2026-10-18  
 **Scope:** `github.com/majiddarvishan/fluxlog` (core plus independently versioned `adapters/goconfig`).  
-**Current release decision:** migrate the already-tested post-commit adapter integration to the official tagged upstream `goconfig v1.7.0`. The prior pseudo-version is recorded as historical development evidence. Phase 1 characterization is complete. The maintainer explicitly approved human-readable console time, and FMT-01 was implemented without modifying unrelated behavior.  
+**Lockstep policy (2026-10-19):** Starting with core v0.3.0, all official adapters share the same version number; the next nested tag is `adapters/goconfig/v0.3.0`, not v0.2.0. Modules stay separate and may point to different release commits. Historical notes are retained.
+**Historical release decision:** migrate the already-tested post-commit adapter integration to the official tagged upstream `goconfig v1.7.0`. The prior pseudo-version is recorded as historical development evidence. Phase 1 characterization is complete. The maintainer explicitly approved human-readable console time, and FMT-01 was implemented without modifying unrelated behavior.  
 **Tracking:** task IDs below are stable; update checkboxes only when acceptance criteria have actually been met.
 
 ## Current execution boundary
@@ -15,8 +16,8 @@
 
 - [x] **REL-02 — Publish and verify upstream goconfig v1.7.0.** Annotated Git tag resolves to `213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`; upstream [CI 39167180503](https://github.com/majiddarvishan/goconfig/actions/runs/39167180503) passed. Go module origin and sums verified in [run 39167874434](https://github.com/majiddarvishan/fluxlog/actions/runs/39167874434). A separate GitHub Release object has not been published.
 - [x] **REL-03 — Adopt the tagged upstream dependency in the nested adapter.** Nested `go.mod` now uses official `goconfig v1.7.0` and the sums verified by Go. Strict CFG-01/CFG-02/CFG-03 cases PASS without SKIP. Both modules passed dependency consistency, format, vet, race tests and example builds in [PR CI run 39168203987](https://github.com/majiddarvishan/fluxlog/actions/runs/39168203987). Merge and post-merge CI must still be verified as a separate process gate.
-- [ ] **REL-04 — Publish Fluxlog core.** After verified post-merge CI, create a root annotated `v0.3.0` tag on the exact tested main HEAD using an authorized Git client. Confirm remote tag and Go module resolution. Do not create nested adapter tag yet.
-- [ ] **REL-05 — Publish the independently versioned adapter.** After root release, update the adapter's core dependency to root `v0.3.0`, regenerate module sums, pass both CI modules, merge, and tag `adapters/goconfig/v0.2.0` on the new tested main commit.
+- [x] **REL-04 — Publish Fluxlog core.** Existing annotated `v0.3.0` tag resolves to `fe57c3e1271d5ada9339b255ac4ca0d727aef5bd` and both jobs passed post-merge CI 39168420174. Go proxy resolution remains an independent check. Never recreate or move the tag.
+- [ ] **REL-05 — Publish the lockstep-versioned adapter.** Update the separate module's core dependency to `v0.3.0`, regenerate sums with Go, pass both CI jobs and strict CFG-02/CFG-03, merge, check post-merge CI, and tag `adapters/goconfig/v0.3.0` on the tested main commit. Do not publish adapter v0.2.0.
 
 ## P0 — dependency migration and baseline verification
 
