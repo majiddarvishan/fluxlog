@@ -34,6 +34,10 @@ constraints, and a copy/paste prompt for Codex or another coding agent.
   example links and guidance for package-level, structured, JSON, dual-output,
   goconfig and custom timestamp integrations.
 
+**Ready-to-copy prompt:** [Integrate Fluxlog with Codex or other Coding Agents](prompts/INTEGRATE_FLUXLOG.md).
+It includes the short integration request, decision criteria, release version
+constraints, validation requirements, and optional scenario-specific inputs.
+
 For a coding agent integrating this library into **another repository**:
 
 > Use Fluxlog for this Go project's logging. First inspect the existing

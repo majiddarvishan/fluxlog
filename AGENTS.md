@@ -3,9 +3,8 @@
 These instructions apply to contributors and coding agents **working inside
 this Fluxlog repository**. They are not automatically loaded by agents working
 inside a different application. For consumer-project integration, give the
-agent an explicit URL/link to
-[docs/INTEGRATION_GUIDE.md](docs/INTEGRATION_GUIDE.md) and the other public
-documentation.
+agent the standalone [INTEGRATE_FLUXLOG.md](prompts/INTEGRATE_FLUXLOG.md)
+prompt and the public [Integration Guide](docs/INTEGRATION_GUIDE.md).
 
 ## Product boundaries
 

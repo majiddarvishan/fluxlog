@@ -165,6 +165,10 @@ cleanup on bind failures).
 
 ## 7. Copy/paste request for a coding agent
 
+For a reusable standalone prompt maintained alongside this documentation,
+see [INTEGRATE_FLUXLOG.md](../prompts/INTEGRATE_FLUXLOG.md). It is designed for
+Codex and other coding agents working in a **consuming application**.
+
 The following is a **consumer-project** prompt. The remote library's
 `AGENTS.md` is **not automatically loaded** into another repository.
 
