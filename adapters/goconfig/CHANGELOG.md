@@ -8,6 +8,23 @@ starting at `v0.3.0`, while retaining its own nested Git tags and dependencies:
 
 No changes recorded yet.
 
+## [0.3.1] - 2026-10-19
+
+### Compatibility and documentation
+
+- Align the independently versioned adapter module with Fluxlog core
+  `v0.3.1`; continue to require upstream `goconfig v1.7.0`.
+- Document the optional goconfig integration and runtime level binding
+  in the published root usage guides and runnable examples.
+- No adapter runtime API or behavior changes from v0.3.0.
+- Go module checksums regenerated from the official Go 1.23 CI module
+  download; no manually invented checksums.
+
+**Release status:** core `v0.3.1` is published; the nested
+`adapters/goconfig/v0.3.1` annotated tag is pending until this adapter
+change passes CI and is merged. Do not use the nested version before its
+tag and Go module resolution have been independently verified.
+
 ## [0.3.0] - 2026-10-19
 
 ### Added
@@ -42,5 +59,6 @@ The maintainer verified Go module resolution through `proxy.golang.org`.
 
 Previous published adapter tag: `adapters/goconfig/v0.1.0`.
 
+[0.3.1]: https://github.com/majiddarvishan/fluxlog/tree/adapters/goconfig/v0.3.1
 [0.3.0]: https://github.com/majiddarvishan/fluxlog/tree/adapters/goconfig/v0.3.0
 [0.1.0]: https://github.com/majiddarvishan/fluxlog/tree/adapters/goconfig/v0.1.0
