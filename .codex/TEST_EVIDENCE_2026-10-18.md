@@ -37,3 +37,15 @@ Both module CI jobs performed dependency `go mod tidy` consistency, `gofmt`, `go
 3. **FMT-01:** Confirm Unix timestamp formats are part of Fluxlog's console compatibility contract. If yes, accept `json.Number` as the upstream console formatter already does.
 
 Until these decisions are made, keep their tasks open. Next: `LIFE-01`, `FILE-01`, `ERR-01` only if the user asks for further test expansion. No behavior-changing fix is authorized in this test-only iteration.
+
+---
+
+## FMT-01 fix verification — 2026-10-18 (PR #13)
+
+This addendum **supersedes only FMT-01's historical SKIP outcomes above**; earlier results remain traceable to their original CI runs.
+
+- **Authorized behavior:** show timestamps as human-readable local time in console output, using `ConsoleConfig.TimeFormat`. Default is RFC3339, while `"2006-01-02 15:04:05"` is a documented simpler 24-hour layout.
+- **Core code change:** `console.go` now parses zerolog `json.Number` timestamps for Unix seconds, milliseconds, microseconds and nanoseconds; fractional precision and negative epochs are handled. JSON output is unchanged.
+- **Passing checks:** `TestFMT01ConsoleUnixTimestampFormats` (all four cases PASS), `TestFMT01ConsoleRFC3339Timestamp`, `TestFMT01CustomHumanReadableTimeLayout`, `TestFMT01UnixTimestampPrecisionAndNegativeEpoch` (all four cases PASS), `TestFMT01LoggerRendersUnixTimestampAsHumanReadable`.
+- **CI evidence:** [Actions run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603), both core and adapter jobs PASS, including fmt, vet, race tests and examples.
+- **Remaining known-issue SKIPs:** **two**, CFG-02 and CFG-03. They are not fixed by this change. No tag or release created.

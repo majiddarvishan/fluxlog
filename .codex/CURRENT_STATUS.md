@@ -2,39 +2,33 @@
 
 **Date:** 2026-10-18  
 **Repository:** https://github.com/majiddarvishan/fluxlog  
-**Verified main HEAD before Phase 1 test PR:** `78274ee19a1668a71ac563b0e64b69b86b9f0ff9`  
-**Current development PR:** [#12 — Phase 1 behavior regression tests](https://github.com/majiddarvishan/fluxlog/pull/12)  
-**Pinned adapter dependency:** `github.com/majiddarvishan/goconfig v1.6.0`  
-**Source-only review:** [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md)  
-**Executed CI evidence:** [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
+**Verified main HEAD before the timestamp fix:** `d4866c7a62789f31531e2017fd43bcadcdaa2757`  
+**Current change:** [PR #13 — Human-readable Unix console timestamps](https://github.com/majiddarvishan/fluxlog/pull/13)  
+**Adapter version:** `github.com/majiddarvishan/goconfig v1.6.0` (nested module only).  
+**Go version in CI:** 1.23.x.
 
-## Completed upstream and baseline changes
+## Completed baseline work
 
-- PR #9: permanent English `.codex` documentation.
-- PR #10: goconfig 1.6.0 nested-adapter dependency; no core goconfig dependency.
-- PR #11: evidence-backed code-path review and new CFG-03 task.
-- All three preceding PRs were merged. Last confirmed main before this work: `78274ee19a1668a71ac563b0e64b69b86b9f0ff9`.
+- [PR #9](https://github.com/majiddarvishan/fluxlog/pull/9): English architecture/handoff documentation, merged.
+- [PR #10](https://github.com/majiddarvishan/fluxlog/pull/10): upgrade optional goconfig adapter dependency to v1.6.0, merged.
+- [PR #11](https://github.com/majiddarvishan/fluxlog/pull/11): behavior review and evidence-backed issues, merged.
+- [PR #12](https://github.com/majiddarvishan/fluxlog/pull/12): executable Phase 1 regression scenarios, merged. Historical results: CFG-01 and LVL-01 PASS; CFG-02, CFG-03 and four FMT-01 numeric cases SKIP.
 
-## Current Phase 1 executable result
+## Current authorized change: human-readable console timestamps
 
-Two existing-module GitHub Actions jobs (`core`, `goconfig-adapter`) passed in [run 39146082868](https://github.com/majiddarvishan/fluxlog/actions/runs/39146082868). Race detector, vet, tidy/format gates and examples all passed. CI is now verbose to surface known-issue skips.
+The maintainer requested time to remain **human-readable when printed**. This authorizes FMT-01 only. The implementation:
 
-- **CFG-01: complete** — valid runtime level replacement and invalid rollback both pass, including FileSource persistence.
-- **LVL-01: complete** — external zerolog global filtering verified and documented in root README.
-- **CFG-02: OPEN** — reproducible multi-binding limitation, reported as SKIP.
-- **CFG-03: OPEN** — reproducible persistence-failure/runtime-level drift, reported as SKIP.
-- **FMT-01: OPEN** — four numeric Unix timestamp console cases reported as SKIP; RFC3339 passes.
+- Supports numeric Unix seconds, milliseconds, microseconds and nanoseconds emitted by zerolog in the human-readable console formatter.
+- Converts to the process's **local timezone**, using `ConsoleConfig.TimeFormat`; default remains **RFC3339** for compatibility. A simpler 24-hour layout is `2006-01-02 15:04:05`.
+- Preserves string timestamps, negative/fractional timestamp precision and **JSON output encoding unchanged**.
+- Changes only `console.go`, tests, configuration documentation and `.codex`; **not** goconfig, logger lifecycle, serialization format or the dependency graph.
 
-The targeted suite therefore contains **six expected, explicitly identified SKIPs**. They are **not successful fixes**. See the complete matrix and test names in the evidence file.
+**Verification:** [GitHub Actions run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603) passed both `core` and `goconfig-adapter` jobs, including dependency consistency, format, vet, race tests and examples. All previously SKIPPED FMT-01 numeric cases now PASS; custom-layout, negative/fractional and full Logger pipeline tests also PASS. This is remote CI, not a local Go run.
 
-## Change boundary
+## Current backlog
 
-- Added only focused `*_test.go` files, English documents, one README clarification and verbose output for existing CI race-test commands.
-- No production `.go` source changes, dependency bumps, refactors, new features, tags or releases.
-- This was verified on GitHub Actions, **not** a newly executed local `go test`.
+- **Complete:** DEP-01, DEP-02, INV-01, CFG-01, LVL-01, **FMT-01**.
+- **Open and reproducible:** CFG-02 (multiple loggers bound to one goconfig path; second callback not invoked) and CFG-03 (failed FileSource persistence rolls back config but not runtime Logger level). Two known-issue test cases remain SKIPPED, **not fixed**.
+- **Open, not started:** LIFE-01, FILE-01, ERR-01, FMT-02, REL-01, DOC-01, PERF-01, CI-01.
 
-## Pending decisions and next phase
-
-Decide supported semantics for multiple bindings, persistence-side-effect rollback, and numeric timestamp encodings before modifying source. Other open tasks: `LIFE-01`, `FILE-01`, `ERR-01`, `FMT-02`, adapter release docs, optional performance work.
-
-After merging PR #12, verify the actual `main` SHA, post-merge CI, and deletion of its temporary branch. If branch deletion is not available through the connector, provide the exact manual command rather than claiming it succeeded.
+Do not add unrelated fixes or tags. Before future work, check actual `main` SHA, PR #13 merge state and CI, review the small diff, and update this status with confirmed merge SHA. Verify/deal with branch cleanup after merging.

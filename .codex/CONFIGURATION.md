@@ -85,6 +85,14 @@ The maintainer selected `github.com/majiddarvishan/goconfig v1.6.0` for the nest
 
 ## Phase 1 source-review caveat (2026-10-18)
 
-At goconfig v1.6.0, an invalid `level` replacement is rejected by `applyLevel` and the config node is reverted. However, if the callback **succeeds** and subsequent `FileSource.setConfig` **fails**, goconfig reverts its node without compensating the externally changed `fluxlog.Logger` level. This is a source-backed consistency risk, distinct from invalid-value rollback; executable regression test is still pending.
+At goconfig v1.6.0, an invalid `level` replacement is rejected by `applyLevel` and the config node is reverted. However, if the callback **succeeds** and subsequent `FileSource.setConfig` **fails**, goconfig reverts its node without compensating the externally changed `fluxlog.Logger` level. This is a source-backed consistency risk, distinct from invalid-value rollback; the previously missing post-persist error-path regression test has since reproduced the mismatch (CFG-03 remains open).
 
 Registering two `BindLevel` callbacks for the same goconfig path does not make them broadcast listeners: v1.6.0 manager selects the first matching handler on replacement. See `REVIEW_2026-10-18.md`; define a supported binding policy before making changes.
+
+## Console human-readable timestamp contract (FMT-01)
+
+Human-readable `console` output always formats a timestamp according to `ConsoleConfig.TimeFormat` (Go time layout, default `time.RFC3339`). Example compact 24-hour local time: `"2006-01-02 15:04:05"`. Set `Config.Timestamp = true` to include a timestamp in emitted events.
+
+When zerolog's `TimeFieldFormat` encodes Unix seconds, milliseconds, microseconds or nanoseconds, the custom console writer converts its numeric JSON timestamp to a `time.Time` in the **process local timezone** and displays the configured human-readable layout. Subsecond precision is preserved when that layout includes it. String-formatted timestamps continue to use the original parsing path. JSON output remains raw/unchanged.
+
+FMT-01 is implemented and tested in [PR #13](https://github.com/majiddarvishan/fluxlog/pull/13). See [Actions run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603). No global timestamp format mutation was added to the core library.

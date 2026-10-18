@@ -91,3 +91,20 @@ The user requested continuation in Persian, with all created/modified repository
 - Reproduced defects are **not fixed**; only CFG-01 and LVL-01 are marked complete. Remaining work awaits explicit API/behavior decisions.
 - Full evidence and precise names: [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
 - No local execution or release/tag was performed.
+
+---
+
+# 2026-10-18 — FMT-01: human-readable time in console output
+
+The maintainer confirmed temporary-branch cleanup and explicitly requested timestamps to remain **human-readable** in console output. This authorized a narrowly scoped FMT-01 runtime correction.
+
+- Verified starting `main@d4866c7a62789f31531e2017fd43bcadcdaa2757`, with only `main` remaining and no open PRs.
+- Created branch `fix/human-readable-unix-console-timestamps`, opened [PR #13](https://github.com/majiddarvishan/fluxlog/pull/13).
+- Updated `console.go:timestampFormatter` to decode `json.Number` from zerolog's Unix seconds/milliseconds/microseconds/nanoseconds with integer division and process-local time, retaining the configured `ConsoleConfig.TimeFormat` layout and previous string timestamp behavior.
+- Kept default RFC3339, JSON output, source dependencies, goconfig integration and unrelated logger semantics unchanged.
+- Updated the FMT-01 test to check real `PASS` rather than SKIP for all four Unix units; added negative/fractional precision, custom 24-hour format and actual Logger pipeline tests.
+- Documented `TimeFormat: "2006-01-02 15:04:05"` in English README; documented the configuration field.
+- Initial CI checks failed **gofmt only** in the newly edited test file; formatting was corrected before full verification.
+- [Actions run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603) PASSED both Go 1.23 CI jobs (tidy, gofmt, vet, race tests and example builds). The four formerly skipped Unix cases and all new FMT-01 checks PASS.
+- FMT-01 marked complete. CFG-02 and CFG-03 remain **open** and their tests SKIP by design; no fixes were made to them.
+- No local test run or release/tag was performed. After final docs commit, verify the final PR run, merge and post-merge CI.
