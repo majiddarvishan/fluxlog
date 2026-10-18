@@ -213,3 +213,5 @@ with **one consolidated test run at the end**.
   publication merely because dependency migration succeeded.
 - At documentation commit time, full final migration CI was still pending.
   Verify actual post-PR and post-merge results before closing REL-03.
+
+- The official-tag migration **PASSED** [GitHub Actions run 39168203987](https://github.com/majiddarvishan/fluxlog/actions/runs/39168203987) for both root and adapter jobs (tidy, fmt, vet, race, examples). The strict CFG-01/02/03 tests all passed, no SKIPs. This is a PR-run outcome; final main CI will be checked separately.

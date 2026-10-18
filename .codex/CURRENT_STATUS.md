@@ -22,8 +22,8 @@ No root Go implementation changes.
 
 ## Remaining release gates
 
-- Verify final migration PR and post-merge CI for both modules, then finish
-  documentation with the exact main SHA and CI run.
+- Migration PR test evidence is PASS in run 39168203987. Verify the final
+  documentation commit CI and post-merge main status before release tagging.
 - Root Fluxlog `v0.3.0` and nested adapter `adapters/goconfig/v0.2.0`
   are **planned, not published**. The root tag requires approval and
   access to an authorized Git client; after it exists, update the nested

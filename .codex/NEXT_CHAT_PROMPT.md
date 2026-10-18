@@ -15,8 +15,7 @@ Explain in **Persian**. All repo docs, comments and code must be **English**.
 - Official Go module origin/checksums were obtained through Go 1.23 in
   [39167874434](https://github.com/majiddarvishan/fluxlog/actions/runs/39167874434).
   All temporary checksum workflows should be absent from final diff.
-- Strict CFG-02/CFG-03 tests and the post-commit integration already passed
-  against upstream source; they must pass again with **tagged v1.7.0**.
+- Strict CFG-01/CFG-02/CFG-03 tests and both modules' checks **PASSED with tagged v1.7.0** in [CI 39168203987](https://github.com/majiddarvishan/fluxlog/actions/runs/39168203987); do not confuse that PR-run evidence with post-merge CI.
 
 ## Remaining steps
 

@@ -28,8 +28,7 @@ github.com/majiddarvishan/goconfig v1.7.0/go.mod h1:oNFfQuyPt3xp2tdZSl3vutSXxnsH
 - Existing Fluxlog `main@70b17302e5cc5b2974fff502227552ed8cf4d694`
   passed [CI 39167270820](https://github.com/majiddarvishan/fluxlog/actions/runs/39167270820)
   for both core and adapter before this migration.
-- Full CI on the final migration PR commit, and then post-merge main,
-  must pass before marking the migration complete.
+- The migration source passed both modules in [CI run 39168203987](https://github.com/majiddarvishan/fluxlog/actions/runs/39168203987), including tidy/format/vet/race/example-build gates. Strict CFG-01/CFG-02/CFG-03 tests all PASS. Final docs commit and post-merge main still require verification.
 - The current *published* Fluxlog root version is `v0.2.1`. The current
   *published* nested adapter is `adapters/goconfig/v0.1.0`. Neither is
   automatically updated by an upstream goconfig tag.
@@ -39,7 +38,7 @@ github.com/majiddarvishan/goconfig v1.7.0/go.mod h1:oNFfQuyPt3xp2tdZSl3vutSXxnsH
 
 ## Remaining work
 
-1. Verify the tagged upstream dependency migration under Go CI.
+1. **DONE:** official tagged upstream dependency migrated and verified by Go CI 39168203987; confirm post-merge CI before release tagging.
 2. Publish Fluxlog root `v0.3.0` at the exact tested main commit using
    an authorized Git client.
 3. Migrate the adapter's dependency on root Fluxlog `v0.2.1` to `v0.3.0`;
