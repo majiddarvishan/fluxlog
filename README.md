@@ -105,6 +105,12 @@ logger.Debug().Msg("debug logging is now enabled")
 Level changes affect only the target `Logger` instance. They never call
 `zerolog.SetGlobalLevel`.
 
+**External zerolog global filtering still applies.** If other application code
+calls `zerolog.SetGlobalLevel(zerolog.ErrorLevel)`, a Fluxlog Logger configured
+at `DebugLevel` will still suppress debug events. The effective output threshold
+is constrained by both zerolog's process-global level and the Fluxlog instance
+level; setting a lower instance threshold cannot override global filtering.
+
 ## Console and rotating JSON file
 
 ```go

@@ -2,13 +2,13 @@
 
 **Planning date:** 2026-10-18  
 **Scope:** `github.com/majiddarvishan/fluxlog` (core plus independently versioned `adapters/goconfig`).  
-**Maintainer decision:** Use **`github.com/majiddarvishan/goconfig v1.6.0`**. All other items are **planned**, not authorized as implemented changes.  
+**Maintainer decision:** Use **`github.com/majiddarvishan/goconfig v1.6.0`**. Phase 1 **test-only** characterization has now been executed; production fixes remain unapproved.  
 **Tracking:** task IDs below are stable; update checkboxes only when acceptance criteria have actually been met.
 
 ## Current execution boundary
 
-- **In scope now:** dependency upgrade to goconfig v1.6.0, canonical module/checksum files, compatibility verification, this English plan and handoff documentation.
-- **Deferred:** every runtime implementation, new test, public API modification, release/tag, and optimization described below. Those remain separate follow-up tasks.
+- **Completed:** dependency upgrade to v1.6.0, focused Phase 1 test-only characterization, and English CI evidence.
+- **Deferred:** any behavior-changing runtime fix, API modification, release/tag or speculative optimization. See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
 - **Not requested:** asynchronous logging, new exporters, queueing, broad architecture rewrites or new providers.
 
 ## P0 — dependency migration and baseline verification
@@ -20,11 +20,11 @@
 
 - [x] **INV-01 — Source-level behavior characterization.** Reviewed pinned goconfig v1.6.0 mutation/OnReplace/FileSource code and zerolog v1.35.1 formatting/global-level code. Recorded evidence and reproducible test scenarios in [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md). **Important:** this is **not** execution of the regression tests below.
 
-- [ ] **CFG-01 — Test runtime goconfig replacement on v1.6.0.** Exercise `Manager.Replace` after `BindLevel`: successful `info -> debug`, invalid level rejection and rollback; check new/current level and persisted node consistency. **Acceptance:** focused integration tests reproduce expected states (including invalid input) under `-race`. **Depends on:** DEP-02.
-- [ ] **CFG-02 — Characterize multi-logger binding and callback lifetime.** Bind two loggers to one manager level node, replace once and observe both; examine `OnReplace` registration and whether manager retains callbacks after Logger.Close. v1.6.0 still appends handler registrations and selects a matching path, so **do not assume** fan-out or deregistration. **Acceptance:** tests + explicit documented support policy; only then propose minimal fix if a supported use case fails. **Depends on:** CFG-01. **Source review:** OBS-01 confirms the first-match handler selection in goconfig v1.6.0; still requires test and contract decision.
-- [ ] **CFG-03 — Persistence-failure rollback of logger side effects.** After a successful `BindLevel` callback and a failed `FileSource.setConfig`, the goconfig Node is restored but the fluxlog runtime level may remain changed. Introduce deterministic failure-injection verification, specify transactional consistency requirements and choose a minimal fix only if approved. **Acceptance:** reproducible error-path test with node, file and runtime level assertions. **Source review:** OBS-02. **Depends on:** CFG-01.
-- [ ] **LVL-01 — Define effective per-instance threshold with zerolog global level.** Test a fluxlog logger after external `zerolog.SetGlobalLevel` calls (restore original global state; avoid parallel pollution). Decide whether the contract promises independence from **other fluxlog instances** or also from **external zerolog global filtering**. **Acceptance:** reproducible test and explicit contract; defer code changes until the expected policy is approved.
-- [ ] **FMT-01 — Characterize Unix-format timestamps.** Test console formatting when `zerolog.TimeFieldFormat` uses numeric Unix variants, versus RFC3339 strings; also confirm JSON output is unaffected. **Acceptance:** expected output documented and regression tests; avoid changing behavior until reproduced.
+- [x] **CFG-01 — Test runtime goconfig replacement on v1.6.0.** Exercise `Manager.Replace` after `BindLevel`: successful `info -> debug`, invalid level rejection and rollback; check new/current level and persisted node consistency. **Acceptance:** focused integration tests reproduce expected states (including invalid input) under `-race`. **Depends on:** DEP-02. **Evidence:** 2 PASS in Actions run 39146082868 (including real FileSource persistence).
+- [ ] **CFG-02 — Characterize multi-logger binding and callback lifetime.** Bind two loggers to one manager level node, replace once and observe both; examine `OnReplace` registration and whether manager retains callbacks after Logger.Close. v1.6.0 still appends handler registrations and selects a matching path, so **do not assume** fan-out or deregistration. **Acceptance:** tests + explicit documented support policy; only then propose minimal fix if a supported use case fails. **Depends on:** CFG-01. **Source review:** OBS-01 confirms the first-match handler selection in goconfig v1.6.0; Observed in CI: SKIP with second logger stuck at info; requires explicit supported contract and fix decision.
+- [ ] **CFG-03 — Persistence-failure rollback of logger side effects.** After a successful `BindLevel` callback and a failed `FileSource.setConfig`, the goconfig Node is restored but the fluxlog runtime level may remain changed. Introduce deterministic failure-injection verification, specify transactional consistency requirements and choose a minimal fix only if approved. **Acceptance:** reproducible error-path test with node, file and runtime level assertions. **Executable evidence:** SKIP in Actions run 39146082868 (runtime debug, node/file info). **Depends on:** CFG-01. Remains open pending expected consistency policy/fix.
+- [x] **LVL-01 — Define effective per-instance threshold with zerolog global level.** Test a fluxlog logger after external `zerolog.SetGlobalLevel` calls (restore original global state; avoid parallel pollution). Decide whether the contract promises independence from **other fluxlog instances** or also from **external zerolog global filtering**. **Acceptance:** reproducible test and explicit contract. **Evidence:** PASS in Actions run 39146082868; README explicitly documents that external zerolog global filtering remains effective. No logger implementation change.
+- [ ] **FMT-01 — Characterize Unix-format timestamps.** Test console formatting when `zerolog.TimeFieldFormat` uses numeric Unix variants, versus RFC3339 strings; also confirm JSON output is unaffected. **Evidence:** Four numeric Unix cases reproduced and SKIPPED as known defects in Actions run 39145924506; RFC3339 passed and JSON passthrough verified. Remains open for compatibility decision and fix.
 
 ## P2 — lifecycle and sink reliability
 
@@ -62,4 +62,4 @@ DEP-01 -> DEP-02
 
 Each follow-up should be narrowly scoped: first reproduce (or document expected behavior), then decide whether code change is warranted, then add regression tests and verify both modules. Prefer one focused PR per coherent correction. **Do not merge speculative fixes** and do not tag a release implicitly. After PR merge, verify `main`, remove temporary remote branches if possible, and update `CURRENT_STATUS.md` / `SESSION.md`.
 
-See [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for phases, change boundaries and final acceptance gates. Read [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md) for source-backed risks and precise test scenarios.
+See [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for phases and gates, [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md) for source paths, and [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md) for actual PASS/SKIP outcomes.
