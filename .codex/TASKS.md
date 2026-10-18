@@ -18,8 +18,11 @@
 
 ## P1 — correctness and existing API contracts (tests first)
 
+- [x] **INV-01 — Source-level behavior characterization.** Reviewed pinned goconfig v1.6.0 mutation/OnReplace/FileSource code and zerolog v1.35.1 formatting/global-level code. Recorded evidence and reproducible test scenarios in [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md). **Important:** this is **not** execution of the regression tests below.
+
 - [ ] **CFG-01 — Test runtime goconfig replacement on v1.6.0.** Exercise `Manager.Replace` after `BindLevel`: successful `info -> debug`, invalid level rejection and rollback; check new/current level and persisted node consistency. **Acceptance:** focused integration tests reproduce expected states (including invalid input) under `-race`. **Depends on:** DEP-02.
-- [ ] **CFG-02 — Characterize multi-logger binding and callback lifetime.** Bind two loggers to one manager level node, replace once and observe both; examine `OnReplace` registration and whether manager retains callbacks after Logger.Close. v1.6.0 still appends handler registrations and selects a matching path, so **do not assume** fan-out or deregistration. **Acceptance:** tests + explicit documented support policy; only then propose minimal fix if a supported use case fails. **Depends on:** CFG-01.
+- [ ] **CFG-02 — Characterize multi-logger binding and callback lifetime.** Bind two loggers to one manager level node, replace once and observe both; examine `OnReplace` registration and whether manager retains callbacks after Logger.Close. v1.6.0 still appends handler registrations and selects a matching path, so **do not assume** fan-out or deregistration. **Acceptance:** tests + explicit documented support policy; only then propose minimal fix if a supported use case fails. **Depends on:** CFG-01. **Source review:** OBS-01 confirms the first-match handler selection in goconfig v1.6.0; still requires test and contract decision.
+- [ ] **CFG-03 — Persistence-failure rollback of logger side effects.** After a successful `BindLevel` callback and a failed `FileSource.setConfig`, the goconfig Node is restored but the fluxlog runtime level may remain changed. Introduce deterministic failure-injection verification, specify transactional consistency requirements and choose a minimal fix only if approved. **Acceptance:** reproducible error-path test with node, file and runtime level assertions. **Source review:** OBS-02. **Depends on:** CFG-01.
 - [ ] **LVL-01 — Define effective per-instance threshold with zerolog global level.** Test a fluxlog logger after external `zerolog.SetGlobalLevel` calls (restore original global state; avoid parallel pollution). Decide whether the contract promises independence from **other fluxlog instances** or also from **external zerolog global filtering**. **Acceptance:** reproducible test and explicit contract; defer code changes until the expected policy is approved.
 - [ ] **FMT-01 — Characterize Unix-format timestamps.** Test console formatting when `zerolog.TimeFieldFormat` uses numeric Unix variants, versus RFC3339 strings; also confirm JSON output is unaffected. **Acceptance:** expected output documented and regression tests; avoid changing behavior until reproduced.
 
@@ -43,6 +46,7 @@
 DEP-01 -> DEP-02
                |
                +-> CFG-01 -> CFG-02
+               |          +-> CFG-03
                +-> LVL-01
                +-> FMT-01
                |
@@ -58,4 +62,4 @@ DEP-01 -> DEP-02
 
 Each follow-up should be narrowly scoped: first reproduce (or document expected behavior), then decide whether code change is warranted, then add regression tests and verify both modules. Prefer one focused PR per coherent correction. **Do not merge speculative fixes** and do not tag a release implicitly. After PR merge, verify `main`, remove temporary remote branches if possible, and update `CURRENT_STATUS.md` / `SESSION.md`.
 
-See [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for phases, change boundaries and final acceptance gates.
+See [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for phases, change boundaries and final acceptance gates. Read [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md) for source-backed risks and precise test scenarios.
