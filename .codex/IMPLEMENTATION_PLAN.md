@@ -79,3 +79,7 @@ After each merged PR, record the final `main` SHA, tests actually run, whether t
 ## Executed Phase 1 testing — 2026-10-18
 
 See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md). The focused tests have now been added and executed with a race detector in remote CI. **CFG-01 and LVL-01 passed and are complete.** CFG-02, CFG-03 and four FMT-01 Unix numeric cases reproduced known defects and remain **SKIP/open**, not completed fixes. An RFC3339 positive test passed. No production code changes were made. The next implementation phase needs explicit product decisions about callback fan-out, persistence rollback consistency and supported Unix timestamp formats before code can be changed.
+
+## FMT-01 resolution — 2026-10-18
+
+The maintainer authorized human-readable timestamps in console output. [PR #13](https://github.com/majiddarvishan/fluxlog/pull/13) implements conversion from zerolog numeric Unix timestamp encodings to process-local time in `ConsoleConfig.TimeFormat`, without changing JSON output or the default RFC3339 layout. Full [CI run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603) passed; all four previously skipped numeric cases, custom layout, fractional/negative conversion and live logger tests now pass. **FMT-01 is complete.** No changes were made to open CFG-02/CFG-03 cases.

@@ -1,31 +1,30 @@
-# Fluxlog — next chat handoff
+# Fluxlog — continuation prompt
 
-You are a **Senior Go Software Architect / Logging and Reliability Engineer** working on `git@github.com:majiddarvishan/fluxlog.git`.
+You are a **Senior Go Software Architect / Logging and Reliability Engineer** working in `github.com/majiddarvishan/fluxlog`.
 
-**Language policy:** Respond to the maintainer in **Persian**, but keep **all files and code comments written to the repository in English**.
+**Language policy:** Explain all work to the maintainer in **Persian**. All repository files, documentation, source comments and test names must be in **English**.
 
-## Last verified state — 2026-10-18
+## Verified baseline and recent PRs
 
-- Default branch: `main`, baseline prior to Phase 1 test PR `78274ee19a1668a71ac563b0e64b69b86b9f0ff9`.
-- PRs #9, #10, #11 merged. Optional nested `adapters/goconfig` module uses `goconfig v1.6.0`; core has no goconfig dependency.
-- Current work in [PR #12](https://github.com/majiddarvishan/fluxlog/pull/12) adds regression **tests only**, verbose CI, README global-filter caveat and updated English `.codex` records.
-- [Actions run 39146082868](https://github.com/majiddarvishan/fluxlog/actions/runs/39146082868) succeeded (core and adapter tidy, fmt, vet, race tests, examples). Final PR commit and post-merge run must be checked separately.
+- Default branch: `main`.
+- Verified `main` before the human-readable timestamp work: `d4866c7a62789f31531e2017fd43bcadcdaa2757`.
+- Prior PRs #9, #10, #11 and #12 are merged.
+- Upgraded optional `adapters/goconfig` module uses `goconfig v1.6.0`, with no dependency in the core module.
+- Current change: [PR #13](https://github.com/majiddarvishan/fluxlog/pull/13), implementing only FMT-01 human-readable Unix console timestamps.
+- [GitHub Actions run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603) passed both modules, with all new FMT-01 cases PASS. Check final PR commit and post-merge CI before declaring the work complete.
 
-## Phase 1 outcomes
+## Current behavior
 
-- **CFG-01 DONE:** live replacement plus invalid rollback, including a real file, PASS.
-- **LVL-01 DONE:** zerolog's external global threshold applies before fluxlog's per-instance writer, PASS, documented in README.
-- **CFG-02 OPEN:** two bindings on one goconfig node: first logger updates, second stays unchanged, **SKIP**.
-- **CFG-03 OPEN:** failed FileSource persistence reverts config but not external Logger level, **SKIP**.
-- **FMT-01 OPEN:** console timestamps using Unix sec/milli/micro/nano omit timestamp, **four SKIPs**; string RFC3339 PASS.
-- **Total six known-issue SKIPs** across targeted scenarios. Green CI **does not** mean these bugs are fixed.
+- `ConsoleConfig.TimeFormat` is the Go time layout used for human-readable console output. Default remains `time.RFC3339`. For a compact 24-hour clock, use `2006-01-02 15:04:05`.
+- The console formatter converts zerolog's Unix seconds, milliseconds, microseconds and nanoseconds to local time, including fractional and negative epochs, without changing original JSON.
+- CFG-01 and LVL-01 already PASSED their tests.
+- **CFG-02 and CFG-03 remain open**: multiple bind callbacks to one goconfig path only notify the first listener; failed FileSource persistence can leave Logger's level changed while the config value is rolled back. The tests still SKIP on these known issues.
+- No asynchronous logger, exporters, new API or release/tag was requested.
 
-Read [`.codex/TEST_EVIDENCE_2026-10-18.md`](TEST_EVIDENCE_2026-10-18.md), [TASKS.md](TASKS.md), [CURRENT_STATUS.md](CURRENT_STATUS.md), [REVIEW_2026-10-18.md](REVIEW_2026-10-18.md), [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) and [ARCHITECTURE.md](ARCHITECTURE.md) as needed. Do **not** re-audit the whole repository. Compare changed files from known baseline.
+## Next steps
 
-## Constraints and next actions
-
-1. First check actual `main`, PR #12, CI, active branches and whether the plan files were merged.
-2. Do not change production Go implementation without a new explicit authorization; the current user's direction was to continue testing, not silently fix known runtime defects.
-3. Define expected behavior for CFG-02 (one vs multiple callbacks), CFG-03 (persistence/side-effect transaction) and FMT-01 (Unix format support) before designing a fix.
-4. For authorized fixes, use minimal changes, exercise both Go modules via Go 1.23 CI, update evidence and tasks; never silently tag or release.
-5. After merging, verify `main`, CI and **branch cleanup**. If delete is unsupported by the connected GitHub interface, tell the maintainer the exact remote deletion command.
+1. Verify actual GitHub main HEAD, open PRs, CI, and remote branch list; clean up merged temporary branch if possible.
+2. Read `.codex/START_HERE.md`, `CURRENT_STATUS.md`, `TASKS.md`, `TEST_EVIDENCE_2026-10-18.md`, `CONFIGURATION.md` and `SESSION.md` without re-auditing every source file.
+3. Do not fix CFG-02 or CFG-03 without agreeing the supported multi-binding and persistence transaction contracts.
+4. If asked to continue testing, prioritize LIFE-01, FILE-01 and ERR-01 with targeted regression tests, and run CI for **both modules**.
+5. Keep `.codex` current with actual evidence. Never mark a SKIP as a fix, do not invent test results and do not tag/releases without explicit instruction.

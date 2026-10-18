@@ -2,13 +2,13 @@
 
 **Planning date:** 2026-10-18  
 **Scope:** `github.com/majiddarvishan/fluxlog` (core plus independently versioned `adapters/goconfig`).  
-**Maintainer decision:** Use **`github.com/majiddarvishan/goconfig v1.6.0`**. Phase 1 **test-only** characterization has now been executed; production fixes remain unapproved.  
+**Maintainer decision:** Use **`github.com/majiddarvishan/goconfig v1.6.0`**. Phase 1 characterization is complete. The maintainer explicitly approved human-readable console time, and FMT-01 was implemented without modifying unrelated behavior.  
 **Tracking:** task IDs below are stable; update checkboxes only when acceptance criteria have actually been met.
 
 ## Current execution boundary
 
-- **Completed:** dependency upgrade to v1.6.0, focused Phase 1 test-only characterization, and English CI evidence.
-- **Deferred:** any behavior-changing runtime fix, API modification, release/tag or speculative optimization. See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
+- **Completed:** dependency upgrade to v1.6.0, Phase 1 characterization, FMT-01 human-readable Unix timestamp fix, and English CI evidence.
+- **Deferred:** CFG-02/CFG-03 behavior changes, unrelated API modifications, release/tag or speculative optimization. See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
 - **Not requested:** asynchronous logging, new exporters, queueing, broad architecture rewrites or new providers.
 
 ## P0 — dependency migration and baseline verification
@@ -24,7 +24,7 @@
 - [ ] **CFG-02 — Characterize multi-logger binding and callback lifetime.** Bind two loggers to one manager level node, replace once and observe both; examine `OnReplace` registration and whether manager retains callbacks after Logger.Close. v1.6.0 still appends handler registrations and selects a matching path, so **do not assume** fan-out or deregistration. **Acceptance:** tests + explicit documented support policy; only then propose minimal fix if a supported use case fails. **Depends on:** CFG-01. **Source review:** OBS-01 confirms the first-match handler selection in goconfig v1.6.0; Observed in CI: SKIP with second logger stuck at info; requires explicit supported contract and fix decision.
 - [ ] **CFG-03 — Persistence-failure rollback of logger side effects.** After a successful `BindLevel` callback and a failed `FileSource.setConfig`, the goconfig Node is restored but the fluxlog runtime level may remain changed. Introduce deterministic failure-injection verification, specify transactional consistency requirements and choose a minimal fix only if approved. **Acceptance:** reproducible error-path test with node, file and runtime level assertions. **Executable evidence:** SKIP in Actions run 39146082868 (runtime debug, node/file info). **Depends on:** CFG-01. Remains open pending expected consistency policy/fix.
 - [x] **LVL-01 — Define effective per-instance threshold with zerolog global level.** Test a fluxlog logger after external `zerolog.SetGlobalLevel` calls (restore original global state; avoid parallel pollution). Decide whether the contract promises independence from **other fluxlog instances** or also from **external zerolog global filtering**. **Acceptance:** reproducible test and explicit contract. **Evidence:** PASS in Actions run 39146082868; README explicitly documents that external zerolog global filtering remains effective. No logger implementation change.
-- [ ] **FMT-01 — Characterize Unix-format timestamps.** Test console formatting when `zerolog.TimeFieldFormat` uses numeric Unix variants, versus RFC3339 strings; also confirm JSON output is unaffected. **Evidence:** Four numeric Unix cases reproduced and SKIPPED as known defects in Actions run 39145924506; RFC3339 passed and JSON passthrough verified. Remains open for compatibility decision and fix.
+- [x] **FMT-01 — Render Unix-format timestamps as human-readable local time.** The console formatter now converts zerolog's integer Unix seconds/milliseconds/microseconds/nanoseconds using `ConsoleConfig.TimeFormat`, including negative and fractional values, while preserving the RFC3339 default and unchanged JSON output. **Evidence:** all FMT-01 cases, custom 24-hour layout and full Logger pipeline PASS in [Actions run 39147165603](https://github.com/majiddarvishan/fluxlog/actions/runs/39147165603); PR #13. Earlier four SKIPs in run 39145924506 are historical regression evidence.
 
 ## P2 — lifecycle and sink reliability
 

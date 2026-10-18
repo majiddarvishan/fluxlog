@@ -1,6 +1,7 @@
 package fluxlog
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -37,17 +38,44 @@ func newConsoleWriter(
 	return writer
 }
 
+// timestampFormatter renders both formatted zerolog timestamps and the
+// integer Unix timestamp formats as readable time in the configured layout.
 func timestampFormatter(timeFormat string) zerolog.Formatter {
 	return func(value any) string {
-		timestamp, ok := value.(string)
-		if !ok || timestamp == "" {
+		switch timestamp := value.(type) {
+		case string:
+			if timestamp == "" {
+				return ""
+			}
+			parsed, err := time.Parse(zerolog.TimeFieldFormat, timestamp)
+			if err != nil {
+				return timestamp
+			}
+			return parsed.Format(timeFormat)
+		case json.Number:
+			value, err := timestamp.Int64()
+			if err != nil {
+				return timestamp.String()
+			}
+
+			var seconds, nanoseconds int64
+			switch zerolog.TimeFieldFormat {
+			case zerolog.TimeFormatUnix:
+				seconds = value
+			case zerolog.TimeFormatUnixMs:
+				seconds, nanoseconds = value/1_000, (value%1_000)*1_000_000
+			case zerolog.TimeFormatUnixMicro:
+				seconds, nanoseconds = value/1_000_000, (value%1_000_000)*1_000
+			case zerolog.TimeFormatUnixNano:
+				seconds, nanoseconds = value/1_000_000_000, value%1_000_000_000
+			default:
+				// Unknown numeric units must not be silently misinterpreted.
+				return timestamp.String()
+			}
+			return time.Unix(seconds, nanoseconds).Local().Format(timeFormat)
+		default:
 			return ""
 		}
-		parsed, err := time.Parse(zerolog.TimeFieldFormat, timestamp)
-		if err != nil {
-			return timestamp
-		}
-		return parsed.Format(timeFormat)
 	}
 }
 
