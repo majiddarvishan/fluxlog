@@ -7,7 +7,7 @@
 
 ## Current execution boundary
 
-- **Completed:** dependency upgrade to v1.6.0, Phase 1 characterization, FMT-01 human-readable Unix timestamp fix, Phase 2 LIFE-01/FILE-01/ERR-01 verification, and English CI evidence.
+- **Completed:** dependency upgrade to v1.6.0, Phase 1 characterization, FMT-01 human-readable Unix timestamp fix, Phase 2 LIFE-01/FILE-01/ERR-01/FMT-02 verification, and English CI evidence.
 - **Deferred:** CFG-02/CFG-03 behavior changes, unrelated API modifications, release/tag or speculative optimization. See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
 - **Not requested:** asynchronous logging, new exporters, queueing, broad architecture rewrites or new providers.
 
@@ -31,7 +31,7 @@
 - [x] **LIFE-01 — Concurrent Close/Write and default ownership tests.** Stress active writer vs Close, multiple Close calls, post-close events and `SetDefault` pointer swaps; include the race detector. **Acceptance:** no races or deadlocks, deterministic ownership expectations and controlled error outcomes. **Evidence:** 3 PASS in Actions [run 39158993645](https://github.com/majiddarvishan/fluxlog/actions/runs/39158993645); includes blocked active writer, concurrent Close/Write, default logger swap and post-close error.
 - [x] **FILE-01 — Real rotation and retention tests.** Use temp dirs to verify size rollover, MaxBackups, MaxAgeDays, Compress and LocalTime where applicable. **Acceptance:** temporary-directory tests and bounded observable-completion polling for asynchronous retention. **Evidence:** 4 PASS in Actions run 39158993645: size rotation, option propagation, actual MaxBackups cleanup, MaxAge deletion and gzip content. **Caveat:** LocalTime filename timezone only checked via configuration forwarding.
 - [x] **ERR-01 — Output-failure tests.** Cover failing custom `io.Writer`, parent directory/permission failure and partial multi-output failure. **Acceptance:** 3 PASS (with two subcases) in Actions run 39158993645: failing/short stream, partial multi-sink failure and invalid directory. Event.Msg error reporting remains zerolog-owned; no new Fluxlog API.
-- [ ] **FMT-02 — Complete ANSI/color contract tests.** Test Auto/Always/Never modes, `NO_COLOR`, file console-formatted output, and service/caller formatting. **Acceptance:** clear compatibility contract with tests on a CI-compatible platform.
+- [x] **FMT-02 — Complete ANSI/color contract tests.** Auto/Always/Never for non-terminal output, `NO_COLOR` overriding AlwaysColor, service/caller fields, and dual console+file sinks are verified. **Acceptance:** all FMT-02 subtests PASS in [CI 39159526896](https://github.com/majiddarvishan/fluxlog/actions/runs/39159526896), both modules passing race, vet, formatting and example builds; file console format contains no ANSI codes even when stream output is colored.
 
 ## P3 — release hygiene and optional optimization (after correctness)
 

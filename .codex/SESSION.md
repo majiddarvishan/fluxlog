@@ -125,3 +125,16 @@ The maintainer asked to continue, after the human-readable timestamp PR #13 merg
 - No runtime Go code changes, no dependency updates, no release or tag, and no local Go execution. Detailed evidence: [PHASE2_TEST_EVIDENCE_2026-10-18.md](PHASE2_TEST_EVIDENCE_2026-10-18.md).
 - CFG-02 and CFG-03 remain reproduced, unresolved known-issue SKIPs. Future contract decisions are needed before behavior changes.
 - Final step: verify PR #14 final CI, merge to main if clean, check post-merge CI and remote branch cleanup.
+
+---
+
+# 2026-10-18 — FMT-02 console output contracts
+
+The maintainer requested continuation following the Phase 2 hardening tests.
+
+- Verified `main@5c972345043b5e315c8125a444f4c68754ffbaf9` after merging PR #14; post-merge [CI 39159303947](https://github.com/majiddarvishan/fluxlog/actions/runs/39159303947) passed.
+- Created `test/fluxlog-fmt02-console-color-contract`, [PR #15](https://github.com/majiddarvishan/fluxlog/pull/15).
+- Added `console_contract_integration_test.go` only: Auto/Always/Never modes, NO_COLOR override, service/caller fields, and dual console+human-readable file output (ANSI disabled in file sink).
+- Formatted test file per gofmt output. [CI run 39159526896](https://github.com/majiddarvishan/fluxlog/actions/runs/39159526896) passed both core and adapter Go 1.23 jobs (tidy/fmt/vet/race/example builds). All FMT-02 tests PASS, core coverage 76.9%.
+- FMT-02 marked complete, no runtime fixes, no tag/release. Remaining known defects CFG-02 and CFG-03 still SKIP; REL-01/DOC-01 docs tasks are open.
+- Update CI evidence and verify final PR/merge/branch cleanup before closing this session.

@@ -45,3 +45,15 @@ Both CI jobs performed `go mod tidy` consistency, formatting checks, `go vet`, `
 ## Outstanding unrelated work
 
 `CFG-02` and `CFG-03` remain observed/known-issue **SKIPs**, not fixed. `FMT-02` is still open for additional console-color contract checks; `REL-01` and `DOC-01` remain release/documentation tasks. `PERF-01` and `CI-01` remain optional. No broad logger rewrite or async architecture is recommended merely because these tests passed.
+
+---
+
+## FMT-02 console color contract — 2026-10-18 (PR #15)
+
+New file: `console_contract_integration_test.go`, with three test functions and Auto/Always/Never subcases. No runtime code, dependencies or CI workflow changed.
+
+- `TestFMT02ConsoleColorModes`: **PASS**, with `auto-buffer`, `always`, `never` subcases; buffered output does not accidentally gain ANSI, while explicit AlwaysColor does when `NO_COLOR` is unset.
+- `TestFMT02NoColorDisablesServiceLevelAndCallerColors`: **PASS**; `NO_COLOR=1` suppresses ANSI while retaining level, caller, service, request ID and message.
+- `TestFMT02DualOutputKeepsFilePlainText`: **PASS**; a colored console stream and a simultaneous human-readable file sink contain the expected fields, but the file has no ANSI escape codes.
+- **Evidence:** [GitHub Actions run 39159526896](https://github.com/majiddarvishan/fluxlog/actions/runs/39159526896): `core` and `goconfig-adapter` **PASS**, including Go 1.23 race/vet/format/tidy/build. Core coverage **76.9%** in this run.
+- **Result:** FMT-02 is complete with no production changes. Only CFG-02/CFG-03 remain known-issue SKIPs from the earlier Phase 1 behavioral tests.
