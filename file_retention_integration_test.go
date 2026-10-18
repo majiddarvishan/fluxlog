@@ -49,9 +49,9 @@ func TestFILE01MaxBackupsIsEnforced(t *testing.T) {
 	logger, err := New(Config{
 		Level: InfoLevel,
 		File: &FileConfig{
-			Path: filepath.Join(dir, "service.log"),
-			Format: JSONFormat,
-			MaxSizeMB: 1,
+			Path:       filepath.Join(dir, "service.log"),
+			Format:     JSONFormat,
+			MaxSizeMB:  1,
 			MaxBackups: 1,
 		},
 	})
@@ -84,11 +84,11 @@ func TestFILE01MaxAgeAndCompression(t *testing.T) {
 	logger, err := New(Config{
 		Level: InfoLevel,
 		File: &FileConfig{
-			Path: filepath.Join(dir, "service.log"),
-			Format: JSONFormat,
-			MaxSizeMB: 1,
+			Path:       filepath.Join(dir, "service.log"),
+			Format:     JSONFormat,
+			MaxSizeMB:  1,
 			MaxAgeDays: 7,
-			Compress: true,
+			Compress:   true,
 		},
 	})
 	if err != nil {
