@@ -188,3 +188,30 @@ with **one consolidated test run at the end**.
 - `TestCFG02MultipleLoggersOnOneLevelNode`, `TestCFG03FilePersistenceFailureDoesNotLeakRuntimeLevel`, `TestCFG02BatchMultipleLoggersAndInvalidRollback`, and `TestCFG03FileSourceBatchFailureKeepsBothLoggersUnchanged` all **PASS**, without SKIP.
 - Go-generated pseudo-version sums were verified in checksum-only run 39165338586. The temporary workflow is excluded from PR diff.
 - All work is bounded to the optional adapter and documentation. No root runtime changes, no new release/tag, no floating branch dependency.
+
+---
+
+# 2026-10-19 — Official goconfig v1.7.0 dependency migration
+
+- Verified upstream annotated `goconfig v1.7.0` tag object
+  `f3263dd3160cf226ec0f3371d7753615862d0c32` points to commit
+  `213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`; upstream main CI
+  [39167180503](https://github.com/majiddarvishan/goconfig/actions/runs/39167180503)
+  passed.
+- Verified Fluxlog main `70b17302e5cc5b2974fff502227552ed8cf4d694` passed
+  both jobs in [39167270820](https://github.com/majiddarvishan/fluxlog/actions/runs/39167270820)
+  before the migration.
+- Created `release/fluxlog-goconfig-v1.7.0-migration` and updated only
+  the nested module to the official tagged upstream version.
+- Resolved module via Go 1.23 in [Actions 39167874434](https://github.com/majiddarvishan/fluxlog/actions/runs/39167874434).
+  Origin verified against upstream tag commit, exact Go checksums copied
+  without guessing. A temporary checksum-resolution workflow was removed
+  from the final diff.
+- Updated English README, changelog, releasing instructions, status, tasks
+  and cross-chat handoff. The next root `v0.3.0` and nested adapter
+  `adapters/goconfig/v0.2.0` tags are release-gated; do not claim
+  publication merely because dependency migration succeeded.
+- At documentation commit time, full final migration CI was still pending.
+  Verify actual post-PR and post-merge results before closing REL-03.
+
+- The official-tag migration **PASSED** [GitHub Actions run 39168203987](https://github.com/majiddarvishan/fluxlog/actions/runs/39168203987) for both root and adapter jobs (tidy, fmt, vet, race, examples). The strict CFG-01/02/03 tests all passed, no SKIPs. This is a PR-run outcome; final main CI will be checked separately.

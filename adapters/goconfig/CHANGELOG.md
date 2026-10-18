@@ -19,10 +19,9 @@ This is the independently versioned Go module
 
 ### Compatibility
 
-- The current source depends on an **immutable, unreleased upstream goconfig
-  commit** via canonical Go pseudo-version. Before tagging a new adapter
-  version, update this to an actual, published goconfig tag and regenerate
-  `go.sum` using Go tooling.
+- The current source depends on the **published `goconfig v1.7.0`** tag;
+  `go.sum` was regenerated from the official module using Go tooling.
+  The adapter itself still requires a separate nested-module release.
 - goconfig's original `OnReplace` selects the first registered pre-commit
   handler. Fluxlog must own the first validation registration on a level path.
   Post-commit observers remain registered for the Manager's lifetime.

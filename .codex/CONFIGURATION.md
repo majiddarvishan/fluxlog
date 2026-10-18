@@ -123,3 +123,16 @@ Tests: `TestCFG02MultipleLoggersOnOneLevelNode`,
 All PASS (no SKIP) with race detector in [CI run 39165664802](https://github.com/majiddarvishan/fluxlog/actions/runs/39165664802).
 Root Fluxlog `go.mod` remains independent of goconfig. Published adapter
 `v0.1.0` is unchanged and must not be described as including this feature.
+
+
+## Official upstream goconfig dependency (2026-10-19)
+
+The previously integrated post-commit adapter behavior is now pinned to
+the **official `goconfig v1.7.0`** tag, rather than a pseudo-version.
+The tag is annotated and points to
+`213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`.
+Go-generated hashes were verified in
+[Actions run 39167874434](https://github.com/majiddarvishan/fluxlog/actions/runs/39167874434).
+The nested adapter's published `v0.1.0` tag is not changed by this
+dependency upgrade; `main` source and tagged adapter releases must not
+be confused. The legacy first-`OnReplace`-handler constraint remains.

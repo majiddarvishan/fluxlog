@@ -2,14 +2,21 @@
 
 **Planning date:** 2026-10-18  
 **Scope:** `github.com/majiddarvishan/fluxlog` (core plus independently versioned `adapters/goconfig`).  
-**Baseline decision:** use `goconfig v1.6.0`; this integration branch now deliberately pins immutable upstream commit `20a58eb9a426` using its canonical Go pseudo-version until a new tagged goconfig release is authorized. Phase 1 characterization is complete. The maintainer explicitly approved human-readable console time, and FMT-01 was implemented without modifying unrelated behavior.  
+**Current release decision:** migrate the already-tested post-commit adapter integration to the official tagged upstream `goconfig v1.7.0`. The prior pseudo-version is recorded as historical development evidence. Phase 1 characterization is complete. The maintainer explicitly approved human-readable console time, and FMT-01 was implemented without modifying unrelated behavior.  
 **Tracking:** task IDs below are stable; update checkboxes only when acceptance criteria have actually been met.
 
 ## Current execution boundary
 
 - **Completed:** dependency upgrade to v1.6.0, Phase 1 characterization, FMT-01 human-readable Unix timestamp fix, Phase 2 LIFE-01/FILE-01/ERR-01/FMT-02 verification, and English CI evidence.
-- **Current change:** implement CFG-02/CFG-03 with a pinned upstream pre-release commit, strict no-SKIP integration tests and real Go-generated module checksums; acceptance verified by consolidated CI run 39165664802 (both modules PASS). **Deferred:** new release/tag, unrelated API modifications or speculative optimization. **REL-01** is complete for the existing release. **DOC-01** is complete for the current supported source contract; future release notes require separate tag authorization. See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
+- **Current change:** replace the previously tested goconfig source-commit pseudo-version with published upstream `v1.7.0` in the nested adapter module, verify both modules and prepare independent release gates. **Deferred:** unrelated API changes or speculative optimization. **REL-01** is complete for the existing release. **DOC-01** is complete for the current supported source contract; future release notes require separate tag authorization. See [TEST_EVIDENCE_2026-10-18.md](TEST_EVIDENCE_2026-10-18.md).
 - **Not requested:** asynchronous logging, new exporters, queueing, broad architecture rewrites or new providers.
+
+## Release gates — after CFG-02 and CFG-03 are fixed
+
+- [x] **REL-02 — Publish and verify upstream goconfig v1.7.0.** Annotated Git tag resolves to `213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`; upstream [CI 39167180503](https://github.com/majiddarvishan/goconfig/actions/runs/39167180503) passed. Go module origin and sums verified in [run 39167874434](https://github.com/majiddarvishan/fluxlog/actions/runs/39167874434). A separate GitHub Release object has not been published.
+- [x] **REL-03 — Adopt the tagged upstream dependency in the nested adapter.** Nested `go.mod` now uses official `goconfig v1.7.0` and the sums verified by Go. Strict CFG-01/CFG-02/CFG-03 cases PASS without SKIP. Both modules passed dependency consistency, format, vet, race tests and example builds in [PR CI run 39168203987](https://github.com/majiddarvishan/fluxlog/actions/runs/39168203987). Merge and post-merge CI must still be verified as a separate process gate.
+- [ ] **REL-04 — Publish Fluxlog core.** After verified post-merge CI, create a root annotated `v0.3.0` tag on the exact tested main HEAD using an authorized Git client. Confirm remote tag and Go module resolution. Do not create nested adapter tag yet.
+- [ ] **REL-05 — Publish the independently versioned adapter.** After root release, update the adapter's core dependency to root `v0.3.0`, regenerate module sums, pass both CI modules, merge, and tag `adapters/goconfig/v0.2.0` on the new tested main commit.
 
 ## P0 — dependency migration and baseline verification
 

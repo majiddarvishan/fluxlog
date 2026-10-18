@@ -1,43 +1,38 @@
 # Current status — Fluxlog
 
-**Updated:** 2026-10-19  
-**Base main before PR #18:** `3c3b38352e44eb311f7841f670c8071ae7cf41a7`  
-**Development PR:** [#18 — Post-commit shared level binding](https://github.com/majiddarvishan/fluxlog/pull/18)  
-**Final pre-merge test evidence:** [GitHub Actions run 39165664802](https://github.com/majiddarvishan/fluxlog/actions/runs/39165664802) **PASS** for both Go modules.
+**Updated:** 2026-10-19
+**Main before dependency migration:** `70b17302e5cc5b2974fff502227552ed8cf4d694`.
+**Migration branch:** `release/fluxlog-goconfig-v1.7.0-migration`.
+**Scope:** official upstream goconfig module upgrade and release documentation.
+No root Go implementation changes.
 
-## Completed implementation
+## Verified baseline
 
-The optional `adapters/goconfig` module now pins a reproducible upstream
-pseudo-version `v1.6.1-0.20261018202246-20a58eb9a426` (exact commit
-`20a58eb9a426d0ed7d522b1e5848a0971ce58198`). This is a deliberate
-development integration, **not** a newly tagged upstream version.
-Checksum provenance: [Go module resolution run 39165338586](https://github.com/majiddarvishan/fluxlog/actions/runs/39165338586).
+- Previous fixes CFG-02 and CFG-03 (shared Logger updates and persistence
+  rollback consistency) passed without SKIP in PR #18 and post-merge
+  CI [39166047372](https://github.com/majiddarvishan/fluxlog/actions/runs/39166047372).
+- Previous main release documentation passed both jobs in
+  [CI 39167270820](https://github.com/majiddarvishan/fluxlog/actions/runs/39167270820).
+- Upstream goconfig v1.7.0 is an **annotated tag** on commit
+  `213e87a1677af862fa9d6226f4e6ea8d0b0edfbc`.
+- Go resolved the official upstream tag and generated hashes in
+  [CI 39167874434](https://github.com/majiddarvishan/fluxlog/actions/runs/39167874434).
+  The development pseudo-version is replaced by `v1.7.0` in the **nested
+  adapter module only**.
 
-`BindLevel` validates incoming levels before persistence and updates all
-bound loggers only after a successful committed configuration change, using
-the new upstream `Manager.OnReplaceCommitted`. The historical known-issue
-CFG-02 and CFG-03 tests are now strict **PASS** assertions, also covering
-successful/failed Batch, invalid values and real FileSource failure injection.
+## Remaining release gates
 
-`gofmt`, `go mod tidy`, `go vet`, `go test -race`, and example builds
-passed for both the root and adapter jobs in run 39165664802. No root
-runtime source or root `go.mod` was changed.
+- Migration PR test evidence is PASS in run 39168203987. Verify the final
+  documentation commit CI and post-merge main status before release tagging.
+- Root Fluxlog `v0.3.0` and nested adapter `adapters/goconfig/v0.2.0`
+  are **planned, not published**. The root tag requires approval and
+  access to an authorized Git client; after it exists, update the nested
+  adapter's root Fluxlog dependency and verify before tagging the adapter.
+- Old published tags `v0.2.1` and `adapters/goconfig/v0.1.0`
+  remain available. Do not misrepresent them as including current source.
+- Legacy goconfig `OnReplace` uses the first registered validation
+  handler; users must register Fluxlog's validator first on a level path.
+  Post-commit listeners live until their Manager is discarded.
 
-## Tracking
-
-**Complete in development source:** UP-01, UP-02, CFG-01, CFG-02, CFG-03,
-LVL-01, FMT-01, FMT-02, LIFE-01, FILE-01, ERR-01, DEP-01/02, REL-01 and DOC-01.
-
-**Not yet done:** Publish a stable new goconfig tag and, separately, a new
-nested adapter version — neither was authorized or created. Do not say the
-published adapter `v0.1.0` contains these changes.
-
-**Supported limitation:** Fluxlog must be the first pre-commit handler
-registered for a managed level path to validate every candidate level.
-The legacy goconfig `OnReplace` still uses first-match selection.
-Post-commit observers are retained for the lifetime of the Manager.
-The adapter README documents these restrictions.
-
-**Final process checks:** Verify final PR #18 head CI, merge status and
-post-merge main SHA/CI. Clean up temporary branches when possible. All
-committed files are English and explanations to the maintainer are Persian.
+See [RELEASE_READINESS_2026-10-19.md](RELEASE_READINESS_2026-10-19.md)
+and [RELEASING.md](../RELEASING.md) for exact gates and commands.

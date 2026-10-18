@@ -200,12 +200,10 @@ go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.1.0
 
 **Published release vs source:** `v0.1.0` is the latest verified adapter
 module tag. Its `go.mod` requires Fluxlog core `v0.1.0` and `goconfig v1.3.0`.
-The current adapter development source requires core `v0.2.1` and pins
-an immutable **unreleased** goconfig revision,
-`v1.6.1-0.20261018202246-20a58eb9a426`, rather than the old `v1.6.0`.
-It supports post-commit level changes for multiple loggers and optional
-`service` and `caller_max_length` configuration fields. These development changes are not part of the tagged
-adapter release. A root Fluxlog `v0.2.1` tag does **not** publish an adapter
+The current adapter source requires core `v0.2.1` and the now **published**
+`goconfig v1.7.0`, supporting post-commit level changes for multiple loggers
+and optional `service` / `caller_max_length` fields. These adapter changes
+are not part of the published adapter `v0.1.0` release. A root Fluxlog `v0.2.1` tag does **not** publish an adapter
 `v0.2.1`; nested Go modules have independent tag prefixes.
 
 ```go
