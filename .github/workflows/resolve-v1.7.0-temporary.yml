@@ -18,8 +18,8 @@ jobs:
           cache-dependency-path: adapters/goconfig/go.mod
       - name: Resolve official release through Go
         run: |
-          go list -m -json github.com/majiddarvishan/goconfig@v1.7.0
           go mod tidy
+          go list -m -json github.com/majiddarvishan/goconfig@v1.7.0
           printf '%s\n' '=== V1.7.0 CHECKSUMS ==='
           grep -F 'github.com/majiddarvishan/goconfig v1.7.0 ' go.sum
           grep -F 'github.com/majiddarvishan/goconfig v1.7.0/go.mod ' go.sum
