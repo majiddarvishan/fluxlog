@@ -6,17 +6,19 @@ the `level` node is successfully persisted.
 
 ## Install
 
+The independent goconfig adapter is prepared for lockstep `v0.3.2`.
+**Use this version only after verifying the nested
+`adapters/goconfig/v0.3.2` tag exists and resolves as a Go module**:
+
 ```bash
-go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.1
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.2
 ```
 
-The published annotated adapter tag is `adapters/goconfig/v0.3.1`,
-verified on 2026-10-20. It points to CI-tested commit
-`8aa21dd639b4e40afdeb750f4be90a8558e88995`. The adapter
-requires Fluxlog core `v0.3.1` and upstream `goconfig v1.7.0`.
-Core never depends on goconfig. For a **new integration**, check the
-[latest stable tag selection instructions](../../docs/INTEGRATION_GUIDE.md#3-resolve-versions-then-install)
-before choosing versions; these are dated release examples.
+The `v0.3.2` adapter requires published Fluxlog core `v0.3.2` and
+upstream `goconfig v1.7.0`. Historical published `v0.3.1` remains
+available. Core never depends on goconfig. For new integrations, consult
+the [latest stable tag selection guide](../../docs/INTEGRATION_GUIDE.md#3-resolve-versions-then-install)
+and select only verified, compatible published tags.
 
 The earlier adapter `v0.1.0` remains published as historical compatibility
 with core `v0.1.0` and goconfig `v1.3.0`; it does not include the
