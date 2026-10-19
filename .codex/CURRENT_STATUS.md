@@ -1,21 +1,23 @@
 # Current status — Fluxlog
 
-**Verified:** 2026-10-19
-**Main release baseline:** `0b5c2f46dfaf1b6ca2ae08a832d855dffe51582e`.
-**Lockstep v0.3.0 publication:** complete for core and goconfig adapter.
+**Verified:** 2026-10-20
+**Main baseline before this documentation update:** `8aa21dd639b4e40afdeb750f4be90a8558e88995`.
+**Lockstep v0.3.1 tags:** both Core and Adapter confirmed on GitHub.
 
-**Current v0.3.1 release progress (2026-10-19):**
+**Current v0.3.1 release status (verified 2026-10-20):**
 - Core annotated `v0.3.1` tag object `4ccbe38d44cb97930caf80eb593edd0d16dd6070`
   peels to `fdb55d6d48ed9a8fc24b8c1e00994278b7fd1785`; both CI jobs
   passed in [39176344867](https://github.com/majiddarvishan/fluxlog/actions/runs/39176344867).
 - `v0.3.1` records examples, documentation, integration guidance and a
   reusable coding-agent prompt, without core API/behavior change.
-- Adapter `adapters/goconfig/v0.3.1` is pending independent tagging.
-  Its Go module must require core `v0.3.1` and goconfig `v1.7.0`,
-  pass CI in the final PR and on post-merge main, then have its annotated
-  tag and public Go module resolution verified.
-- The following table records the **completed v0.3.0** historical baseline,
-  not the currently pending v0.3.1 adapter publication.
+- Adapter annotated `adapters/goconfig/v0.3.1` tag object
+  `e23ecdd7c0e00e6b2d0555f205e627da5fbde11a` peels to
+  `8aa21dd639b4e40afdeb750f4be90a8558e88995`. Both module CI
+  jobs passed in [39177136303](https://github.com/majiddarvishan/fluxlog/actions/runs/39177136303).
+- Public proxy resolution for adapter `v0.3.1` remains to be checked
+  independently by consumers; GitHub tag presence is verified.
+- The table below records the **v0.3.0 historical baseline** for comparison,
+  not the latest published tags.
 
 ## Published Go modules
 
@@ -32,7 +34,7 @@
 ## Architectural and release guarantees
 
 - Core and all official adapters share release version numbers from v0.3.0 onward; Go modules and tags remain separate. Release commits can differ.
-- The adapter requires core v0.3.0 and upstream goconfig v1.7.0. The core module has **no** goconfig dependency.
+- The latest verified adapter tag `v0.3.1` requires core v0.3.1 and upstream goconfig v1.7.0. The core module has **no** goconfig dependency.
 - Historical releases `v0.2.1` and `adapters/goconfig/v0.1.0` remain unchanged. No adapter v0.2.0 tag was published.
 - The first legacy goconfig `OnReplace` handler validates the initial candidate; committed observers live for the Manager lifetime. This limitation is documented and accepted for v0.3.0.
 - No standalone GitHub Release object was found during this verification. Annotated Git tags and Go module availability constitute the publication evidence.

@@ -7,8 +7,11 @@ Their release tags need not target the same Git commit.
 
 | Component | Module | Repository tag |
 | --- | --- | --- |
-| Core | `github.com/majiddarvishan/fluxlog` | `v0.3.0` |
-| goconfig adapter | `github.com/majiddarvishan/fluxlog/adapters/goconfig` | `adapters/goconfig/v0.3.0` |
+| Core | `github.com/majiddarvishan/fluxlog` | `v0.3.1` |
+| goconfig adapter | `github.com/majiddarvishan/fluxlog/adapters/goconfig` | `adapters/goconfig/v0.3.1` |
+
+These are the latest Git tags verified on 2026-10-20; query current Git
+tags and Go module versions for all future releases and integrations.
 
 ## v0.3.1 publication status — 2026-10-19
 
@@ -18,15 +21,16 @@ Their release tags need not target the same Git commit.
   [Core source CI 39176344867](https://github.com/majiddarvishan/fluxlog/actions/runs/39176344867)
   passed both Go module jobs. No core code changes beyond v0.3.0; the
   patch release captures examples and public agent integration docs.
-- **Adapter pending:** publish a **new** annotated
-  `adapters/goconfig/v0.3.1` tag at the final verified **post-merge**
-  main commit, after updating the nested `go.mod` to core `v0.3.1`,
-  regenerating `go.sum` from the Go toolchain, and running both CI jobs.
-  The existing goconfig requirement remains v1.7.0.
-- **Do not invent or move tags:** the existing
-  `adapters/goconfig/v0.3.0` and root `v0.3.0` are immutable. Update
-  this status **only after** GitHub and Go module resolution confirm the
-  nested release.
+- **Adapter published:** annotated `adapters/goconfig/v0.3.1` tag
+  (object `e23ecdd7c0e00e6b2d0555f205e627da5fbde11a`) peels to
+  `8aa21dd639b4e40afdeb750f4be90a8558e88995`.
+  [Post-merge CI 39177136303](https://github.com/majiddarvishan/fluxlog/actions/runs/39177136303)
+  passed both module jobs. It requires core `v0.3.1` and upstream
+  goconfig `v1.7.0` in the published commit.
+- **Go module proxy:** GitHub tags are verified independently. Public
+  proxy resolution of the adapter `v0.3.1` has not been confirmed in
+  this session; consumers should validate with `go list -m`.
+- **Release integrity:** historical root and adapter tags remain immutable.
 
 ## Verified v0.3.0 publication — 2026-10-19
 

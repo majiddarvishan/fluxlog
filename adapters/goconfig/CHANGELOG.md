@@ -20,10 +20,11 @@ No changes recorded yet.
 - Go module checksums regenerated from the official Go 1.23 CI module
   download; no manually invented checksums.
 
-**Release status:** core `v0.3.1` is published; the nested
-`adapters/goconfig/v0.3.1` annotated tag is pending until this adapter
-change passes CI and is merged. Do not use the nested version before its
-tag and Go module resolution have been independently verified.
+**Release status:** core `v0.3.1` and the nested annotated
+`adapters/goconfig/v0.3.1` tag are present on GitHub. The adapter tag
+peels to `8aa21dd639b4e40afdeb750f4be90a8558e88995` and passed
+[post-merge CI 39177136303](https://github.com/majiddarvishan/fluxlog/actions/runs/39177136303).
+Public Go module proxy resolution should be verified by consumers.
 
 ## [0.3.0] - 2026-10-19
 

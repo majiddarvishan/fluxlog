@@ -17,8 +17,9 @@ This installs the published `v0.3.1` core module, including human-readable
 console timestamps and the library's documented core API. Its annotated tag
 points to CI-tested commit `fdb55d6d48ed9a8fc24b8c1e00994278b7fd1785`
 and includes the public integration guide, recipes and coding-agent prompt.
-The nested goconfig adapter is versioned separately; confirm its matching
-tag is published before requesting `adapters/goconfig@v0.3.1`.
+The independently versioned goconfig adapter `adapters/goconfig/v0.3.1`
+is also tagged. These are verified release examples as of 2026-10-20,
+**not permanent integration pins**. Check latest stable tags for new projects.
 
 ## Choose the right integration
 
@@ -38,8 +39,9 @@ constraints, and a copy/paste prompt for Codex or another coding agent.
   goconfig and custom timestamp integrations.
 
 **Ready-to-copy prompt:** [Integrate Fluxlog with Codex or other Coding Agents](prompts/INTEGRATE_FLUXLOG.md).
-It includes the short integration request, decision criteria, release version
-constraints, validation requirements, and optional scenario-specific inputs.
+It directs agents to discover the newest stable Go-resolvable tags for
+each required module at execution time, check compatibility and pin the
+verified versions. It also includes integration decisions and validation.
 
 For a coding agent integrating this library into **another repository**:
 
@@ -47,9 +49,10 @@ For a coding agent integrating this library into **another repository**:
 > configuration provider, deployment, output requirements and Logger
 > ownership. Read the [Integration Guide](docs/INTEGRATION_GUIDE.md),
 > [Configuration Reference](docs/CONFIGURATION_REFERENCE.md), and
-> [Recipes](docs/RECIPES.md). Use stable core `v0.3.0`, adding adapter
-> `v0.3.0` only if needed. Select the smallest compatible integration,
-> verify the real APIs, run tests and explain any limitations.
+> [Recipes](docs/RECIPES.md). Resolve the latest stable published Go-module
+> versions for Core and, when needed, goconfig Adapter independently;
+> check compatibility and pin those versions. Do not assume an old example
+> contains the latest tag. Verify APIs, run tests and explain limitations.
 
 The `AGENTS.md` file in **this library repository** guides agents editing
 Fluxlog itself. It is not automatically loaded by an agent working in the
@@ -244,14 +247,14 @@ do not inherit its dependencies.
 
 The goconfig adapter preserves the original configuration keys and binds the
 `level` node to runtime-safe per-instance level changes. Install the
-published lockstep `v0.3.0` adapter with:
+published lockstep `v0.3.1` adapter (verified on 2026-10-20) with:
 
 ```bash
-go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.0
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.1
 ```
 
-The published nested module tag is `adapters/goconfig/v0.3.0`, independent
-from the core `v0.3.0` Git tag. The adapter requires Fluxlog core `v0.3.0`
+The published nested module tag is `adapters/goconfig/v0.3.1`, independent
+from the core `v0.3.1` Git tag. The adapter requires Fluxlog core `v0.3.1`
 and upstream `goconfig v1.7.0`; it supports post-commit level updates for
 multiple loggers and optional `service` / `caller_max_length` fields.
 The historical adapter `v0.1.0` remains available with its earlier

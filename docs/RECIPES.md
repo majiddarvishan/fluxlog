@@ -2,8 +2,10 @@
 
 Use [Integration Guide](INTEGRATION_GUIDE.md) to pick a pattern and
 [Configuration Reference](CONFIGURATION_REFERENCE.md) for supported
-fields and defaults. Examples below use the published core `v0.3.0`
-and, where relevant, independent goconfig adapter `v0.3.0`.
+fields and defaults. The examples are compatible with the verified
+`v0.3.1` core and adapter snapshot (2026-10-20); for new integrations,
+resolve [the latest stable tags](INTEGRATION_GUIDE.md#3-resolve-versions-then-install)
+rather than treating documentation examples as fixed dependency versions.
 
 ## Recipe 1 — Small application, package-level Info
 

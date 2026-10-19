@@ -7,14 +7,16 @@ the `level` node is successfully persisted.
 ## Install
 
 ```bash
-go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.0
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.1
 ```
 
-The published annotated adapter tag is `adapters/goconfig/v0.3.0`.
-It points to CI-tested commit `0b5c2f46dfaf1b6ca2ae08a832d855dffe51582e`
-and is Go-module-resolvable. Under lockstep versioning, this separate
-adapter module requires Fluxlog core `v0.3.0` and upstream
-`goconfig v1.7.0`. Core never depends on goconfig.
+The published annotated adapter tag is `adapters/goconfig/v0.3.1`,
+verified on 2026-10-20. It points to CI-tested commit
+`8aa21dd639b4e40afdeb750f4be90a8558e88995`. The adapter
+requires Fluxlog core `v0.3.1` and upstream `goconfig v1.7.0`.
+Core never depends on goconfig. For a **new integration**, check the
+[latest stable tag selection instructions](../../docs/INTEGRATION_GUIDE.md#3-resolve-versions-then-install)
+before choosing versions; these are dated release examples.
 
 The earlier adapter `v0.1.0` remains published as historical compatibility
 with core `v0.1.0` and goconfig `v1.3.0`; it does not include the
@@ -107,7 +109,7 @@ default before closing the Logger, and do not put this defer in a short-lived
 initialization helper. goconfig retains the registered callbacks for the
 Manager's lifetime.
 
-## Runtime level updates in v0.3.0
+## Runtime level updates (v0.3.0 and later)
 
 The published adapter requires the official upstream `goconfig v1.7.0` tag,
 verified against its annotated tag on commit
@@ -127,7 +129,7 @@ for that path. Do not register an unrelated `OnReplace` callback before
 `BindLevel` for the same level node. Committed observers are retained
 until the Manager is discarded (there is no unsubscribe method).
 
-The `v0.3.0` adapter behavior is published as an independently tagged Go
-module. Its version number matches core, but the two tags legitimately point
-to different CI-tested commits. No source checkout or local replacement is
-necessary to install the published module.
+This behavior was introduced in `v0.3.0` and remains in `v0.3.1`.
+The adapter and core have independent tags which may point to distinct
+CI-tested commits. No source checkout or local replacement is needed
+to install the published modules.

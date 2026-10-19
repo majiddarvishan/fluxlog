@@ -1,7 +1,9 @@
 # Fluxlog Configuration Reference
 
-**Applies to:** current public API supported by Fluxlog core `v0.3.0` and
-optional goconfig adapter `v0.3.0`. The library's
+**Verified release snapshot (2026-10-20):** core `v0.3.1` and optional
+goconfig adapter `v0.3.1`. For a new integration, always resolve the
+latest stable published tag separately for each module; the current
+examples are **not fixed version recommendations**. The library's
 [construction code](../config.go) and
 [adapter parser](../adapters/goconfig/adapter.go) are authoritative if a
 future release changes behavior. **Go constructor fields and JSON adapter keys
@@ -169,13 +171,18 @@ previous default before closing the instance it replaced.
 
 ## Versioning and verification
 
+For new integrations, first follow the
+[latest stable tag selection procedure](INTEGRATION_GUIDE.md#3-resolve-versions-then-install).
+These commands are **verified release examples from 2026-10-20**, not
+an automatic future version baseline:
+
 ~~~bash
-go get github.com/majiddarvishan/fluxlog@v0.3.0
-go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.0
+go get github.com/majiddarvishan/fluxlog@v0.3.1
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.1
 ~~~
 
-Import the adapter only when required. The adapter is independently published
-under `adapters/goconfig/v0.3.0` and requires core `v0.3.0` plus
+Import the adapter only when needed. The adapter has an independent tag
+`adapters/goconfig/v0.3.1` and requires core `v0.3.1` plus
 `goconfig v1.7.0`. No adapter `v0.2.0` was published. Distinct tag commits
 are valid under the [lockstep release policy](../RELEASING.md).
 

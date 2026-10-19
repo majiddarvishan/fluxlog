@@ -25,11 +25,30 @@ Inspect this project's architecture, existing logging, Go modules,
 configuration provider, deployment environment, and shutdown lifecycle.
 Choose the appropriate integration pattern instead of assuming one.
 
-Use approved published versions as the initial baseline:
-- Core: github.com/majiddarvishan/fluxlog@v0.3.0
-- Optional adapter:
-  github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.0
-Verify actual dependency and API compatibility before implementation.
+Discover the latest published stable versions BEFORE editing any code:
+- Core Go module: github.com/majiddarvishan/fluxlog
+  Git tag prefix: vMAJOR.MINOR.PATCH
+- Optional adapter Go module:
+  github.com/majiddarvishan/fluxlog/adapters/goconfig
+  Git tag prefix: adapters/goconfig/vMAJOR.MINOR.PATCH
+
+For each required module independently, query live GitHub repository tags
+(e.g., git ls-remote --tags) and official Go module versions
+(e.g., go list -m -versions <module-path>). Select the highest stable
+SemVer version that is publicly Go-module-resolvable. Exclude prerelease
+tags, pseudo-versions and untagged main commits unless explicitly asked.
+Ignore outdated "recommended version" examples in READMEs or prompts.
+Check the selected adapter's published go.mod requirements and verify
+compatibility with the selected core and upstream goconfig versions.
+If newest core and adapter tags differ or are incompatible, find the latest
+verified compatible combination and explain the constraint. Never invent
+a missing tag or silently downgrade to an older fixed baseline.
+If GitHub or Go module resolution is unavailable, report this explicitly
+rather than guessing. Respect an explicit user pin or project constraints.
+
+Use go get <module-path>@vX.Y.Z only AFTER selection, pin actual verified
+versions, and report the exact core/adapter versions and evidence.
+Check the public APIs at those tagged versions, not only at main.
 
 Decide and explain:
 1. Core-only vs. goconfig adapter: add the adapter only if the project
@@ -68,8 +87,9 @@ Finish with a short summary of:
 - verification results;
 - supported limitations or follow-up work.
 
-Do not bump dependency versions beyond the approved baseline, create
-Git tags, or perform unrelated refactoring without explicit approval.
+Use the latest verified stable, compatible dependencies unless the user
+explicitly pins versions or documented constraints require otherwise.
+Do not create Git tags or perform unrelated refactoring without approval.
 ```
 
 ## Choosing a narrower request
@@ -93,7 +113,7 @@ Consult the [Integration Guide](../docs/INTEGRATION_GUIDE.md),
 [Configuration Reference](../docs/CONFIGURATION_REFERENCE.md), and
 [Recipes](../docs/RECIPES.md) for feature support and runnable examples.
 
-**Version note:** this prompt uses the published `v0.3.0` module API as its
-baseline. Documentation on the repository's `main` branch may be newer than
-the code at an immutable release tag; verify examples and APIs against the
-selected dependency version.
+**Version policy:** this prompt intentionally has no pinned Fluxlog
+version. Resolve the latest stable published, Go-resolvable tags each time
+the prompt is used. Documentation on `main` may be newer than any immutable
+release; verify APIs against the versions actually selected.

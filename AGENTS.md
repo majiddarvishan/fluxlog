@@ -13,11 +13,14 @@ logging library built on zerolog and lumberjack. The optional goconfig adapter
 (`github.com/majiddarvishan/fluxlog/adapters/goconfig`) is a **separate**
 Go module. The core must not import goconfig.
 
-As of the published lockstep `v0.3.0` release, the adapter requires core
-`v0.3.0` and upstream `goconfig v1.7.0`. Modules use matching release
-version numbers but distinct tags: root `vX.Y.Z` and nested
-`adapters/goconfig/vX.Y.Z`. Do not create or move release tags without
-explicit maintainer authorization.
+The latest verified lockstep release (2026-10-20) is `v0.3.1` for
+both modules. The adapter requires core `v0.3.1` and goconfig `v1.7.0`.
+Modules use matching version numbers but distinct tags: `vX.Y.Z` for
+core and `adapters/goconfig/vX.Y.Z` for the nested adapter.
+For consumer-project prompts **discover the latest published stable
+versions dynamically**; do not hardcode any baseline in
+`prompts/INTEGRATE_FLUXLOG.md`. Never create or move release tags
+without explicit maintainer authorization.
 
 ## Reading order
 
