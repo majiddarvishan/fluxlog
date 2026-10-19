@@ -16,10 +16,12 @@ go get github.com/majiddarvishan/fluxlog@v0.3.2
 This installs published Fluxlog core `v0.3.2` (annotated Git tag on
 CI-tested commit `9050def72d3ad4195f3c5044d1ba4dd0a077f166`).
 This documentation-only patch includes the latest stable-version discovery
-policy for coding agents. The separately published goconfig adapter
-`v0.3.1` remains available; its matching `v0.3.2` patch is prepared
-independently. **Check the available tags at installation time** and select
-the newest verified, compatible published module versions.
+policy for coding agents. The matching goconfig adapter `v0.3.2`
+is also independently tagged at CI-tested commit
+`024602daf22ffd44ba712a23f1eac5e043020958`. Both Git tags are
+verified; public module-proxy resolution should be checked separately.
+**Check current stable tags at installation time** and use the newest
+verified, compatible versions, not a permanently pinned example.
 
 ## Choose the right integration
 
@@ -247,14 +249,14 @@ do not inherit its dependencies.
 
 The goconfig adapter preserves the original configuration keys and binds the
 `level` node to runtime-safe per-instance level changes. Install the
-published lockstep `v0.3.1` adapter (verified on 2026-10-20) with:
+published lockstep `v0.3.2` adapter (GitHub tag verified 2026-10-20) with:
 
 ```bash
-go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.1
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.2
 ```
 
-The published nested module tag is `adapters/goconfig/v0.3.1`, independent
-from the core `v0.3.1` Git tag. The adapter requires Fluxlog core `v0.3.1`
+The published nested module tag is `adapters/goconfig/v0.3.2`, independent
+from the core `v0.3.2` Git tag. The adapter requires Fluxlog core `v0.3.2`
 and upstream `goconfig v1.7.0`; it supports post-commit level updates for
 multiple loggers and optional `service` / `caller_max_length` fields.
 The historical adapter `v0.1.0` remains available with its earlier
