@@ -8,32 +8,37 @@ Their release tags need not target the same Git commit.
 | Component | Module | Repository tag |
 | --- | --- | --- |
 | Core | `github.com/majiddarvishan/fluxlog` | `v0.3.2` |
-| goconfig adapter | `github.com/majiddarvishan/fluxlog/adapters/goconfig` | `adapters/goconfig/v0.3.1` (v0.3.2 pending) |
+| goconfig adapter | `github.com/majiddarvishan/fluxlog/adapters/goconfig` | `adapters/goconfig/v0.3.2` |
 
 These are the latest Git tags verified on 2026-10-20; query current Git
 tags and Go module versions for all future releases and integrations.
 
-## v0.3.2 release preparation — 2026-10-20
+## Verified v0.3.2 Git tags — 2026-10-20
 
-- **Core release candidate:** documentation-only patch since v0.3.1.
-  The dynamic latest-tag integration prompt was merged in
+- **Purpose:** documentation-only patch for core, including the updated
+  reusable integration prompt that selects the latest published stable tags.
   [PR #27](https://github.com/majiddarvishan/fluxlog/pull/27)
-  and passed [post-merge CI 39326544866](https://github.com/majiddarvishan/fluxlog/actions/runs/39326544866).
-  This preparation commit adds the v0.3.2 changelog; **do not tag until
-  the final preparation merge commit passes both main CI jobs**.
+  and [CI 39326544866](https://github.com/majiddarvishan/fluxlog/actions/runs/39326544866)
+  validated the revised guidance.
 - **Core tag published:** annotated `v0.3.2` tag object
   `163e1774aa4635454d0f52186318eec85155ea67` peels to
   `9050def72d3ad4195f3c5044d1ba4dd0a077f166`.
   [Post-merge CI 39327982376](https://github.com/majiddarvishan/fluxlog/actions/runs/39327982376)
   passed both module jobs. Historical `v0.3.1` is immutable.
-- **Adapter tag pending:** the nested module is being updated to require
-  Core `v0.3.2`, while retaining upstream goconfig `v1.7.0`.
-  Regenerate `go.sum` using Go tooling and verify both CI jobs. Only
-  after the final adapter commit passes post-merge CI, publish an annotated
-  `adapters/goconfig/v0.3.2` tag on exactly that commit.
-- **Publication status:** root tag verified in GitHub; nested tag is not
-  yet published. Confirm module proxy resolution separately.
-  Never move existing tags.
+- **Adapter tag published:** annotated `adapters/goconfig/v0.3.2`
+  Git tag object `3c5ff74ee5766273f54820afd1317b76ea46d1b4`
+  peels to `024602daf22ffd44ba712a23f1eac5e043020958`.
+  [PR #29](https://github.com/majiddarvishan/fluxlog/pull/29)
+  was merged and [post-merge CI 39329602416](https://github.com/majiddarvishan/fluxlog/actions/runs/39329602416)
+  passed both independent module jobs, including race tests and example
+  builds. The adapter requires Fluxlog core `v0.3.2` and upstream
+  goconfig `v1.7.0`.
+- **Go module proxy:** GitHub tags are independently verified. A
+  consumer's query to `proxy.golang.org` returned a TLS handshake timeout,
+  so public Go-module proxy resolution is **not yet confirmed** here.
+  This network error is not evidence that the Git tag is missing.
+  Verify from a network with working connectivity and do not move tags.
+- **Release integrity:** all older tags remain immutable.
 
 ## v0.3.1 publication status — 2026-10-19
 

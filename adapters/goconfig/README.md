@@ -6,9 +6,11 @@ the `level` node is successfully persisted.
 
 ## Install
 
-The independent goconfig adapter is prepared for lockstep `v0.3.2`.
-**Use this version only after verifying the nested
-`adapters/goconfig/v0.3.2` tag exists and resolves as a Go module**:
+The independently published adapter has an annotated
+`adapters/goconfig/v0.3.2` Git tag, pointing to CI-tested commit
+`024602daf22ffd44ba712a23f1eac5e043020958`. The tag has been
+verified in GitHub. Before installing in a new environment, confirm
+that its Go module can be resolved by the configured proxy:
 
 ```bash
 go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.2

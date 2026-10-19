@@ -3,18 +3,25 @@
 **Verified:** 2026-10-20
 **Main baseline before this documentation update:** `8aa21dd639b4e40afdeb750f4be90a8558e88995`.
 **Lockstep v0.3.1 tags:** historical, both verified on GitHub.
-**v0.3.2 release:** Core annotated tag verified; adapter patch is in progress.
+**v0.3.2 release:** Both annotated Git tags verified; Go module proxy
+resolution from the consumer's network remains unverified.
 
-### v0.3.2 release progress (2026-10-20)
+### v0.3.2 Git tag publication (2026-10-20)
 
 - Core `v0.3.2` tag object `163e1774aa4635454d0f52186318eec85155ea67`
   points to `9050def72d3ad4195f3c5044d1ba4dd0a077f166`.
   [Post-merge CI 39327982376](https://github.com/majiddarvishan/fluxlog/actions/runs/39327982376)
   passed both independent jobs.
-- Adapter `v0.3.2` preparation updates only its core module requirement
-  (v0.3.1 -> v0.3.2), release notes and docs, retaining upstream goconfig
-  v1.7.0. Its nested tag is **not yet published**; verify CI, tag and
-  public Go module availability before declaring completion.
+- Adapter annotated `adapters/goconfig/v0.3.2` tag object
+  `3c5ff74ee5766273f54820afd1317b76ea46d1b4` peels to
+  `024602daf22ffd44ba712a23f1eac5e043020958` (merged
+  [PR #29](https://github.com/majiddarvishan/fluxlog/pull/29)).
+  [Post-merge CI 39329602416](https://github.com/majiddarvishan/fluxlog/actions/runs/39329602416)
+  passed both module jobs. The adapter requires core `v0.3.2`
+  and upstream goconfig `v1.7.0`.
+- Go module proxy resolution remains separately unverified because a
+  consumer reported TLS handshake timeout with `proxy.golang.org`.
+  Git tags and CI are verified; avoid changing existing published tags.
 
 **Current v0.3.1 release status (verified 2026-10-20):**
 - Core annotated `v0.3.1` tag object `4ccbe38d44cb97930caf80eb593edd0d16dd6070`

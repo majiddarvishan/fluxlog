@@ -28,9 +28,11 @@ No changes recorded yet.
 - Both module CI jobs (including vet, race tests and example builds) passed
   on [PR #27](https://github.com/majiddarvishan/fluxlog/pull/27)
   and [post-merge main CI 39326544866](https://github.com/majiddarvishan/fluxlog/actions/runs/39326544866).
-- The independently versioned goconfig adapter should be republished
-  under the matching nested v0.3.2 tag after it requires core v0.3.2,
-  passes CI and is merged.
+- The independently versioned goconfig adapter now has its matching
+  `adapters/goconfig/v0.3.2` annotated tag on the verified post-merge
+  commit, with core `v0.3.2` in its dependency graph.
+  [Post-merge CI 39329602416](https://github.com/majiddarvishan/fluxlog/actions/runs/39329602416)
+  passed both module jobs.
 
 ## [0.3.1] - 2026-10-19
 

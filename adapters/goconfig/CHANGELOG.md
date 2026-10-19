@@ -17,13 +17,17 @@ No changes recorded yet.
 - Keep upstream `github.com/majiddarvishan/goconfig v1.7.0` unchanged.
 - Carry the updated Fluxlog coding-agent integration guidance into the matching
   adapter release; no adapter runtime API or logging behavior changes.
-- Recompute `go.sum` using Go tooling, validate both modules with Go CI
-  including race tests, then publish annotated `adapters/goconfig/v0.3.2`
-  from the verified post-merge commit. Do not retag an earlier release.
+- Regenerate `go.sum` using Go 1.23 tooling; both module jobs
+  including race tests and example builds passed
+  [post-merge CI 39329602416](https://github.com/majiddarvishan/fluxlog/actions/runs/39329602416).
 
-**Status:** adapter `v0.3.2` is a release candidate until its independent
-Git tag and Go module resolution are verified. The core `v0.3.2` tag has
-already been published.
+**Publication:** independent annotated Git tag
+`adapters/goconfig/v0.3.2` (tag object
+`3c5ff74ee5766273f54820afd1317b76ea46d1b4`) peels to
+`024602daf22ffd44ba712a23f1eac5e043020958`.
+Core `v0.3.2` is also tagged. Verification through the public Go
+module proxy remains outstanding because of a reported TLS handshake
+timeout; do not infer proxy availability from tag presence alone.
 
 ## [0.3.1] - 2026-10-19
 
