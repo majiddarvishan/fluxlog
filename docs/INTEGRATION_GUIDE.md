@@ -5,12 +5,11 @@ usage in a consuming Go application. It applies to human developers and to
 Codex, Claude Code, and other coding agents. Make decisions from the
 application's requirements, not merely from an example's defaults.
 
-**Supported release baseline:** Fluxlog core `v0.3.0`, optional
-`adapters/goconfig` module `v0.3.0`, and adapter dependency
-`github.com/majiddarvishan/goconfig v1.7.0`. These are **two Go modules**
-with distinct Git tag prefixes. Read the source and `go.mod` of the version
-the application actually pins; new documentation on `main` is not
-automatically added to an existing release tag.
+**Verified release snapshot (2026-10-20):** Fluxlog core `v0.3.1` and
+goconfig adapter `v0.3.1` (requiring goconfig `v1.7.0`). These are
+**two Go modules** with distinct tag prefixes, not a permanent integration
+baseline. Look up the latest stable releases for each module when using
+this guide; inspect the actual selected release's source and go.mod.
 
 - [Configuration reference](CONFIGURATION_REFERENCE.md): accepted fields,
   defaults, and **adapter-specific limitations**.
@@ -68,24 +67,34 @@ expose structured events through its instance API.
    implement that. Design a controlled reinitialization/lifecycle or
    application-owned configuration mechanism instead.
 
-## 3. Install the selected module
+## 3. Resolve versions, then install
 
-Core only:
-
-~~~bash
-go get github.com/majiddarvishan/fluxlog@v0.3.0
-~~~
-
-With the optional adapter:
+For **each required module**, check GitHub tags and the Go module proxy:
 
 ~~~bash
-go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.0
+git ls-remote --tags https://github.com/majiddarvishan/fluxlog.git
+go list -m -versions github.com/majiddarvishan/fluxlog
+go list -m -versions github.com/majiddarvishan/fluxlog/adapters/goconfig
 ~~~
 
-The v0.3.0 adapter requires core v0.3.0 and upstream goconfig v1.7.0.
-Do not import the nested adapter from the core module by assumption,
-introduce a `replace` directive for a published dependency without reason,
-or guess a newer release tag.
+Core tags are `vX.Y.Z`; adapter tags use
+`adapters/goconfig/vX.Y.Z`. Choose the highest stable SemVer tag that
+is actually Go-resolvable, excluding prerelease and untagged commits.
+Verify the adapter's published go.mod dependency on core and goconfig.
+If the newest tags differ or are incompatible, identify a verified
+compatible pair and explain why. Do not invent tags, silently fall back
+to stale versions, or claim verification when the network is unavailable.
+Honor explicit user-provided version constraints.
+
+**As of 2026-10-20** (illustrative, not a permanent default):
+
+~~~bash
+go get github.com/majiddarvishan/fluxlog@v0.3.1
+go get github.com/majiddarvishan/fluxlog/adapters/goconfig@v0.3.1
+~~~
+
+The v0.3.1 adapter requires core v0.3.1 and upstream goconfig v1.7.0.
+Do not add the nested adapter to applications that do not need it.
 
 ## 4. API boundaries and ownership
 
@@ -177,9 +186,12 @@ The following is a **consumer-project** prompt. The remote library's
 > versions, deployment output and shutdown lifecycle. Read the library's
 > `docs/INTEGRATION_GUIDE.md`, `docs/CONFIGURATION_REFERENCE.md`,
 > `docs/RECIPES.md` and runnable examples at the version we will use.
-> Start with released Fluxlog core v0.3.0 and add the independently released
-> goconfig adapter v0.3.0 only if the project already uses goconfig and its
-> mapping fits. Choose instance vs package-level logging, structured fields,
+> Query current published Git tags and Go module versions separately for
+> Core and the goconfig Adapter. Select and pin the latest stable,
+> Go-resolvable, compatible releases; do not assume an old documentation
+> example contains the latest. Add the adapter only if the project uses
+> goconfig and its mapping fits. Choose instance vs package-level logging,
+> structured fields,
 > console/file/JSON and runtime-level changes based on the project.
 > Do not invent config fields, imply hot reload for settings other than level,
 > break Logger ownership, rewrite other logging systems without cause, or
