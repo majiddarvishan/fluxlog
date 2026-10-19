@@ -13,6 +13,24 @@ Their release tags need not target the same Git commit.
 These are the latest Git tags verified on 2026-10-20; query current Git
 tags and Go module versions for all future releases and integrations.
 
+## v0.3.2 release preparation — 2026-10-20
+
+- **Core release candidate:** documentation-only patch since v0.3.1.
+  The dynamic latest-tag integration prompt was merged in
+  [PR #27](https://github.com/majiddarvishan/fluxlog/pull/27)
+  and passed [post-merge CI 39326544866](https://github.com/majiddarvishan/fluxlog/actions/runs/39326544866).
+  This preparation commit adds the v0.3.2 changelog; **do not tag until
+  the final preparation merge commit passes both main CI jobs**.
+- **Core tag pending:** create a new annotated root tag `v0.3.2`
+  at that verified post-merge main commit. Do not move v0.3.1.
+- **Adapter tag pending:** after core v0.3.2 resolves as a Go module,
+  update `adapters/goconfig/go.mod` to require core v0.3.2,
+  regenerate `go.sum` with Go tooling and verify both module CI jobs.
+  Create annotated `adapters/goconfig/v0.3.2` only on a verified
+  post-merge adapter commit.
+- This is release **preparation**, not evidence of published tags.
+  Update the status once each tag and its peeled commit can be verified.
+
 ## v0.3.1 publication status — 2026-10-19
 
 - **Core published:** `v0.3.1` is an annotated tag (object

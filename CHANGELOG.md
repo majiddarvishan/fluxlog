@@ -9,6 +9,29 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 No changes recorded yet.
 
+## [0.3.2] - 2026-10-20
+
+### Documentation
+
+- Update the reusable coding-agent prompt to discover the latest stable,
+  Go-module-resolvable Fluxlog core and goconfig adapter tags independently
+  instead of assuming a fixed v0.3.0 baseline.
+- Document compatible release selection, independent adapter tag prefixes,
+  module dependency checks, and explicit version pins in consuming projects.
+- Align public integration examples and release status with the verified
+  v0.3.1 tags as of 2026-10-20.
+
+### Compatibility
+
+- Documentation-only patch: no changes to Fluxlog core runtime behavior,
+  public API, dependency graph, or Go toolchain requirement.
+- Both module CI jobs (including vet, race tests and example builds) passed
+  on [PR #27](https://github.com/majiddarvishan/fluxlog/pull/27)
+  and [post-merge main CI 39326544866](https://github.com/majiddarvishan/fluxlog/actions/runs/39326544866).
+- The independently versioned goconfig adapter should be republished
+  under the matching nested v0.3.2 tag after it requires core v0.3.2,
+  passes CI and is merged.
+
 ## [0.3.1] - 2026-10-19
 
 ### Documentation and examples
@@ -78,6 +101,7 @@ are tracked in [`adapters/goconfig/CHANGELOG.md`](adapters/goconfig/CHANGELOG.md
 - Core and adapter examples, unit tests, race tests, fuzz seeds, and benchmarks.
 - GitHub Actions verification for both Go modules.
 
+[0.3.2]: https://github.com/majiddarvishan/fluxlog/tree/v0.3.2
 [0.3.1]: https://github.com/majiddarvishan/fluxlog/tree/v0.3.1
 [0.3.0]: https://github.com/majiddarvishan/fluxlog/tree/v0.3.0
 [0.2.1]: https://github.com/majiddarvishan/fluxlog/releases/tag/v0.2.1
