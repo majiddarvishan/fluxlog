@@ -7,8 +7,8 @@ Their release tags need not target the same Git commit.
 
 | Component | Module | Repository tag |
 | --- | --- | --- |
-| Core | `github.com/majiddarvishan/fluxlog` | `v0.3.1` |
-| goconfig adapter | `github.com/majiddarvishan/fluxlog/adapters/goconfig` | `adapters/goconfig/v0.3.1` |
+| Core | `github.com/majiddarvishan/fluxlog` | `v0.3.2` |
+| goconfig adapter | `github.com/majiddarvishan/fluxlog/adapters/goconfig` | `adapters/goconfig/v0.3.1` (v0.3.2 pending) |
 
 These are the latest Git tags verified on 2026-10-20; query current Git
 tags and Go module versions for all future releases and integrations.
@@ -21,15 +21,19 @@ tags and Go module versions for all future releases and integrations.
   and passed [post-merge CI 39326544866](https://github.com/majiddarvishan/fluxlog/actions/runs/39326544866).
   This preparation commit adds the v0.3.2 changelog; **do not tag until
   the final preparation merge commit passes both main CI jobs**.
-- **Core tag pending:** create a new annotated root tag `v0.3.2`
-  at that verified post-merge main commit. Do not move v0.3.1.
-- **Adapter tag pending:** after core v0.3.2 resolves as a Go module,
-  update `adapters/goconfig/go.mod` to require core v0.3.2,
-  regenerate `go.sum` with Go tooling and verify both module CI jobs.
-  Create annotated `adapters/goconfig/v0.3.2` only on a verified
-  post-merge adapter commit.
-- This is release **preparation**, not evidence of published tags.
-  Update the status once each tag and its peeled commit can be verified.
+- **Core tag published:** annotated `v0.3.2` tag object
+  `163e1774aa4635454d0f52186318eec85155ea67` peels to
+  `9050def72d3ad4195f3c5044d1ba4dd0a077f166`.
+  [Post-merge CI 39327982376](https://github.com/majiddarvishan/fluxlog/actions/runs/39327982376)
+  passed both module jobs. Historical `v0.3.1` is immutable.
+- **Adapter tag pending:** the nested module is being updated to require
+  Core `v0.3.2`, while retaining upstream goconfig `v1.7.0`.
+  Regenerate `go.sum` using Go tooling and verify both CI jobs. Only
+  after the final adapter commit passes post-merge CI, publish an annotated
+  `adapters/goconfig/v0.3.2` tag on exactly that commit.
+- **Publication status:** root tag verified in GitHub; nested tag is not
+  yet published. Confirm module proxy resolution separately.
+  Never move existing tags.
 
 ## v0.3.1 publication status — 2026-10-19
 

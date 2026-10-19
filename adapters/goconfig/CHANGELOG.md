@@ -8,6 +8,23 @@ starting at `v0.3.0`, while retaining its own nested Git tags and dependencies:
 
 No changes recorded yet.
 
+## [0.3.2] - 2026-10-20
+
+### Compatibility and documentation
+
+- Update the separately published goconfig adapter module requirement from
+  Fluxlog core `v0.3.1` to the annotated core `v0.3.2` release.
+- Keep upstream `github.com/majiddarvishan/goconfig v1.7.0` unchanged.
+- Carry the updated Fluxlog coding-agent integration guidance into the matching
+  adapter release; no adapter runtime API or logging behavior changes.
+- Recompute `go.sum` using Go tooling, validate both modules with Go CI
+  including race tests, then publish annotated `adapters/goconfig/v0.3.2`
+  from the verified post-merge commit. Do not retag an earlier release.
+
+**Status:** adapter `v0.3.2` is a release candidate until its independent
+Git tag and Go module resolution are verified. The core `v0.3.2` tag has
+already been published.
+
 ## [0.3.1] - 2026-10-19
 
 ### Compatibility and documentation
@@ -60,6 +77,7 @@ The maintainer verified Go module resolution through `proxy.golang.org`.
 
 Previous published adapter tag: `adapters/goconfig/v0.1.0`.
 
+[0.3.2]: https://github.com/majiddarvishan/fluxlog/tree/adapters/goconfig/v0.3.2
 [0.3.1]: https://github.com/majiddarvishan/fluxlog/tree/adapters/goconfig/v0.3.1
 [0.3.0]: https://github.com/majiddarvishan/fluxlog/tree/adapters/goconfig/v0.3.0
 [0.1.0]: https://github.com/majiddarvishan/fluxlog/tree/adapters/goconfig/v0.1.0
